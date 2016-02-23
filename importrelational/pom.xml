@@ -25,11 +25,11 @@
 			<artifactId>spring-hateoas</artifactId>
 		</dependency>
 		
+		<!-- this is not in public repos due to Oracle license -->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
 			<version>11.2.0.2.0</version>
-<!-- 			<scope>runtime</scope> -->
 		</dependency>
 		
 		
@@ -78,6 +78,23 @@
 			<id>spring-milestones</id>
 			<url>http://repo.spring.io/milestone</url>
 		</repository>
+		
+		<!-- Has the Oracle driver, which cannot be published outside, for copyright reasons -->		
+		<repository>
+			<id>coconut.ebi.ac.uk-snapshots</id>
+			<name>Coconut Snapshot Repository</name>
+			<url>http://coconut.ebi.ac.uk:8081/artifactory/local-repo/</url>
+			<snapshots>
+			  <enabled>true</enabled>
+			</snapshots>
+		</repository>
+		
+		<repository>
+			<id>coconut.ebi.ac.uk</id>
+			<name>coconut.ebi.ac.uk-releases</name>
+			<url>http://coconut.ebi.ac.uk:8081/artifactory/hasbanana</url>
+		</repository>
+		
 	</repositories>
 	<pluginRepositories>
 		<!-- (you don't need this if you are using a .RELEASE version) -->
