@@ -30,13 +30,7 @@ public class WebappConfiguration extends Neo4jConfiguration {
 		// name of package containing domain objects here
 		return new SessionFactory("uk.ac.ebi.biosamples.relations.model");
 	}
-
-	@Override
-	@Bean
-	public Neo4jServer neo4jServer() {
-		return new RemoteServer(env.getProperty("neo4j.url"));
-	}
-
+	
 	@Override
 	@Bean
 	public Session getSession() throws Exception {
