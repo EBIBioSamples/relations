@@ -8,8 +8,13 @@ public class Submission {
     private Long id;
     
     private String submissionId;
+    
+    public Submission() {
+    	super();
+    }
 
 	public Submission(String submissionId) {
+		super();
 		this.submissionId = submissionId;
 	}
 

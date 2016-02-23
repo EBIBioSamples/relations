@@ -16,42 +16,40 @@ import org.springframework.data.neo4j.template.Neo4jTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@EnableNeo4jRepositories("uk.ac.ebi.biosamples.relations.webapp.repo") //name of package containing repositories here
+// name of package containing repositories here
+@EnableNeo4jRepositories("uk.ac.ebi.biosamples.relations.webapp.repo")
 @EnableTransactionManagement
 public class WebappConfiguration extends Neo4jConfiguration {
 
-    @Autowired 
-    private Environment env;
+	@Autowired
+	private Environment env;
 
-    @Override
-    @Bean
-    public SessionFactory getSessionFactory() {
-        return new SessionFactory("uk.ac.ebi.biosamples.relations.model"); //name of package containing domain objects here
-    }
-
-    @Override
-    @Bean
-    public Neo4jServer neo4jServer() {
-        return new RemoteServer(env.getProperty("neo4j.url"));
-    }
-
-    @Override
-    @Bean
-    //@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public Session getSession() throws Exception {
-        return super.getSession();
-    }
-	
+	@Override
 	@Bean
-	 public Neo4jOperations getNeo4jTemplate() throws Exception {
-	     return new Neo4jTemplate(getSession());
-	 }
+	public SessionFactory getSessionFactory() {
+		// name of package containing domain objects here
+		return new SessionFactory("uk.ac.ebi.biosamples.relations.model");
+	}
 
-	
-	
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(WebappConfiguration.class, args);
-    }
+	@Override
+	@Bean
+	public Neo4jServer neo4jServer() {
+		return new RemoteServer(env.getProperty("neo4j.url"));
+	}
 
+	@Override
+	@Bean
+	public Session getSession() throws Exception {
+		return super.getSession();
+	}
+
+	@Bean
+	public Neo4jOperations getNeo4jTemplate() throws Exception {
+		return new Neo4jTemplate(getSession());
+	}
+
+	public static void main(String[] args) throws Exception {
+		SpringApplication.run(WebappConfiguration.class, args);
+	}
 
 }

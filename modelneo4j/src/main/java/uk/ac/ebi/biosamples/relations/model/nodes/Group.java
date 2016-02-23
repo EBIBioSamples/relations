@@ -17,8 +17,12 @@ public class Group extends SampleOrGroup {
     @JsonIgnore 
 	private Set<MemberOf> memberOfs = new HashSet<>();
 
+    public Group() {
+    	super();
+    }
+    
 	public Group(String accession) {
-		this.accession = accession;
+		super(accession);
 	}
 	
     public void addMemberOf(MemberOf memberOf) {

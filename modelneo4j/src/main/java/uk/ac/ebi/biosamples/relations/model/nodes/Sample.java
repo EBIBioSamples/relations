@@ -1,26 +1,17 @@
 package uk.ac.ebi.biosamples.relations.model.nodes;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @NodeEntity
 public class Sample extends SampleOrGroup {
-    
-
-    
+        
 	public Sample() {
-		
+		super();
 	}
 	
 	public Sample(String accession) {
-		this.accession = accession;
+		super(accession);
 	}
 	
 	@Override

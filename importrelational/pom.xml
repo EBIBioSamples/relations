@@ -2,14 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.ac.ebi.biosamples</groupId>
-	<artifactId>relations-webapp</artifactId>
+	<artifactId>relations-importsql</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<!-- <version>1.3.2.RELEASE</version> -->
-		<version>1.4.0.BUILD-SNAPSHOT</version>
+		<version>1.3.2.RELEASE</version>
 	</parent>
 
 	<properties>
@@ -19,23 +18,55 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-rest</artifactId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-neo4j</artifactId>
-			<!-- Have to manually specify a more recent version for best results -->
-			<version>4.0.0.RELEASE</version>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.2.0</version>
+<!-- 			<scope>runtime</scope> -->
+		</dependency>
+		
+		
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		
+		<!-- BioSD Components -->
+		<dependency>
+			<groupId>uk.ac.ebi.fg</groupId>
+			<artifactId>biosd_model</artifactId>
+			<version>4.0.1-SNAPSHOT</version>
+		</dependency>
+		
+        
 		<dependency>
 			<groupId>uk.ac.ebi.biosamples</groupId>
 			<artifactId>relations-modelneo4j</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-	
-	<repositories>		<!-- (you don't need this if you are using a .RELEASE version) -->
+
+	<repositories>
+		<repository>
+			<id>EBIBioSamples-GH-repo</id>
+			<url>https://raw.githubusercontent.com/EBIBioSamples/EBIBioSamples.github.io/maven-repo</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<!-- (you don't need this if you are using a .RELEASE version) -->
 		<repository>
 			<id>spring-snapshots</id>
 			<url>http://repo.spring.io/snapshot</url>
@@ -59,4 +90,5 @@
 			<url>http://repo.spring.io/milestone</url>
 		</pluginRepository>
 	</pluginRepositories>
+
 </project>

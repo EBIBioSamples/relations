@@ -26,8 +26,17 @@ public abstract class SampleOrGroup {
     @Relationship(type = "OWNED_BY", direction=Relationship.OUTGOING)
     @JsonIgnore 
 	private OwnedBy ownedBy;
+
+    public SampleOrGroup() {
+    	super();
+	}
     
-    public String getAccession() {
+    public SampleOrGroup(String accession) {
+    	super();
+    	this.accession = accession;
+	}
+
+	public String getAccession() {
     	return accession;
 	}
 

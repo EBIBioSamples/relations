@@ -14,8 +14,6 @@ import uk.ac.ebi.biosamples.relations.model.nodes.Group;
 import uk.ac.ebi.biosamples.relations.model.nodes.Sample;
 import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
 import uk.ac.ebi.biosamples.relations.webapp.repo.GroupRepository;
-import uk.ac.ebi.biosamples.relations.webapp.repo.MemberOfRepository;
-import uk.ac.ebi.biosamples.relations.webapp.repo.OwnedByRepository;
 import uk.ac.ebi.biosamples.relations.webapp.repo.SampleRepository;
 import uk.ac.ebi.biosamples.relations.webapp.repo.SubmissionRepository;
 
@@ -31,13 +29,6 @@ public class DummyPopulator {
 	
 	@Autowired 
 	private GroupRepository groupRepository;
-
-	
-	@Autowired 
-	private MemberOfRepository memberOfRepository;
-	
-	@Autowired 
-	private OwnedByRepository ownedByRepository;
 	
 	
 	@Autowired 
