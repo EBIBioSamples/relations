@@ -17,6 +17,10 @@ public class Group extends SampleOrGroup {
     @JsonIgnore 
 	private Set<MemberOf> memberOfs = new HashSet<>();
 
+    /**
+     * Dummy constructor for use by Jackson and Neo4j
+     * Do not use
+     */
     public Group() {
     	super();
     }

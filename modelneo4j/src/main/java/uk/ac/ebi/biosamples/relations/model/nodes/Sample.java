@@ -5,7 +5,11 @@ import org.neo4j.ogm.annotation.NodeEntity;
 
 @NodeEntity
 public class Sample extends SampleOrGroup {
-        
+
+    /**
+     * Dummy constructor for use by Jackson and Neo4j
+     * Do not use
+     */
 	public Sample() {
 		super();
 	}

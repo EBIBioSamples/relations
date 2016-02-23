@@ -27,6 +27,10 @@ public abstract class SampleOrGroup {
     @JsonIgnore 
 	private OwnedBy ownedBy;
 
+    /**
+     * Dummy constructor for use by Jackson and Neo4j
+     * Do not use
+     */
     public SampleOrGroup() {
     	super();
 	}

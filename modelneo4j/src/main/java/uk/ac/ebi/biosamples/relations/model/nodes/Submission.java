@@ -8,7 +8,11 @@ public class Submission {
     private Long id;
     
     private String submissionId;
-    
+
+    /**
+     * Dummy constructor for use by Jackson and Neo4j
+     * Do not use
+     */
     public Submission() {
     	super();
     }
