@@ -1,7 +1,6 @@
 package uk.ac.ebi.biosamples.relations.webapp;
 
-import java.util.HashMap;
-
+import java.util.Collections;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class DummyPopulator {
     public void populateOnStart() {
     	//clean up any nodes or edges from previous sessions
     	//woulnd't want to do this in production...
-    	neo4jTemplate.query("MATCH (n) DETACH DELETE n", new HashMap<>());
+    	neo4jTemplate.query("MATCH (n) DETACH DELETE n", Collections.emptyMap());
     	
     	Submission sub = new Submission("GSB-TEST");
     	submissionRepository.save(sub);    	   	
