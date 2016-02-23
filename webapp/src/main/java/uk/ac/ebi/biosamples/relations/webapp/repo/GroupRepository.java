@@ -7,5 +7,6 @@ import uk.ac.ebi.biosamples.relations.model.nodes.Group;
 
 @Repository
 public interface GroupRepository extends GraphRepository<Group> {
-	
+
+	public Group findOneByAccession(String accession);
 }

@@ -7,5 +7,6 @@ import uk.ac.ebi.biosamples.relations.model.nodes.Sample;
 
 @Repository
 public interface SampleRepository extends GraphRepository<Sample> {
-	
+
+	public Sample findOneByAccession(String accession);
 }

@@ -8,4 +8,5 @@ import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
 @Repository
 public interface SubmissionRepository extends GraphRepository<Submission> {
 	
+	public Submission findOneBySubmissionId(String submissionId);
 }

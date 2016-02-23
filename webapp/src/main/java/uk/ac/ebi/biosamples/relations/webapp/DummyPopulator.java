@@ -69,6 +69,12 @@ public class DummyPopulator {
     	g1.addMemberOf(s2g1);
 //    	memberOfRepository.save(s2g1);
     	groupRepository.save(g1);
+    	
+    	
+    	//some quick tests
+    	submissionRepository.findOneBySubmissionId("GSB-TEST");
+    	sampleRepository.findOneByAccession("SAMETST1");
+    	groupRepository.findOneByAccession("SAMEGTST2");
     }
 
 }

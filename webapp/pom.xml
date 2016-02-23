@@ -32,7 +32,22 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-	
+
+	<build>
+		<plugins>
+		<!-- Need to pass this argument to the compiler so that custom respostory searches work -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- <groupId>org.springframework.boot</groupId> -->
+				<!-- <artifactId>spring-boot-maven-plugin</artifactId> -->
+				<configuration>
+					<compilerArgument>-parameters</compilerArgument>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<repositories>		<!-- (you don't need this if you are using a .RELEASE version) -->
 		<repository>
 			<id>spring-snapshots</id>
