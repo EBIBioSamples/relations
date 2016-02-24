@@ -43,31 +43,18 @@ public class DummyPopulator {
     	Submission sub = new Submission("GSB-TEST");
     	submissionRepository.save(sub);    	   	
     	
-    	Sample s1 = new Sample("SAMETST1");
+    	Sample s1 = new Sample("SAMETST1", sub);
     	sampleRepository.save(s1);
-    	Sample s2 = new Sample("SAMETST2");
+    	Sample s2 = new Sample("SAMETST2", sub);
     	sampleRepository.save(s2);
     	
-    	Group g1 = new Group("SAMEGTST2");
-    	groupRepository.save(g1);
-    	
-    	OwnedBy s1own = new OwnedBy(s1, sub);
-    	s1.setOwnedBy(s1own);
-//    	ownedByRepository.save(s1own);
-    	OwnedBy s2own = new OwnedBy(s2, sub);
-    	s2.setOwnedBy(s2own);
-//    	ownedByRepository.save(s2own);
-    	OwnedBy g1own = new OwnedBy(g1, sub);
-    	g1.setOwnedBy(g1own);
-//    	ownedByRepository.save(g1own);
+    	Group g1 = new Group("SAMEGTST2", sub);
     	groupRepository.save(g1);
     	
     	MemberOf s1g1 = new MemberOf(s1, g1);
     	g1.addMemberOf(s1g1);
-//    	memberOfRepository.save(s1g1);
     	MemberOf s2g1 = new MemberOf(s2, g1);
     	g1.addMemberOf(s2g1);
-//    	memberOfRepository.save(s2g1);
     	groupRepository.save(g1);
     	
     	
