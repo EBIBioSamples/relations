@@ -14,8 +14,8 @@ public class Sample extends SampleOrGroup {
 		super();
 	}
 	
-	public Sample(String accession) {
-		super(accession);
+	public Sample(String accession, Submission owner) {
+		super(accession, owner);
 	}
 	
 	@Override

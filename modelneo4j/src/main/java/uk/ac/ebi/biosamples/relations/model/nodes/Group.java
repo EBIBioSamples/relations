@@ -25,8 +25,8 @@ public class Group extends SampleOrGroup {
     	super();
     }
     
-	public Group(String accession) {
-		super(accession);
+	public Group(String accession, Submission sub) {
+		super(accession, sub);
 	}
 	
     public void addMemberOf(MemberOf memberOf) {

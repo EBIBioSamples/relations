@@ -35,9 +35,10 @@ public abstract class SampleOrGroup {
     	super();
 	}
     
-    public SampleOrGroup(String accession) {
+    public SampleOrGroup(String accession, Submission owner) {
     	super();
     	this.accession = accession;
+    	this.ownedBy = new OwnedBy(this, owner);
 	}
 
 	public String getAccession() {
