@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Component;
 
-import uk.ac.ebi.biosamples.relations.model.edges.MemberOf;
-import uk.ac.ebi.biosamples.relations.model.edges.OwnedBy;
+import uk.ac.ebi.biosamples.relations.model.edges.Membership;
+import uk.ac.ebi.biosamples.relations.model.edges.Ownership;
 import uk.ac.ebi.biosamples.relations.model.nodes.Group;
 import uk.ac.ebi.biosamples.relations.model.nodes.Sample;
 import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
@@ -44,18 +44,18 @@ public class DummyPopulator {
     	submissionRepository.save(sub);    	   	
     	
     	Sample s1 = new Sample("SAMETST1", sub);
-    	sampleRepository.save(s1);
+    	sampleRepository.save(s1, 1);
     	Sample s2 = new Sample("SAMETST2", sub);
-    	sampleRepository.save(s2);
+    	sampleRepository.save(s2, 1);
     	
     	Group g1 = new Group("SAMEGTST2", sub);
-    	groupRepository.save(g1);
+    	groupRepository.save(g1, 1);
     	
-    	MemberOf s1g1 = new MemberOf(s1, g1);
-    	g1.addMemberOf(s1g1);
-    	MemberOf s2g1 = new MemberOf(s2, g1);
-    	g1.addMemberOf(s2g1);
-    	groupRepository.save(g1);
+    	Membership s1g1 = new Membership(s1, g1);
+    	g1.addMembership(s1g1);
+    	Membership s2g1 = new Membership(s2, g1);
+    	g1.addMembership(s2g1);
+    	groupRepository.save(g1, 1);
     	
     	
     	//some quick tests

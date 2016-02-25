@@ -8,14 +8,14 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import uk.ac.ebi.biosamples.relations.model.edges.MemberOf;
+import uk.ac.ebi.biosamples.relations.model.edges.Membership;
 
 @NodeEntity
 public class Group extends SampleOrGroup {
 
-    @Relationship(type = "MEMBER_OF", direction=Relationship.INCOMING)
+    @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
     @JsonIgnore 
-	private Set<MemberOf> memberOfs = new HashSet<>();
+	private Set<Membership> memberships = new HashSet<>();
 
     /**
      * Dummy constructor for use by Jackson and Neo4j
@@ -29,12 +29,12 @@ public class Group extends SampleOrGroup {
 		super(accession, sub);
 	}
 	
-    public void addMemberOf(MemberOf memberOf) {
-    	memberOfs.add(memberOf);
+    public void addMembership(Membership membership) {
+    	memberships.add(membership);
     }
 
-    public void removeMemberOf(MemberOf memberOf) {
-    	memberOfs.remove(memberOf);
+    public void removeMembership(Membership membership) {
+    	memberships.remove(membership);
     }
 
 	@Override

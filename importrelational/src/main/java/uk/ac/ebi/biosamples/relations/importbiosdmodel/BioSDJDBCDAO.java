@@ -62,6 +62,11 @@ public class BioSDJDBCDAO {
         
         return jdbcTemplate.query(sql, stringRowMapper);	
     }
+    
+    public List<String> getAllSubmissionIds() {
+    	String sql = "SELECT ACC FROM MSI"; 
+        return jdbcTemplate.query(sql, stringRowMapper);
+    }
 
 
 }

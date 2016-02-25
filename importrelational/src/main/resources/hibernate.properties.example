@@ -1,7 +1,7 @@
 # Hibernate properties
 
 hibernate.connection.factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
-hibernate.connection.driverClassName="oracle.jdbc.driver.OracleDriver"
+hibernate.connection.driverClassName="oracle.jdbc.OracleDriver"
 hibernate.connection.url="jdbc:oracle:thin:@hostname:port:database"
 hibernate.connection.username="xxxx"
 hibernate.connection.password="xxxx"

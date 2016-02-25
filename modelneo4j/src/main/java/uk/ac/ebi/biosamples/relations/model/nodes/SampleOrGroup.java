@@ -5,7 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import uk.ac.ebi.biosamples.relations.model.edges.OwnedBy;
+import uk.ac.ebi.biosamples.relations.model.edges.Ownership;
 
 public abstract class SampleOrGroup {
 
@@ -21,11 +21,10 @@ public abstract class SampleOrGroup {
     protected String accession;
 
     /**
-     * This is the relationship to the owner (NOT the owner itself).
+     * This is the owner
      */
-    @Relationship(type = "OWNED_BY", direction=Relationship.OUTGOING)
-    @JsonIgnore 
-	private OwnedBy ownedBy;
+    @Relationship(type = "OWNERSHIP", direction=Relationship.OUTGOING)
+	protected Submission owner;
 
     /**
      * Dummy constructor for use by Jackson and Neo4j
@@ -38,18 +37,18 @@ public abstract class SampleOrGroup {
     public SampleOrGroup(String accession, Submission owner) {
     	super();
     	this.accession = accession;
-    	this.ownedBy = new OwnedBy(this, owner);
+    	setOwner(owner);
 	}
 
 	public String getAccession() {
     	return accession;
 	}
 
-	public OwnedBy getOwnedBy() {
-		return ownedBy;
+	public Submission getOwner() {
+		return owner;
 	}
 
-	public void setOwnedBy(OwnedBy ownedBy) {
-		this.ownedBy = ownedBy;
+	public void setOwner(Submission owner) {
+		this.owner = owner;
 	}
 }

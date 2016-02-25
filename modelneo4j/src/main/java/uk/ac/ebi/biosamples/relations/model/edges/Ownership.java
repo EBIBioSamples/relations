@@ -10,8 +10,8 @@ import org.neo4j.ogm.annotation.StartNode;
 import uk.ac.ebi.biosamples.relations.model.nodes.SampleOrGroup;
 import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
 
-@RelationshipEntity(type="OWNED_BY")
-public class OwnedBy {
+@RelationshipEntity(type="OWNERSHIP")
+public class Ownership {
 	
     @GraphId   
     private Long id;
@@ -21,8 +21,12 @@ public class OwnedBy {
     
     @EndNode   
     private Submission submission;
+    
+    public Ownership() {
+    	
+    }
 
-    public OwnedBy(SampleOrGroup source, Submission submission) {
+    public Ownership(SampleOrGroup source, Submission submission) {
     	this.source = source;
     	this.submission = submission;
     }
@@ -41,11 +45,11 @@ public class OwnedBy {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof OwnedBy)) {
+        if (!(o instanceof Ownership)) {
             return false;
         }
 
-        OwnedBy other = (OwnedBy) o;
+        Ownership other = (Ownership) o;
 		return Objects.equals(source, other.source)
 				&& Objects.equals(submission, other.submission);
     }

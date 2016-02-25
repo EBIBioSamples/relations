@@ -1,4 +1,4 @@
-package uk.ac.ebi.biosamples.relations.clientlib;
+package uk.ac.ebi.biosampples.relations.clientlib;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

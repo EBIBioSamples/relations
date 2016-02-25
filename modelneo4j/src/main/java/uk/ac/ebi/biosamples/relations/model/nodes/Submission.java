@@ -1,6 +1,14 @@
 package uk.ac.ebi.biosamples.relations.model.nodes;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Relationship;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import uk.ac.ebi.biosamples.relations.model.edges.Ownership;
 
 public class Submission {
 
@@ -8,6 +16,12 @@ public class Submission {
     private Long id;
     
     private String submissionId;
+    
+    
+    @Relationship(type = "OWNERSHIP", direction=Relationship.INCOMING)
+    @JsonIgnore 
+	private Set<SampleOrGroup> ownerships = new HashSet<>();
+	
 
     /**
      * Dummy constructor for use by Jackson and Neo4j
@@ -29,7 +43,18 @@ public class Submission {
     public String getSubmissionId() {
     	return submissionId;
 	}
-
+    
+    public Set<SampleOrGroup> getOwnerships() {
+    	return ownerships;
+    }
+    
+    public void addOwnership(SampleOrGroup source) {
+    	if (!ownerships.contains(source)) {
+    		ownerships.add(source);
+    		source.setOwner(this);
+    	}
+    }
+    
 	@Override
     public boolean equals(Object o) {
         if (this == o) {

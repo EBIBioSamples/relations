@@ -1,4 +1,4 @@
-package uk.ac.ebi.biosamples.relations.clientlib;
+package uk.ac.ebi.biosampples.relations.clientlib;
 
 import java.net.URISyntaxException;
 
@@ -21,8 +21,10 @@ import org.springframework.web.client.RestTemplate;
 
 import uk.ac.ebi.biosamples.relations.clientlib.exceptions.DuplicateSubmissionException;
 import uk.ac.ebi.biosamples.relations.clientlib.exceptions.NoSuchSubmissionException;
-import uk.ac.ebi.biosamples.relations.model.edges.MemberOf;
-import uk.ac.ebi.biosamples.relations.model.edges.OwnedBy;
+import uk.ac.ebi.biosamples.relations.clientlib.rao.GroupRestAccessObject;
+import uk.ac.ebi.biosamples.relations.clientlib.rao.SubmissionRestAccessObject;
+import uk.ac.ebi.biosamples.relations.model.edges.Membership;
+import uk.ac.ebi.biosamples.relations.model.edges.Ownership;
 import uk.ac.ebi.biosamples.relations.model.nodes.Group;
 import uk.ac.ebi.biosamples.relations.model.nodes.Sample;
 import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
@@ -42,38 +44,50 @@ public class PrototypeRunner implements ApplicationRunner {
 		//create some objects hardcoded
     	
     	Submission sub = new Submission("GSB-TEST2");   	
-    	Sample s1 = new Sample("SAMETST3");
-    	Sample s2 = new Sample("SAMETST4");
-    	Group g1 = new Group("SAMEGTST3");
+    	Sample s1 = new Sample("SAMETST3", sub);
+    	Sample s2 = new Sample("SAMETST4", sub);
+    	Group g1 = new Group("SAMEGTST3", sub);
     	
-    	s1.setOwnedBy(new OwnedBy(s1, sub));
-    	s2.setOwnedBy(new OwnedBy(s2, sub));
-    	g1.setOwnedBy(new OwnedBy(g1, sub));
-    	
-    	g1.addMemberOf(new MemberOf(s1, g1));
-    	g1.addMemberOf(new MemberOf(s2, g1));
+    	g1.addMembership(new Membership(s1, g1));
+    	g1.addMembership(new Membership(s2, g1));
 
     	
 		//test out the other class
-		RestAccessObject rao = new RestAccessObject("http://localhost:8080");
+		SubmissionRestAccessObject subao = new SubmissionRestAccessObject("http://localhost:8080");
 		
-		log.info(""+rao.getSubmission("GSB-TEST"));
+		GroupRestAccessObject gao = new GroupRestAccessObject("http://localhost:8080");
+		//link the access objects for nested queries
+		gao.setSubRAO(subao);
+		subao.setGroupRAO(gao);
+		//share a rest template for performance
+		//is multi-threaded once constructed
+		gao.setRestTemplate(subao.getRestTemplate());
+		
+		log.info(""+subao.getSubmission("GSB-TEST"));
 		
 		try {
-			rao.persistNovelSubmission(sub);
+			subao.persistNovelSubmission(sub);
 		} catch (DuplicateSubmissionException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
 		try {
-			rao.updateSubmission(sub);
+			subao.updateSubmission(sub);
 		} catch (NoSuchSubmissionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		log.info(""+rao.getSubmission("GSB-TEST2"));
+		
+		log.info(""+gao.getGroup("SAMEGTST2").get().getContent().getAccession());
+		log.info(""+gao.getGroupWithNeighbours("SAMEGTST2").get().getContent().getAccession());
+		for (Group group: gao.getGroupsOwnedBySubmission("GSB-TEST").getContent()) {
+			log.info("foo"+group.getAccession());
+		}
+		
+		
+		log.info(""+subao.getSubmission("GSB-TEST2"));
 		
 		log.info("Complete");
 	}

@@ -10,8 +10,8 @@ import org.neo4j.ogm.annotation.StartNode;
 import uk.ac.ebi.biosamples.relations.model.nodes.Group;
 import uk.ac.ebi.biosamples.relations.model.nodes.Sample;
 
-@RelationshipEntity(type = "MEMBER_OF")
-public class MemberOf {
+@RelationshipEntity(type = "MEMBERSHIP")
+public class Membership {
 
 	@GraphId
 	private Long id;
@@ -22,7 +22,11 @@ public class MemberOf {
 	@EndNode
 	private Group group;
 
-	public MemberOf(Sample sample, Group group) {
+	public Membership() {
+		
+	}
+	
+	public Membership(Sample sample, Group group) {
 		this.sample = sample;
 		this.group = group;
 	}
@@ -41,11 +45,11 @@ public class MemberOf {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MemberOf)) {
+        if (!(o instanceof Membership)) {
             return false;
         }
 
-        MemberOf other = (MemberOf) o;
+        Membership other = (Membership) o;
 		return Objects.equals(sample, other.sample)
 				&& Objects.equals(group, other.group);
     }
