@@ -1,22 +1,37 @@
 package uk.ac.ebi.biosamples.relations.model.nodes;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @NodeEntity
 public class Sample extends SampleOrGroup {
 
-    /**
-     * Dummy constructor for use by Jackson and Neo4j
-     * Do not use
-     */
+    @Relationship(type = "MEMBERSHIP", direction=Relationship.OUTGOING)
+    @JsonIgnore 
+	private Set<Group> groups = new HashSet<>();
+
 	public Sample() {
 		super();
 	}
+    
+    public Set<Group> getGroups() {
+    	return groups;
+    }
 	
-	public Sample(String accession, Submission owner) {
-		super(accession, owner);
-	}
+    public void addSample(Group group) {
+    	groups.add(group);
+    }
+
+    public void removeSample(Group group) {
+    	groups.remove(group);
+    }
+
 	
 	@Override
     public boolean equals(Object o) {

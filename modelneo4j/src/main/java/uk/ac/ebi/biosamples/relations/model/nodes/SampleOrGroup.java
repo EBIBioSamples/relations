@@ -34,14 +34,12 @@ public abstract class SampleOrGroup {
     	super();
 	}
     
-    public SampleOrGroup(String accession, Submission owner) {
-    	super();
-    	this.accession = accession;
-    	setOwner(owner);
-	}
-
 	public String getAccession() {
     	return accession;
+	}
+    
+	public void setAccession(String accession) {
+    	this.accession = accession;
 	}
 
 	public Submission getOwner() {
@@ -50,5 +48,8 @@ public abstract class SampleOrGroup {
 
 	public void setOwner(Submission owner) {
 		this.owner = owner;
+		if (!owner.getOwnerships().contains(this)) {
+			owner.addOwnership(this);
+		}
 	}
 }

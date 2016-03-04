@@ -15,26 +15,22 @@ public class Group extends SampleOrGroup {
 
     @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
     @JsonIgnore 
-	private Set<Membership> memberships = new HashSet<>();
+	private Set<Sample> samples = new HashSet<>();
 
-    /**
-     * Dummy constructor for use by Jackson and Neo4j
-     * Do not use
-     */
     public Group() {
     	super();
     }
     
-	public Group(String accession, Submission sub) {
-		super(accession, sub);
-	}
+    public Set<Sample> getSamples() {
+    	return samples;
+    }
 	
-    public void addMembership(Membership membership) {
-    	memberships.add(membership);
+    public void addSample(Sample sample) {
+    	samples.add(sample);
     }
 
-    public void removeMembership(Membership membership) {
-    	memberships.remove(membership);
+    public void removeSample(Sample sample) {
+    	samples.remove(sample);
     }
 
 	@Override

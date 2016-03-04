@@ -23,21 +23,16 @@ public class Submission {
 	private Set<SampleOrGroup> ownerships = new HashSet<>();
 	
 
-    /**
-     * Dummy constructor for use by Jackson and Neo4j
-     * Do not use
-     */
     public Submission() {
     	super();
     }
-
-	public Submission(String submissionId) {
-		super();
-		this.submissionId = submissionId;
-	}
-
+    
 	public Long getId() {
 		return id;
+	}
+    
+    public void setSubmissionId(String submissionId) {
+    	this.submissionId = submissionId;
 	}
     
     public String getSubmissionId() {
@@ -51,7 +46,9 @@ public class Submission {
     public void addOwnership(SampleOrGroup source) {
     	if (!ownerships.contains(source)) {
     		ownerships.add(source);
-    		source.setOwner(this);
+    		if (source.getOwner() != this) {
+    			source.setOwner(this);
+    		}
     	}
     }
     
