@@ -1,6 +1,7 @@
 package uk.ac.ebi.biosamples.relations.model.nodes;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.neo4j.ogm.annotation.NodeEntity;
@@ -12,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NodeEntity
 public class Sample extends SampleOrGroup {
 
-    @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
+    @Relationship(type = "MEMBERSHIP", direction=Relationship.OUTGOING)
     @JsonIgnore 
 	private Set<Group> groups = new HashSet<>();
 
@@ -43,9 +44,12 @@ public class Sample extends SampleOrGroup {
         }
 
         Sample other = (Sample) o;
-
+        
         if (id != null && other.id != null) {
         	return id.equals(other.id);
+        } else if (id == null && other.id == null) {
+        	//if both id null, compare accession
+        	return Objects.equals(accession, other.accession);
         } else {
         	return true;
         }
