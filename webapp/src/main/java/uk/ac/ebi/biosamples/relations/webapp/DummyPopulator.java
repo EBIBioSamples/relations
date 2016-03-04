@@ -12,9 +12,9 @@ import uk.ac.ebi.biosamples.relations.model.edges.Ownership;
 import uk.ac.ebi.biosamples.relations.model.nodes.Group;
 import uk.ac.ebi.biosamples.relations.model.nodes.Sample;
 import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
-import uk.ac.ebi.biosamples.relations.webapp.repo.GroupRepository;
-import uk.ac.ebi.biosamples.relations.webapp.repo.SampleRepository;
-import uk.ac.ebi.biosamples.relations.webapp.repo.SubmissionRepository;
+import uk.ac.ebi.biosamples.relations.repo.GroupRepository;
+import uk.ac.ebi.biosamples.relations.repo.SampleRepository;
+import uk.ac.ebi.biosamples.relations.repo.SubmissionRepository;
 
 @Component
 public class DummyPopulator {
@@ -40,15 +40,22 @@ public class DummyPopulator {
     	//woulnd't want to do this in production...
     	neo4jTemplate.query("MATCH (n) DETACH DELETE n", Collections.emptyMap());
     	
-    	Submission sub = new Submission("GSB-TEST");
+    	Submission sub = new Submission();
+    	sub.setSubmissionId("GSB-TEST");
     	submissionRepository.save(sub);    	   	
     	
-    	Sample s1 = new Sample("SAMETST1", sub);
+    	Sample s1 = new Sample();
+    	s1.setAccession("SAMETST1");
+    	s1.setOwner(sub);
     	sampleRepository.save(s1, 1);
-    	Sample s2 = new Sample("SAMETST2", sub);
+    	Sample s2 = new Sample();
+    	s2.setAccession("SAMETST2");
+    	s2.setOwner(sub);
     	sampleRepository.save(s2, 1);
     	
-    	Group g1 = new Group("SAMEGTST2", sub);
+    	Group g1 = new Group();
+    	g1.setAccession("SAMEGTST1");
+    	g1.setOwner(sub);
     	groupRepository.save(g1, 1);
     	
     	Membership s1g1 = new Membership(s1, g1);

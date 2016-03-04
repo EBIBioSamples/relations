@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 // name of package containing repositories here
-@EnableNeo4jRepositories("uk.ac.ebi.biosamples.relations.webapp.repo")
+@EnableNeo4jRepositories("uk.ac.ebi.biosamples.relations.repo")
 @EnableTransactionManagement
 public class WebappConfiguration extends Neo4jConfiguration {
 
