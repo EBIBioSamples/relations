@@ -32,7 +32,6 @@ public class BioSDToNeo4JMappingService {
 	@Autowired
 	private GroupRepository groupRepo;
 	
-	
 	public Submission handle(String msiAcc) {
 		EntityManagerFactory emf = Resources.getInstance().getEntityManagerFactory();
 		EntityManager em = null;
@@ -40,8 +39,7 @@ public class BioSDToNeo4JMappingService {
 		try {
 			em = emf.createEntityManager();
 			AccessibleDAO<MSI> dao = new AccessibleDAO<>(MSI.class, em);
-			MSI msi = dao.find(msiAcc);
-			toReturn = handle(msi);
+			toReturn = handle(dao.find(msiAcc));
 		} finally {
 			if (em != null && em.isOpen()) {
 				em.close();
@@ -50,7 +48,23 @@ public class BioSDToNeo4JMappingService {
 		return toReturn;
 	}
 	
-	//@Transactional
+	public void handleIterable(Iterable<String> msiAccs) {
+		EntityManagerFactory emf = Resources.getInstance().getEntityManagerFactory();
+		EntityManager em = null;
+		try {
+			em = emf.createEntityManager();
+			AccessibleDAO<MSI> dao = new AccessibleDAO<>(MSI.class, em);
+			for (String msiAcc : msiAccs) {
+				handle(dao.find(msiAcc));
+			}
+		} finally {
+			if (em != null && em.isOpen()) {
+				em.close();
+			}
+		}
+	}
+	
+	@Transactional
 	public Submission handle(MSI msi) {
 		Submission subN = new Submission();
 		subN.setSubmissionId(msi.getAcc());
@@ -78,8 +92,7 @@ public class BioSDToNeo4JMappingService {
 				groupN.addSample(sampleN);
 				groupN = groupRepo.save(groupN);
 			}
-		}
-		
+		}		
 		return subN;
 	}
 }
