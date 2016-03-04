@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NodeEntity
 public class Sample extends SampleOrGroup {
 
-    @Relationship(type = "MEMBERSHIP", direction=Relationship.OUTGOING)
+    @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
     @JsonIgnore 
 	private Set<Group> groups = new HashSet<>();
 

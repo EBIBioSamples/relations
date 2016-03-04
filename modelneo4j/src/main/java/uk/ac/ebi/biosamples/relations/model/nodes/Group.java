@@ -13,7 +13,7 @@ import uk.ac.ebi.biosamples.relations.model.edges.Membership;
 @NodeEntity
 public class Group extends SampleOrGroup {
 
-    @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
+    @Relationship(type = "MEMBERSHIP", direction=Relationship.OUTGOING)
     @JsonIgnore 
 	private Set<Sample> samples = new HashSet<>();
 
