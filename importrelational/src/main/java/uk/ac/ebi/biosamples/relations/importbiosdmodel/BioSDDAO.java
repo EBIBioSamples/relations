@@ -86,7 +86,8 @@ public class BioSDDAO {
 			CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 			CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
 			Root<?> root = criteriaQuery.from(clazz);
-			criteriaQuery.select(root.get("acc"));
+			//criteriaQuery.select(root.get("acc"));
+			criteriaQuery.multiselect(root.get("acc"));
 			TypedQuery<String> query = em.createQuery(criteriaQuery);
 			if (startPosition > 0) {
 				query.setFirstResult(startPosition);

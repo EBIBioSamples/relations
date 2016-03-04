@@ -5,6 +5,8 @@ import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.template.Neo4jOperations;
@@ -15,8 +17,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 // name of package containing repositories here
 @EnableNeo4jRepositories("uk.ac.ebi.biosamples.relations.repo")
 @EnableTransactionManagement
+//turn on advanced proxy object creation so the multi-threading and repositories work
+@EnableAspectJAutoProxy(proxyTargetClass = true) 
 public class Application extends Neo4jConfiguration {
 
+	//this is needed to read nonstrings from properties files
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyConfigIn() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
 	@Override
 	@Bean
 	public SessionFactory getSessionFactory() {
@@ -29,12 +39,13 @@ public class Application extends Neo4jConfiguration {
 	public Session getSession() throws Exception {
 		return super.getSession();
 	}
+//
+//	@Bean
+//	public Neo4jOperations getNeo4jTemplate() throws Exception {
+//		return new Neo4jTemplate(getSession());
+//	}
 
-	@Bean
-	public Neo4jOperations getNeo4jTemplate() throws Exception {
-		return new Neo4jTemplate(getSession());
-	}
-
+	
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(Application.class, args);
 	}

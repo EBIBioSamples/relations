@@ -1,6 +1,7 @@
 package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 
@@ -21,9 +22,9 @@ public class IndexCreator {
     @PostConstruct
     public void createIndexes() {
     	log.info("Creating constraint indexs");
-    	neo4jTemplate.query("CREATE CONSTRAINT ON (sample:Sample) ASSERT sample.accession IS UNIQUE", Collections.emptyMap());
-    	neo4jTemplate.query("CREATE CONSTRAINT ON (group:Group) ASSERT group.accession IS UNIQUE", Collections.emptyMap());
-    	neo4jTemplate.query("CREATE CONSTRAINT ON (sub:Submission) ASSERT sub.submissionId IS UNIQUE", Collections.emptyMap());
+    	neo4jTemplate.query("CREATE CONSTRAINT ON (sample:Sample) ASSERT sample.accession IS UNIQUE", new HashMap<String,String>());
+    	neo4jTemplate.query("CREATE CONSTRAINT ON (group:Group) ASSERT group.accession IS UNIQUE", null);
+    	neo4jTemplate.query("CREATE CONSTRAINT ON (sub:Submission) ASSERT sub.submissionId IS UNIQUE", null);
     	
     	//cant create constraint that each node has to have a relationship of specific type?
     	//CREATE CONSTRAINT ON (sample:Sample) ASSERT exists((sample)-[OWNED_BY]-())

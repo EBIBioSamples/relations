@@ -1,12 +1,19 @@
 package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
 import uk.ac.ebi.biosamples.relations.repo.SubmissionRepository;
@@ -17,19 +24,26 @@ public class Runner implements ApplicationRunner {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
+	@Value("${neo4jIndexer.threadCount:4}")
+	private int threadCount;
+	
+	@Value("${neo4jIndexer.fetchStep:10}")
+	private int fetchStep;
+
+	@Autowired
+	private ApplicationContext context;
 	
 	@Autowired
 	private BioSDDAO biosdDAO;
-	
-	@Autowired
-	private BioSDToNeo4JMappingService biosdToNeo4J;
 
 	private List<String> msiAccs; 
+	private ExecutorService threadPool = null;
+	private List<Future<Void>> futures = new ArrayList<>();
 	
 	private int offsetCount = 0;
 	private int offsetTotal = -1;
 
-	public void run(ApplicationArguments args) {
+	public void run(ApplicationArguments args) throws Exception {
 		log.info("Running...");
 
 		long startTime = System.currentTimeMillis();
@@ -57,10 +71,43 @@ public class Runner implements ApplicationRunner {
 			msiAccs = biosdDAO.getMSIAccessions();
 	        log.info("got "+msiAccs.size()+" MSIs");
 		}
-		
-		for (String msiAcc : msiAccs) {
-			log.info("processing "+msiAcc);
-			Submission sub = biosdToNeo4J.handle(msiAcc);
+
+        //create the thread stuff if required
+		try {
+			if (threadCount > 0) {
+				threadPool = Executors.newFixedThreadPool(threadCount);
+			}	
+			
+	        for (int i = 0; i < msiAccs.size(); i += fetchStep) {
+	        	//have to create multiple beans via context so they all have their own dao object
+	        	//this is apparently bad Inversion Of Control but I can't see a better way to do it
+	        	CallableMSI callable = context.getBean(CallableMSI.class);
+	        	
+	        	callable.setAccessions(msiAccs.subList(i, Math.min(i+fetchStep, msiAccs.size())));
+	        	
+				if (threadCount == 0) {
+					callable.call();
+				} else {
+					futures.add(threadPool.submit(callable));
+				}
+	        }
+			
+			//close down thread pool
+			if (threadPool != null) {
+		        log.info("Shutting down thread pool");
+		        threadPool.shutdown();
+		        //one day is a lot, but better safe than sorry!
+				threadPool.awaitTermination(1, TimeUnit.DAYS);
+			}		
+		} finally {
+			//handle closing of thread pool in case of error
+			if (threadPool != null && !threadPool.isShutdown()) {
+		        log.info("Shutting down thread pool");
+		        //allow a second to cleanly terminate before forcing
+		        threadPool.shutdown();
+				threadPool.awaitTermination(1, TimeUnit.SECONDS);
+				threadPool.shutdownNow();
+			}
 		}
 		
 		log.info("Processed "+msiAccs.size()+" in "+(System.currentTimeMillis() - startTime)/1000+"s");

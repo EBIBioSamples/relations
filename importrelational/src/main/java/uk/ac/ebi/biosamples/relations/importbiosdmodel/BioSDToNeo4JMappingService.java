@@ -20,8 +20,7 @@ import uk.ac.ebi.fg.core_model.persistence.dao.hibernate.toplevel.AccessibleDAO;
 import uk.ac.ebi.fg.core_model.resources.Resources;
 
 @Service
-public class BioSDToNeo4JMappingService {
-	
+public class BioSDToNeo4JMappingService {	
 
 	@Autowired
 	private SubmissionRepository subRepo;

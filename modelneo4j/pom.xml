@@ -11,9 +11,24 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
 			<!-- Have to manually specify a more recent version for best results -->
-			<version>4.0.0.RELEASE</version>
+			<version>4.1.0.M1</version>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<!-- (you don't need this if you are using a .RELEASE version) -->
+		<repository>
+			<id>spring-snapshots</id>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<url>http://repo.spring.io/milestone</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
