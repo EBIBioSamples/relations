@@ -1,4 +1,4 @@
-package uk.ac.ebi.biosamples.relations.webapp.repo;
+package uk.ac.ebi.biosamples.relations.repo;
 
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
