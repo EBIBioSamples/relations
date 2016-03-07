@@ -25,12 +25,18 @@ public class Sample extends SampleOrGroup {
     	return groups;
     }
 	
-    public void addSample(Group group) {
-    	groups.add(group);
+    public void addGroup(Group group) {
+    	if (!groups.contains(group)) {
+    		groups.add(group);
+    		group.addSample(this);
+    	}
     }
 
-    public void removeSample(Group group) {
-    	groups.remove(group);
+    public void removeGroup(Group group) {
+    	if (groups.contains(group)) {
+    		groups.remove(group);
+    		group.removeSample(this);
+    	}
     }
 
 	

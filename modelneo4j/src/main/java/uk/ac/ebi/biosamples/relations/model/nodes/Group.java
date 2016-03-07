@@ -26,11 +26,17 @@ public class Group extends SampleOrGroup {
     }
 	
     public void addSample(Sample sample) {
-    	samples.add(sample);
+    	if (!samples.contains(sample)) {
+    		samples.add(sample);
+    		sample.addGroup(this);
+    	}
     }
 
     public void removeSample(Sample sample) {
-    	samples.remove(sample);
+    	if (samples.contains(sample)) {
+    		samples.remove(sample);
+    		sample.removeGroup(this);
+    	}
     }
 
 	@Override
