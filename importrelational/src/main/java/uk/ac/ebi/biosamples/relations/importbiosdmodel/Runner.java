@@ -1,6 +1,7 @@
 package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -59,7 +60,7 @@ public class Runner implements ApplicationRunner {
 		log.info("Getting MSI accessions");
 		if (args.getNonOptionArgs().size() > 0) {
 			//read MSI names from command line
-			msiAccs = args.getNonOptionArgs();
+			msiAccs = Collections.unmodifiableList(args.getNonOptionArgs());
 		} else {
 			//get MSI names from DB
 			if (offsetTotal > 0) {
@@ -67,10 +68,10 @@ public class Runner implements ApplicationRunner {
 				int offsetSize = count/offsetTotal;
 				int start = offsetSize*offsetCount;
 				log.info("Getting MSI accessions for chunk "+offsetCount+" of "+offsetTotal);
-				msiAccs = biosdDAO.getMSIAccessions(start, offsetSize);
+				msiAccs =  Collections.unmodifiableList(biosdDAO.getMSIAccessions(start, offsetSize));
 		        log.info("got "+msiAccs.size()+" MSIs");
 			} else {
-				msiAccs = biosdDAO.getMSIAccessions();
+				msiAccs =  Collections.unmodifiableList(biosdDAO.getMSIAccessions());
 			}
 		}
         log.info("got "+msiAccs.size()+" MSIs");
