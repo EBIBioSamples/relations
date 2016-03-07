@@ -3,6 +3,8 @@ package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import uk.ac.ebi.fg.core_model.resources.Resources;
 
 @Service
 public class BioSDToNeo4JMappingService {
+
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private SubmissionRepository subRepo;
@@ -64,23 +68,31 @@ public class BioSDToNeo4JMappingService {
 	}
 
 	public boolean check(MSI msi) {
+		if (msi == null) {
+			log.info("MSI should not be null");
+			return false;
+		}
 		// first check that each object in the msi is owned by only this msi
 		for (BioSample sample : msi.getSamples()) {
 			if (sample.getMSIs().size() != 1) {
+				log.info("Sample owned by multiple MSIs "+sample.getAcc());
 				return false;
 			}
 			for (MSI msiOther : sample.getMSIs()) {
 				if (!msiOther.getAcc().equals(msi.getAcc())) {
+					log.info("Sample ("+sample.getAcc()+") owned by MSI other than "+msi.getAcc()+" ("+msiOther.getAcc()+")");
 					return false;
 				}
 			}
 		}
 		for (BioSampleGroup group : msi.getSampleGroups()) {
 			if (group.getMSIs().size() != 1) {
+				log.info("Group owned by multiple MSIs "+group.getAcc());
 				return false;
 			}
 			for (MSI msiOther : group.getMSIs()) {
 				if (!msiOther.getAcc().equals(msi.getAcc())) {
+					log.info("Group ("+group.getAcc()+") owned by MSI other than "+msi.getAcc()+" ("+msiOther.getAcc()+")");
 					return false;
 				}
 			}
@@ -90,6 +102,7 @@ public class BioSDToNeo4JMappingService {
 		for (BioSampleGroup group : msi.getSampleGroups()) {
 			for (BioSample sample : group.getSamples()) {
 				if (sample.getMSIs().size() != 1) {
+					log.info("Group ("+group.getAcc()+") references sample ("+sample.getAcc()+") owned by multiple MSIs");
 					return false;
 				}				
 			}
