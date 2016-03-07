@@ -2,6 +2,7 @@ package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,16 +16,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
-import uk.ac.ebi.biosamples.relations.repo.SubmissionRepository;
-import uk.ac.ebi.fg.biosd.model.organizational.MSI;
 
 @Component
 public class Runner implements ApplicationRunner {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Value("${neo4jIndexer.threadCount:4}")
+	@Value("${neo4jIndexer.threadCount:0}")
 	private int threadCount;
 	
 	@Value("${neo4jIndexer.fetchStep:10}")
@@ -58,19 +56,24 @@ public class Runner implements ApplicationRunner {
 		if (args.containsOption("offsettotal")) {
 			offsetTotal = Integer.parseInt(args.getOptionValues("offsettotal").get(0));
 		}
-
-		if (offsetTotal > 0) {
-			int count = biosdDAO.getGroupCount();
-			int offsetSize = count/offsetTotal;
-			int start = offsetSize*offsetCount;
-			log.info("Getting MSI accessions for chunk "+offsetCount+" of "+offsetTotal);
-			msiAccs = biosdDAO.getMSIAccessions(start, offsetSize);
-	        log.info("got "+msiAccs.size()+" MSIs");
+		log.info("Getting MSI accessions");
+		if (args.getNonOptionArgs().size() > 0) {
+			//read MSI names from command line
+			msiAccs = args.getNonOptionArgs();
 		} else {
-			log.info("Getting MSI accessions");
-			msiAccs = biosdDAO.getMSIAccessions();
-	        log.info("got "+msiAccs.size()+" MSIs");
+			//get MSI names from DB
+			if (offsetTotal > 0) {
+				int count = biosdDAO.getGroupCount();
+				int offsetSize = count/offsetTotal;
+				int start = offsetSize*offsetCount;
+				log.info("Getting MSI accessions for chunk "+offsetCount+" of "+offsetTotal);
+				msiAccs = biosdDAO.getMSIAccessions(start, offsetSize);
+		        log.info("got "+msiAccs.size()+" MSIs");
+			} else {
+				msiAccs = biosdDAO.getMSIAccessions();
+			}
 		}
+        log.info("got "+msiAccs.size()+" MSIs");
 
         //create the thread stuff if required
 		try {
@@ -91,6 +94,16 @@ public class Runner implements ApplicationRunner {
 					futures.add(threadPool.submit(callable));
 				}
 	        }
+
+	        //wait for all other futures to finish
+	        log.info("Waiting for futures...");
+			for (Future<Void> future : futures) {
+				try {
+					future.get();
+				} catch (ExecutionException e) {
+					log.error("Problem getting future", e);
+				}
+			}
 			
 			//close down thread pool
 			if (threadPool != null) {

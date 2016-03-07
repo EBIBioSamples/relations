@@ -1,7 +1,5 @@
 package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
@@ -14,15 +12,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.ebi.biosamples.relations.model.nodes.Submission;
-import uk.ac.ebi.fg.biosd.model.organizational.BioSampleGroup;
 import uk.ac.ebi.fg.biosd.model.organizational.MSI;
 import uk.ac.ebi.fg.core_model.persistence.dao.hibernate.toplevel.AccessibleDAO;
 import uk.ac.ebi.fg.core_model.resources.Resources;
 
 @Component
 //this makes sure that we have a different instance wherever it is used
-//@Scope("prototype")
+@Scope("prototype")
 public class CallableMSI implements Callable<Void> {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -62,7 +58,12 @@ public class CallableMSI implements Callable<Void> {
 			em = emf.createEntityManager();
 			AccessibleDAO<MSI> dao = new AccessibleDAO<>(MSI.class, em);
 			for (String msiAcc : accessions) {
-				biosdToNeo4J.handle(dao.find(msiAcc));
+				MSI msi = dao.find(msiAcc);
+				if (!biosdToNeo4J.check(msi)) {
+					continue;
+				}
+				log.info("Got MSI "+msiAcc);
+				biosdToNeo4J.handle(msi);
 			}
 		} finally {
 			if (em != null && em.isOpen()) {

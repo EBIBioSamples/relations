@@ -20,7 +20,7 @@ import uk.ac.ebi.fg.core_model.persistence.dao.hibernate.toplevel.AccessibleDAO;
 import uk.ac.ebi.fg.core_model.resources.Resources;
 
 @Service
-public class BioSDToNeo4JMappingService {	
+public class BioSDToNeo4JMappingService {
 
 	@Autowired
 	private SubmissionRepository subRepo;
@@ -30,7 +30,7 @@ public class BioSDToNeo4JMappingService {
 
 	@Autowired
 	private GroupRepository groupRepo;
-	
+
 	public Submission handle(String msiAcc) {
 		EntityManagerFactory emf = Resources.getInstance().getEntityManagerFactory();
 		EntityManager em = null;
@@ -46,7 +46,7 @@ public class BioSDToNeo4JMappingService {
 		}
 		return toReturn;
 	}
-	
+
 	public void handleIterable(Iterable<String> msiAccs) {
 		EntityManagerFactory emf = Resources.getInstance().getEntityManagerFactory();
 		EntityManager em = null;
@@ -62,15 +62,54 @@ public class BioSDToNeo4JMappingService {
 			}
 		}
 	}
+
+	public boolean check(MSI msi) {
+		// first check that each object in the msi is owned by only this msi
+		for (BioSample sample : msi.getSamples()) {
+			if (sample.getMSIs().size() != 1) {
+				return false;
+			}
+			for (MSI msiOther : sample.getMSIs()) {
+				if (!msiOther.getAcc().equals(msi.getAcc())) {
+					return false;
+				}
+			}
+		}
+		for (BioSampleGroup group : msi.getSampleGroups()) {
+			if (group.getMSIs().size() != 1) {
+				return false;
+			}
+			for (MSI msiOther : group.getMSIs()) {
+				if (!msiOther.getAcc().equals(msi.getAcc())) {
+					return false;
+				}
+			}
+		}
+		//check that each sample reference by any groups is owned by one msi
+		//but it doesn't have to be this one!
+		for (BioSampleGroup group : msi.getSampleGroups()) {
+			for (BioSample sample : group.getSamples()) {
+				if (sample.getMSIs().size() != 1) {
+					return false;
+				}				
+			}
+		}
+		return true;
+	}
 	
 	@Transactional
 	public Submission handle(MSI msi) {
+
 		Submission subN = new Submission();
 		subN.setSubmissionId(msi.getAcc());
 		subN = subRepo.save(subN);
 		for (BioSample sample : msi.getSamples()) {
-			Sample sampleN = new Sample();
-			sampleN.setAccession(sample.getAcc());
+			String sampleAcc = sample.getAcc();
+			Sample sampleN = sampleRepo.findOneByAccession(sampleAcc);
+			if (sampleN == null) {
+				sampleN = new Sample();
+				sampleN.setAccession(sampleAcc);
+			}
 			sampleN.setOwner(subN);
 			sampleN = sampleRepo.save(sampleN);
 		}
@@ -79,7 +118,7 @@ public class BioSDToNeo4JMappingService {
 			groupN.setAccession(group.getAcc());
 			groupN.setOwner(subN);
 			groupN = groupRepo.save(groupN);
-			//add group memberships
+			// add group memberships
 			for (BioSample sample : group.getSamples()) {
 				String sampleAcc = sample.getAcc();
 				Sample sampleN = sampleRepo.findOneByAccession(sampleAcc);
@@ -91,7 +130,8 @@ public class BioSDToNeo4JMappingService {
 				groupN.addSample(sampleN);
 				groupN = groupRepo.save(groupN);
 			}
-		}		
+		}
+		subN = subRepo.save(subN, 10);
 		return subN;
 	}
 }
