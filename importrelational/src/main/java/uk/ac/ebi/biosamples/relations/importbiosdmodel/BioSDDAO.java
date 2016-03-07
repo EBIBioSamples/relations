@@ -29,7 +29,7 @@ public class BioSDDAO {
 	}
 	
 	public List<String> getMSIAccessions() {
-		return getSampleAccessions(-1, -1);
+		return getMSIAccessions(-1, -1);
 	}
 
 	public List<String> getMSIAccessions(int startPosition, int maxResultCount) {
