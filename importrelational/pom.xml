@@ -27,10 +27,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-		</dependency>
 
 		<!-- this is not in public repos due to Oracle license -->
 		<dependency>
@@ -44,7 +40,6 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
-			<version>4.3.11.Final</version>
 		</dependency>
 
 		<dependency>
@@ -57,7 +52,6 @@
 		<dependency>
 			<groupId>uk.ac.ebi.fg</groupId>
 			<artifactId>biosd_model</artifactId>
-			<version>4.0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>h2</artifactId>
@@ -103,7 +97,8 @@
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-neo4j</artifactId>
-				<version>4.1.0.M1</version>
+				<version>4.0.0.RELEASE</version>
+<!-- 				<version>4.1.0.M1</version> -->
 			</dependency>
 			<dependency>
 				<!-- Import dependency management from Spring Boot -->
