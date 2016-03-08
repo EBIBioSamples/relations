@@ -17,6 +17,14 @@ public class Sample extends SampleOrGroup {
     @JsonIgnore 
 	private Set<Group> groups = new HashSet<>();
 
+    @Relationship(type = "DERIVATION", direction=Relationship.INCOMING)
+    @JsonIgnore 
+	private Set<Sample> derivedFrom = new HashSet<>();
+
+    @Relationship(type = "DERIVATION", direction=Relationship.OUTGOING)
+    @JsonIgnore 
+	private Set<Sample> derivedTo = new HashSet<>();
+
 	public Sample() {
 		super();
 	}
@@ -38,7 +46,42 @@ public class Sample extends SampleOrGroup {
     		group.removeSample(this);
     	}
     }
-
+    
+    public Set<Sample> getDerivedFrom() {
+    	return derivedFrom;
+    }
+	
+    public void addDerivedFrom(Sample source) {
+    	if (!derivedFrom.contains(source)) {
+    		derivedFrom.add(source);
+    		source.addDerivedTo(this);
+    	}
+    }
+	
+    public void removeDerivedFrom(Sample source) {
+    	if (derivedFrom.contains(source)) {
+    		derivedFrom.remove(source);
+    		source.removeDerivedTo(this);
+    	}
+    }
+    
+    public Set<Sample> getDerivedTo() {
+    	return derivedTo;
+    }
+	
+    public void addDerivedTo(Sample product) {
+    	if (!derivedTo.contains(product)) {
+    		derivedTo.add(product);
+    		product.addDerivedFrom(this);
+    	}
+    }
+	
+    public void removeDerivedTo(Sample source) {
+    	if (derivedFrom.contains(source)) {
+    		derivedFrom.remove(source);
+    		source.removeDerivedFrom(this);
+    	}
+    }
 	
 	@Override
     public boolean equals(Object o) {
