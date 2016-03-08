@@ -18,6 +18,8 @@ import uk.ac.ebi.biosamples.relations.repo.SubmissionRepository;
 import uk.ac.ebi.fg.biosd.model.expgraph.BioSample;
 import uk.ac.ebi.fg.biosd.model.organizational.BioSampleGroup;
 import uk.ac.ebi.fg.biosd.model.organizational.MSI;
+import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyType;
+import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyValue;
 import uk.ac.ebi.fg.core_model.persistence.dao.hibernate.toplevel.AccessibleDAO;
 import uk.ac.ebi.fg.core_model.resources.Resources;
 
@@ -26,6 +28,8 @@ public class BioSDToNeo4JMappingService {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private EntityManagerFactory emf = Resources.getInstance().getEntityManagerFactory();
+	
 	@Autowired
 	private SubmissionRepository subRepo;
 
@@ -52,7 +56,6 @@ public class BioSDToNeo4JMappingService {
 	}
 
 	public void handleIterable(Iterable<String> msiAccs) {
-		EntityManagerFactory emf = Resources.getInstance().getEntityManagerFactory();
 		EntityManager em = null;
 		try {
 			em = emf.createEntityManager();
@@ -115,22 +118,43 @@ public class BioSDToNeo4JMappingService {
 
 		Submission subN = new Submission();
 		subN.setSubmissionId(msi.getAcc());
-		//subN = subRepo.save(subN);
+		//handle each sample
 		for (BioSample sample : msi.getSamples()) {
 			String sampleAcc = sample.getAcc();
+			//create the sample if it does not exist
 			Sample sampleN = sampleRepo.findOneByAccession(sampleAcc);
 			if (sampleN == null) {
 				sampleN = new Sample();
 				sampleN.setAccession(sampleAcc);
 			}
+			//make sure this sample is owned by this submisison
+			//we know this is true because check() told us so
 			sampleN.setOwner(subN);
-			//sampleN = sampleRepo.save(sampleN);
+			//find any derived from relationships
+			for (ExperimentalPropertyValue<?> epv : sample.getPropertyValues()) {
+				ExperimentalPropertyType ept = epv.getType();
+				if ("Derived From".equals(ept.getTermText())) {
+					//create the derived from sample if it does not exist
+					Sample sampleN2 = sampleRepo.findOneByAccession(sampleAcc);
+					if (sampleN2 == null) {
+						sampleN2 = new Sample();
+						sampleN2.setAccession(sampleAcc);
+					}
+					sampleN.addDerivedFrom(sampleN2);
+				}
+			}
 		}
 		for (BioSampleGroup group : msi.getSampleGroups()) {
-			Group groupN = new Group();
-			groupN.setAccession(group.getAcc());
+			String groupAcc = group.getAcc();
+			//create group if it doesn't exist
+			Group groupN = groupRepo.findOneByAccession(groupAcc);
+			if (groupN == null) {
+				groupN = new Group();			
+				groupN.setAccession(groupAcc);
+			}
+			//make sure this group is owned by this submisison
+			//we know this is true because check() told us so
 			groupN.setOwner(subN);
-			//groupN = groupRepo.save(groupN);
 			// add group memberships
 			for (BioSample sample : group.getSamples()) {
 				String sampleAcc = sample.getAcc();
@@ -138,10 +162,8 @@ public class BioSDToNeo4JMappingService {
 				if (sampleN == null) {
 					sampleN = new Sample();
 					sampleN.setAccession(sampleAcc);
-					//sampleN = sampleRepo.save(sampleN);
 				}
 				groupN.addSample(sampleN);
-				//groupN = groupRepo.save(groupN);
 			}
 		}
 		
