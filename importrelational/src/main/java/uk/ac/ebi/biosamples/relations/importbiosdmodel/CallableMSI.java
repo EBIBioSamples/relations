@@ -48,7 +48,6 @@ public class CallableMSI implements Callable<Void> {
 	}
 
 	@Override
-	@Transactional
 	public Void call() throws Exception {
 		log.info("Starting call()");
 
@@ -58,6 +57,7 @@ public class CallableMSI implements Callable<Void> {
 			em = emf.createEntityManager();
 			AccessibleDAO<MSI> dao = new AccessibleDAO<>(MSI.class, em);
 			for (String msiAcc : accessions) {
+				log.info("Trying MSI "+msiAcc);
 				MSI msi = dao.find(msiAcc);
 				if (!biosdToNeo4J.check(msi)) {
 					continue;
