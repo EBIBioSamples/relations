@@ -115,7 +115,7 @@ public class BioSDToNeo4JMappingService {
 
 		Submission subN = new Submission();
 		subN.setSubmissionId(msi.getAcc());
-		subN = subRepo.save(subN);
+		//subN = subRepo.save(subN);
 		for (BioSample sample : msi.getSamples()) {
 			String sampleAcc = sample.getAcc();
 			Sample sampleN = sampleRepo.findOneByAccession(sampleAcc);
@@ -124,13 +124,13 @@ public class BioSDToNeo4JMappingService {
 				sampleN.setAccession(sampleAcc);
 			}
 			sampleN.setOwner(subN);
-			sampleN = sampleRepo.save(sampleN);
+			//sampleN = sampleRepo.save(sampleN);
 		}
 		for (BioSampleGroup group : msi.getSampleGroups()) {
 			Group groupN = new Group();
 			groupN.setAccession(group.getAcc());
 			groupN.setOwner(subN);
-			groupN = groupRepo.save(groupN);
+			//groupN = groupRepo.save(groupN);
 			// add group memberships
 			for (BioSample sample : group.getSamples()) {
 				String sampleAcc = sample.getAcc();
@@ -138,13 +138,17 @@ public class BioSDToNeo4JMappingService {
 				if (sampleN == null) {
 					sampleN = new Sample();
 					sampleN.setAccession(sampleAcc);
-					sampleN = sampleRepo.save(sampleN);
+					//sampleN = sampleRepo.save(sampleN);
 				}
 				groupN.addSample(sampleN);
-				groupN = groupRepo.save(groupN);
+				//groupN = groupRepo.save(groupN);
 			}
 		}
-		subN = subRepo.save(subN, 10);
+		
+		//save it back to repo
+		//use depth 2
+		//sub -- group -- sample
+		subN = subRepo.save(subN, 2);
 		return subN;
 	}
 }
