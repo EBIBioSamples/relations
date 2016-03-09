@@ -48,6 +48,7 @@ public class CallableMSI implements Callable<Void> {
 	}
 
 	@Override
+	@Transactional
 	public Void call() throws Exception {
 		log.info("Starting call()");
 

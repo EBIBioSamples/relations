@@ -113,7 +113,7 @@ public class BioSDToNeo4JMappingService {
 		return true;
 	}
 	
-	@Transactional
+	//@Transactional
 	public Submission handle(MSI msi) {
 
 		Submission subN = new Submission();
