@@ -58,14 +58,14 @@ public class Application implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 
 		try (final CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(new File("samples.csv")),
-				CSVFormat.DEFAULT.withHeader("accesion:ID(Sample)"))) {
+				CSVFormat.DEFAULT.withHeader("accession:ID(Sample)"))) {
 			log.info("Running samples query");
 			String sql = "SELECT ACC FROM BIO_PRODUCT";
 			jdbcTemplate.query(sql, new CSVCallbackHandler(csvPrinter));
 		}
 
 		try (final CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(new File("groups.csv")),
-				CSVFormat.DEFAULT.withHeader("accesion:ID(Group)"))) {
+				CSVFormat.DEFAULT.withHeader("accession:ID(Group)"))) {
 			log.info("Running groups query");
 			String sql = "SELECT ACC FROM BIO_SMP_GRP";
 			jdbcTemplate.query(sql, new CSVCallbackHandler(csvPrinter));
@@ -95,7 +95,7 @@ public class Application implements ApplicationRunner {
 		try (final CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(new File("sample_membership.csv")),
 				CSVFormat.DEFAULT.withHeader(":START_ID(Sample)", ":END_ID(Group)"))) {
 			log.info("Running sample membership query");
-			String sql = "SELECT BIO_SMP_GRP.ACC, BIO_PRODUCT.ACC FROM BIO_SMP_GRP JOIN BIO_SAMPLE_SAMPLE_GROUP ON BIO_SMP_GRP.ID = BIO_SAMPLE_SAMPLE_GROUP.GROUP_ID JOIN BIO_PRODUCT ON BIO_PRODUCT.ID = BIO_SAMPLE_SAMPLE_GROUP.SAMPLE_ID";
+			String sql = "SELECT BIO_PRODUCT.ACC, BIO_SMP_GRP.ACC FROM BIO_SMP_GRP JOIN BIO_SAMPLE_SAMPLE_GROUP ON BIO_SMP_GRP.ID = BIO_SAMPLE_SAMPLE_GROUP.GROUP_ID JOIN BIO_PRODUCT ON BIO_PRODUCT.ID = BIO_SAMPLE_SAMPLE_GROUP.SAMPLE_ID";
 			jdbcTemplate.query(sql, new CSVCallbackHandler(csvPrinter));
 		}
 
