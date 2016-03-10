@@ -3,6 +3,7 @@ package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -85,9 +86,9 @@ public class Runner implements ApplicationRunner {
 	        for (int i = 0; i < msiAccs.size(); i += fetchStep) {
 	        	//have to create multiple beans via context so they all have their own dao object
 	        	//this is apparently bad Inversion Of Control but I can't see a better way to do it
-	        	CallableMSI callable = context.getBean(CallableMSI.class);
-	        	
-	        	callable.setAccessions(msiAccs.subList(i, Math.min(i+fetchStep, msiAccs.size())));
+	        	Iterable<String> fetchedMsiAccs = msiAccs.subList(i, Math.min(i+fetchStep, msiAccs.size()));
+	        	//Callable<Void> callable = context.getBean(RepoMSICallable.class, fetchedMsiAccs);
+	        	Callable<Void> callable = context.getBean(CSVMSICallable.class, fetchedMsiAccs);
 	        	
 				if (threadCount == 0) {
 					callable.call();

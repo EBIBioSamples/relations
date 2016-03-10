@@ -24,7 +24,7 @@ import uk.ac.ebi.fg.core_model.persistence.dao.hibernate.toplevel.AccessibleDAO;
 import uk.ac.ebi.fg.core_model.resources.Resources;
 
 @Service
-public class BioSDToNeo4JMappingService {
+public class RepoMappingService {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -113,7 +113,7 @@ public class BioSDToNeo4JMappingService {
 		return true;
 	}
 	
-	//@Transactional
+	@Transactional
 	public Submission handle(MSI msi) {
 
 		Submission subN = new Submission();

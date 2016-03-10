@@ -19,24 +19,21 @@ import uk.ac.ebi.fg.core_model.resources.Resources;
 @Component
 //this makes sure that we have a different instance wherever it is used
 @Scope("prototype")
-public class CallableMSI implements Callable<Void> {
+public class RepoMSICallable implements Callable<Void> {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private Iterable<String> accessions;
 
 	@Autowired
-	private BioSDToNeo4JMappingService biosdToNeo4J;
+	private RepoMappingService biosdToNeo4J;
 
-	public CallableMSI() {
+	public RepoMSICallable() {
 		super();
 	}
 
-	public BioSDToNeo4JMappingService getClient() {
-		return biosdToNeo4J;
-	}
-
-	public void setClient(BioSDToNeo4JMappingService client) {
-		this.biosdToNeo4J = client;
+	public RepoMSICallable(Iterable<String> accessions) {
+		super();
+		this.accessions = accessions;
 	}
 
 	public Iterable<String> getAccessions() {
@@ -48,7 +45,6 @@ public class CallableMSI implements Callable<Void> {
 	}
 
 	@Override
-	@Transactional
 	public Void call() throws Exception {
 		log.info("Starting call()");
 
