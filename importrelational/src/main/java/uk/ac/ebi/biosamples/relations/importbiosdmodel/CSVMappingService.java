@@ -24,8 +24,6 @@ import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyValue;
 @Service
 public class CSVMappingService implements Closeable {
 	
-
-	
 	@Value("${neo4jIndexer.outpath:output}")
 	private File outpath;
 
@@ -128,7 +126,8 @@ public class CSVMappingService implements Closeable {
 					printSample(sample.getAcc());
 					printSampleOwnership(sample.getAcc(),msi.getAcc());
 					
-					for (ExperimentalPropertyValue<?> epv: sample.getPropertyValues()){
+					//this is the slow join
+					for (ExperimentalPropertyValue<?> epv: sample.getPropertyValues()) {
 						ExperimentalPropertyType ept = epv.getType();
 						if ("derived from".equals(ept.getTermText().toLowerCase())) {
 							String otherAcc = epv.getTermText();
