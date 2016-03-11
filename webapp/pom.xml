@@ -35,7 +35,7 @@
 
 	<build>
 		<plugins>
-		<!-- Need to pass this argument to the compiler so that custom respostory searches work -->
+		<!-- Need to pass this argument to the compiler so that custom repository searches work -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
