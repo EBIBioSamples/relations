@@ -65,9 +65,8 @@ public class Application extends Neo4jConfiguration {
 	//This will not be needed after spring-data-neo4j v4.0.0
 	@Bean
     public Neo4jServer neo4jServer() {
-		log.info("uri "+uri);
-		log.info("username "+username);
-		log.info("password "+password);
+		log.debug("uri "+uri);
+		log.debug("username "+username);
         return new RemoteServer(uri, username, password);
     }
 	
