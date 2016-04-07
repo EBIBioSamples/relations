@@ -29,12 +29,12 @@ public class WebappConfiguration extends Neo4jConfiguration {
 	public Session getSession() throws Exception {
 		return super.getSession();
 	}
-
+/*
 	@Bean
 	public Neo4jOperations getNeo4jTemplate() throws Exception {
 		return new Neo4jTemplate(getSession());
 	}
-
+*/
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(WebappConfiguration.class, args);
 	}
