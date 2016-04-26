@@ -1,2 +1,4 @@
 /neo4jdb/
 /importjdbc/target/*
+.idea
+.DS_Store
