@@ -44,8 +44,17 @@
 
 
 	<repositories>
-		<!-- Has the Oracle driver, which cannot be published outside, for copyright 
-			reasons -->
+
+		<repository>
+		            <id>EBIBioSamples-GH-repo</id>
+		            <url>https://raw.githubusercontent.com/EBIBioSamples/EBIBioSamples.github.io/maven-repo</url>
+		            <snapshots>
+		                <enabled>true</enabled>
+		            </snapshots>
+		        </repository>
+
+
+		<!-- Has the Oracle driver, which cannot be published outside, for copyright reasons -->
 		<repository>
 			<id>coconut.ebi.ac.uk-snapshots</id>
 			<name>Coconut Snapshot Repository</name>
@@ -54,12 +63,18 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
+
+
+		<!-- DO WE NEED THIS ONE IN THE POM? What do we look up here? -->
+	<!--	<repository>
 			<id>coconut.ebi.ac.uk</id>
 			<name>coconut.ebi.ac.uk-releases</name>
 			<url>http://coconut.ebi.ac.uk:8081/artifactory/hasbanana</url>
-		</repository>
+		</repository> -->
+
+
 	</repositories>
+
 
 	<build>
 		<plugins>
