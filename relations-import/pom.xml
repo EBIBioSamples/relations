@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>uk.ac.ebi.biosamples</groupId>
-	<artifactId>relations-importsql</artifactId>
+	<artifactId>relations-import</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<parent>
