@@ -13,12 +13,11 @@ import uk.ac.ebi.biosamples.relations.model.Submission;
 
 public interface SubmissionRepository extends GraphRepository<Submission> {
 
-	@Query("MATCH (sub:Submission) WHERE (sub)<-[:OWNERSHIP]-(:Group {accession:{accession}}) RETURN sub")
-	public Submission findSubmissionOwningGroupByAccession(String accession);	//Working ATM
-
 	public Submission findOneBySubmissionId(String submissionId);
 
-	@Query("MATCH (sub:Submission) WHERE (sub)<-[:OWNERSHIP]-(:Sample {accession:{accession}}) RETURN sub")
-	public Submission findSubmissionOwningSampleByAccession(String accession);	//NOT working ATM
+	@Query("MATCH (sub:Submission) WHERE (sub)<-[:OWNERSHIP]-(:Group {accession:{accession}}) RETURN sub")
+	public Submission findSubmissionOwningGroupByAccession(String accession);
 
+	@Query("MATCH (sub:Submission) WHERE (sub)<-[:OWNERSHIP]-(:Sample {accession:{accession}}) RETURN sub")
+	public Submission findSubmissionOwningSampleByAccession(String accession);
 }
