@@ -4,13 +4,6 @@ username=xxxxx
 password=xxxxx
 
 
--- Testing pruposes
-driver=org.neo4j.ogm.drivers.http.driver.HttpDriver
-URI=http://localhost:7474
-username=neo4j
-password=tomcat
-
-
----- Embedded mode... ?
+---- Embedded mode
 driver=org.neo4j.ogm.drivers.embedded.driver.EmbeddedDriver
-URI=file:///Users/tliener/Documents/Neo4j/graph.db
+URI=file://LINK_TO_GRAPH_DB_DATA
