@@ -1,5 +1,6 @@
 package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 
+import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
@@ -39,13 +40,13 @@ public class CSVMappingService implements Closeable {
 	public void doSetup() throws IOException {
 		//TODO create in temp dirs, then atomically swap into file location
 		outpath.mkdirs();
-		samplePrinter = new CSVPrinter(new FileWriter(new File(outpath, "sample.csv")), CSVFormat.DEFAULT);
-		groupPrinter = new CSVPrinter(new FileWriter(new File(outpath, "group.csv")), CSVFormat.DEFAULT);
-		submissionPrinter = new CSVPrinter(new FileWriter(new File(outpath, "submission.csv")), CSVFormat.DEFAULT);
-		ownershipSamplePrinter = new CSVPrinter(new FileWriter(new File(outpath, "ownership_sample.csv")), CSVFormat.DEFAULT);
-		ownershipGroupPrinter = new CSVPrinter(new FileWriter(new File(outpath, "ownership_group.csv")), CSVFormat.DEFAULT);
-		membershipPrinter = new CSVPrinter(new FileWriter(new File(outpath, "membership.csv")), CSVFormat.DEFAULT);
-		derivationPrinter = new CSVPrinter(new FileWriter(new File(outpath, "derivation.csv")), CSVFormat.DEFAULT);
+		samplePrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "sample.csv"))), CSVFormat.DEFAULT);
+		groupPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "group.csv"))), CSVFormat.DEFAULT);
+		submissionPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "submission.csv"))), CSVFormat.DEFAULT);
+		ownershipSamplePrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "ownership_sample.csv"))), CSVFormat.DEFAULT);
+		ownershipGroupPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "ownership_group.csv"))), CSVFormat.DEFAULT);
+		membershipPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "membership.csv"))), CSVFormat.DEFAULT);
+		derivationPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "derivation.csv"))), CSVFormat.DEFAULT);
 	}
 
 	@PreDestroy
