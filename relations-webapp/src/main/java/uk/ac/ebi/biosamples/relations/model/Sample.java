@@ -22,7 +22,7 @@ public class Sample {
     public Sample alias;
 
     @Relationship(type="DERIVATION", direction= Relationship.OUTGOING)
-    public Sample parent;
+    public Sample derivedFrom;
 
     @Relationship(type="MEMBERSHIP", direction= Relationship.OUTGOING)
     public Group groups;
@@ -44,11 +44,15 @@ public class Sample {
         this.owner = owner;
     }
 
-    public Sample getParent() {           return parent;        }
+	public Sample getDerivedFrom() {
+		return derivedFrom;
+	}
 
-    public void setParent(Sample parent) {  this.parent = parent;   }
+	public void setDerivedFrom(Sample parent) {
+		this.derivedFrom = parent;
+	}
 
-    public Group getGroups() {
+	public Group getGroups() {
         return groups;
     }
 

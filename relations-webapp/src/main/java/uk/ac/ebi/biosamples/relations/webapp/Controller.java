@@ -44,15 +44,15 @@ public class Controller {
         tmpSource.put("label", accession);
         nodes.add(tmpSource);
 
-        if (tmp.getParent()!=null) {
+        if (tmp.getDerivedFrom()!=null) {
             Map<String, String> tmpNode=new HashMap();
-            tmpNode.put("iri",tmp.getParent().getAccession());
-            tmpNode.put("label",tmp.getParent().getAccession());
+            tmpNode.put("iri",tmp.getDerivedFrom().getAccession());
+            tmpNode.put("label",tmp.getDerivedFrom().getAccession());
             nodes.add(tmpNode);
 
             Map<String, String> tmpList=new HashMap();
             tmpList.put("source", accession);
-            tmpList.put("target", tmp.getParent().getAccession());
+            tmpList.put("target", tmp.getDerivedFrom().getAccession());
             tmpList.put("label","DERIVATION");
             edges.add(tmpList);
         }
