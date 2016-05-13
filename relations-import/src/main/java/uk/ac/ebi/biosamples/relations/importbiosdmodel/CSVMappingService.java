@@ -22,6 +22,9 @@ import uk.ac.ebi.fg.biosd.model.organizational.MSI;
 import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyType;
 import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyValue;
 
+
+import java.util.*;
+
 @Service
 public class CSVMappingService implements Closeable {
 	
@@ -35,6 +38,10 @@ public class CSVMappingService implements Closeable {
 	private CSVPrinter ownershipGroupPrinter;
 	private CSVPrinter membershipPrinter;
 	private CSVPrinter derivationPrinter;
+	private CSVPrinter sameAsPrinter;
+	private CSVPrinter childOfPrinter;
+	private CSVPrinter nieceOrNephewPrinter;
+
 
 	@PostConstruct
 	public void doSetup() throws IOException {
@@ -47,6 +54,9 @@ public class CSVMappingService implements Closeable {
 		ownershipGroupPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "ownership_group.csv"))), CSVFormat.DEFAULT);
 		membershipPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "membership.csv"))), CSVFormat.DEFAULT);
 		derivationPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "derivation.csv"))), CSVFormat.DEFAULT);
+		sameAsPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "sameAs.csv"))), CSVFormat.DEFAULT);
+		childOfPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "childOf.csv"))), CSVFormat.DEFAULT);
+		nieceOrNephewPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "nieceOrNephew.csv"))), CSVFormat.DEFAULT);
 	}
 
 	@PreDestroy
@@ -115,32 +125,81 @@ public class CSVMappingService implements Closeable {
 		derivationPrinter.println();
 	}
 
+	private synchronized void printSameAs(String acc, String otherAcc) throws IOException {
+		sameAsPrinter.print(acc);
+		sameAsPrinter.print(otherAcc);
+		sameAsPrinter.println();
+	}
+
+
+	private synchronized void printChildOf(String acc, String otherAcc) throws IOException {
+		childOfPrinter.print(acc);
+		childOfPrinter.print(otherAcc);
+		childOfPrinter.println();
+	}
+
+	private synchronized void printNieceOrNephew(String acc, String otherAcc) throws IOException{
+		nieceOrNephewPrinter.print(acc);
+		nieceOrNephewPrinter.print(otherAcc);
+		nieceOrNephewPrinter.println();
+	}
 
 	public void handle(MSI msi) throws IOException {
 		
 		if (valid(msi)) {
 			//get outside of sync block as it might call database and take a while
 			printSubmission(msi.getAcc());
-	
 			for (BioSample sample : msi.getSamples()) {
 				if (valid(sample)) {
 					printSample(sample.getAcc());
 					printSampleOwnership(sample.getAcc(),msi.getAcc());
-					
+
 					//this is the slow join
 					for (ExperimentalPropertyValue<?> epv: sample.getPropertyValues()) {
 						ExperimentalPropertyType ept = epv.getType();
+
 						if ("derived from".equals(ept.getTermText().toLowerCase())) {
 							String otherAcc = epv.getTermText();
 							//TODO check that otherAcc is a valid node accession
 							printDerivation(sample.getAcc(), otherAcc);
 						}
+
+					//	can not be found
+						if("same as".equals(ept.getTermText().toLowerCase())){
+							String otherAcc=epv.getTermText();
+							String acc=sample.getAcc();
+							printSameAs(acc, otherAcc);
+						}
+
+						/* - does not work. To compare it exactly without converting it to lower case works, so we are fine, but why doesn't it work. No idea good question.
+						if("child of".equals(ept.getTermText().toLowerCase())){
+								System.out.println("Is never reached ... and this is funny");
+						}*/
+
+						//to convert to lower case does not seem to work. no idea why. for the sake of it I keep in the if clause just to make sure we catch all
+						if ("Child Of".equals(ept.getTermText()) || "child of".equals(ept.getTermText().toLowerCase())) {
+							String otherAcc=epv.getTermText();
+							String acc=sample.getAcc();
+							printChildOf(acc, otherAcc);
+
+						}
+
+						//If we want to save that as well
+						/*if ("niece or nephew of".equals(ept.getTermText().toLowerCase())) {
+							String otherAcc=epv.getTermText();
+							String acc=sample.getAcc();
+							printNieceOrNephew(acc, otherAcc);
+						}*/
 					}
+
+
 				}
 			}
-			
+
+
 			for (BioSampleGroup group : msi.getSampleGroups()) {
 				if (valid(group)) {
+
 					printGroup(group.getAcc());
 					printGroupOwnership(group.getAcc(),msi.getAcc());
 
@@ -152,6 +211,11 @@ public class CSVMappingService implements Closeable {
 				}
 			}
 		}
+
+		//Should never be executed
+		else{			System.out.println("NOT VALID MSI"); 		}
+
+
 	}
 
 }
