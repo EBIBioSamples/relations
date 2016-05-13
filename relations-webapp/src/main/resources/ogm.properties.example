@@ -1,9 +1,0 @@
-driver=org.neo4j.ogm.drivers.http.driver.HttpDriver
-URI=http://localhost:7474
-username=xxxxx
-password=xxxxx
-
-
----- Embedded mode
-driver=org.neo4j.ogm.drivers.embedded.driver.EmbeddedDriver
-URI=file://LINK_TO_GRAPH_DB_DATA

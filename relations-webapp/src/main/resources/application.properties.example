@@ -1,2 +1,2 @@
 ogm.driver=org.neo4j.ogm.drivers.embedded.driver.EmbeddedDriver
-ogm.uri=file:///Users/tliener/Documents/Neo4j/graph.db
+#ogm.uri=URI_to_FOLDER
