@@ -18,7 +18,10 @@ public class Sample {
 
     private Sample(){};
 
-    @Relationship(type="DERIVATION", direction= Relationship.INCOMING)
+    @Relationship(type="SAMEAS", direction= Relationship.OUTGOING)
+    public Sample alias;
+
+    @Relationship(type="DERIVATION", direction= Relationship.OUTGOING)
     public Sample parent;
 
     @Relationship(type="MEMBERSHIP", direction= Relationship.OUTGOING)
@@ -27,12 +30,10 @@ public class Sample {
     @Relationship(type="OWNERSHIP", direction=Relationship.OUTGOING)
     public Submission owner;
 
-    public String getAccession() {
-        return accession;
-    }
+    public String getAccession() {      return accession;    }
 
     public void setAccession(String accession) {
-        this.accession = accession;
+                this.accession = accession;
     }
 
     public Submission getOwner() {
@@ -43,11 +44,9 @@ public class Sample {
         this.owner = owner;
     }
 
-    public Sample getParent() { return parent;}
+    public Sample getParent() {           return parent;        }
 
-    public void setParent(Sample parent) {
-        this.parent = parent;
-    }
+    public void setParent(Sample parent) {  this.parent = parent;   }
 
     public Group getGroups() {
         return groups;
@@ -60,4 +59,15 @@ public class Sample {
     public Long getId() {
         return id;
     }
+
+
+    public Sample getAlias() {
+        return alias;
+    }
+
+    public void setAlias(Sample alias) {
+        this.alias = alias;
+    }
+
+
 }
