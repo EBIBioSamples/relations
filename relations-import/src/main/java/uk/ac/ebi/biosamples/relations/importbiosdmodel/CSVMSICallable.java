@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +53,21 @@ public class CSVMSICallable implements Callable<Void> {
 		EntityManager em = null;
 		try {
 			em = emf.createEntityManager();
-			AccessibleDAO<MSI> dao = new AccessibleDAO<>(MSI.class, em);
-			for (String msiAcc : accessions) {
-				log.trace("Trying MSI "+msiAcc);
-				MSI msi = dao.find(msiAcc);
-				log.trace("Got MSI "+msiAcc);
-				csvService.handle(msi);
+
+			EntityTransaction transaction = em.getTransaction();
+			try {
+				transaction.begin();
+				transaction.setRollbackOnly();	
+				
+				AccessibleDAO<MSI> dao = new AccessibleDAO<>(MSI.class, em);
+				for (String msiAcc : accessions) {
+					log.trace("Trying MSI "+msiAcc);
+					MSI msi = dao.find(msiAcc);
+					log.trace("Got MSI "+msiAcc);
+					csvService.handle(msi);
+				}
+			} finally {
+				transaction.rollback();
 			}
 		} finally {
 			if (em != null && em.isOpen()) {
