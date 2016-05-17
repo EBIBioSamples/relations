@@ -12,9 +12,9 @@ import org.springframework.data.neo4j.config.Neo4jConfiguration;
  */
 
 @Configuration
-public class WebAppConfig extends Neo4jConfiguration{
+public class MyNeo4JConfig extends Neo4jConfiguration{
 
-    @Value("${ogm.uri}")
+    @Value("${ogm.uri:}")
     private String uri;
 
     @Value("${ogm.driver:error}")
@@ -24,6 +24,8 @@ public class WebAppConfig extends Neo4jConfiguration{
     //****** Try to get rid of ogm.properties by defining neo4 driver within java
     @Bean
     public org.neo4j.ogm.config.Configuration getConfiguration() {
+    	if (uri != null && uri.length() == 0) uri = null;
+    	
         org.neo4j.ogm.config.Configuration config = new org.neo4j.ogm.config.Configuration();
         config
                 .driverConfiguration()

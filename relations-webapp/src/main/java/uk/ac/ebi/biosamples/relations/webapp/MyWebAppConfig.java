@@ -4,6 +4,7 @@ import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -33,10 +34,11 @@ import java.util.*;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableNeo4jRepositories("uk.ac.ebi.biosamples.relations")
-public class WebApp extends SpringBootServletInitializer {
+public class MyWebAppConfig extends SpringBootServletInitializer {
 
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(WebApp.class, args);
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(new Class[]{MyWebAppConfig.class, MyNeo4JConfig.class});
     }
 
 
