@@ -15,15 +15,15 @@ public class Submission {
 
     @GraphId
     private Long id;
-/*
-    private String submissionId;
 
+    private String submissionId;
+/*
     @Relationship(type="OWNERSHIP", direction=Relationship.INCOMING )
     private Set<Sample> samples = new HashSet<>();
 
     @Relationship(type="OWNERSHIP", direction= Relationship.INCOMING)
     private Set<Group> groups = new HashSet<>();
-
+*/
     public Submission() {};
 
     public Long getId() {
@@ -37,5 +37,5 @@ public class Submission {
     public void setSubmissionId(String submissionId) {
         this.submissionId = submissionId;
     }
-*/
+
 }
