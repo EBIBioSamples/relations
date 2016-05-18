@@ -16,27 +16,16 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-<!-- 		<version>1.3.5.RELEASE</version> -->
-		<!-- <version>1.4.0.BUILD-SNAPSHOT</version> -->
 		<version>1.4.0.M2</version>
-		<!-- <version>1.4.0.M3</version> -->
 	</parent>
 
 	<dependencies>
 		<!-- only in >1.4.0.M2 -->
 		<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-data-neo4j</artifactId>
-		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework.data</groupId> -->
-<!-- 			<artifactId>spring-data-neo4j</artifactId> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate</groupId> -->
-<!-- 			<artifactId>hibernate-validator</artifactId> -->
-<!-- 		</dependency> -->
-		
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-neo4j</artifactId>
+        </dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
@@ -67,7 +56,7 @@
 
 	<build>
 		<plugins>
-			<!-- Need to pass this argument to the compiler so that custom repository 
+			<!-- Need to pass this argument to the compiler so that custom repository
 				searches work -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
