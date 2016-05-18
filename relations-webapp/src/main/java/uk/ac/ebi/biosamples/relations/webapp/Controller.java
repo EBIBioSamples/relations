@@ -23,147 +23,137 @@ import java.util.Map;
 @RestController
 public class Controller {
 
-    @Autowired
-    private SampleRepository sampleRepository;
+	@Autowired
+	private SampleRepository sampleRepository;
 
-    @Autowired
-    private GroupRepository groupRepository;
+	@Autowired
+	private GroupRepository groupRepository;
 
-    private List<Map<String, String>> nodes;
+	private List<Map<String, String>> nodes;
 
-    private List<Map<String, String>> edges;
+	private List<Map<String, String>> edges;
 
+	public JSONObject parseSample(String accession) {
+		Sample tmp = sampleRepository.findOneByAccession(accession);
 
+		// Adding accession node to nodes
+		Map<String, String> tmpSource = new HashMap<>();
+		tmpSource.put("iri", accession);
+		tmpSource.put("label", accession);
+		nodes.add(tmpSource);
 
-    public Object parseSample(String accession){
-        Sample tmp = sampleRepository.findOneByAccession(accession);
+		if (tmp.getDerivedFrom() != null) {
+			Map<String, String> tmpNode = new HashMap<>();
+			tmpNode.put("iri", tmp.getDerivedFrom().getAccession());
+			tmpNode.put("label", tmp.getDerivedFrom().getAccession());
+			nodes.add(tmpNode);
 
-        //Adding accession node to nodes
-        Map<String, String> tmpSource=new HashMap();
-        tmpSource.put("iri",accession);
-        tmpSource.put("label", accession);
-        nodes.add(tmpSource);
+			Map<String, String> tmpList = new HashMap<>();
+			tmpList.put("source", accession);
+			tmpList.put("target", tmp.getDerivedFrom().getAccession());
+			tmpList.put("label", "DERIVATION");
+			edges.add(tmpList);
+		}
 
-        if (tmp.getDerivedFrom()!=null) {
-            Map<String, String> tmpNode=new HashMap();
-            tmpNode.put("iri",tmp.getDerivedFrom().getAccession());
-            tmpNode.put("label",tmp.getDerivedFrom().getAccession());
-            nodes.add(tmpNode);
+		if (tmp.getOwner() != null) {
+			Map<String, String> tmpNode = new HashMap<>();
+			tmpNode.put("iri", tmp.getOwner().getSubmissionId());
+			tmpNode.put("label", tmp.getOwner().getSubmissionId());
+			nodes.add(tmpNode);
 
-            Map<String, String> tmpList=new HashMap();
-            tmpList.put("source", accession);
-            tmpList.put("target", tmp.getDerivedFrom().getAccession());
-            tmpList.put("label","DERIVATION");
-            edges.add(tmpList);
-        }
+			Map<String, String> tmpList = new HashMap<>();
+			tmpList.put("source", accession);
+			tmpList.put("target", tmp.getOwner().getSubmissionId());
+			tmpList.put("label", "OWNERSHIP");
+			edges.add(tmpList);
+		}
 
-        if (tmp.getOwner()!=null) {
-            Map<String, String> tmpNode=new HashMap();
-            tmpNode.put("iri",tmp.getOwner().getSubmissionId());
-            tmpNode.put("label",tmp.getOwner().getSubmissionId());
-            nodes.add(tmpNode);
+		if (tmp.getGroups() != null) {
+			Map<String, String> tmpNode = new HashMap<>();
+			tmpNode.put("iri", tmp.getGroups().getAccession());
+			tmpNode.put("label", tmp.getGroups().getAccession());
+			nodes.add(tmpNode);
 
-            Map<String, String> tmpList=new HashMap();
-            tmpList.put("source", accession);
-            tmpList.put("target",tmp.getOwner().getSubmissionId());
-            tmpList.put("label","OWNERSHIP");
-            edges.add(tmpList);
-        }
+			Map<String, String> tmpList = new HashMap<>();
+			tmpList.put("source", accession);
+			tmpList.put("target", tmp.getGroups().getAccession());
+			tmpList.put("label", "MEMBERSHIP");
+			edges.add(tmpList);
+		}
 
-        if (tmp.getGroups()!=null) {
-            Map<String, String> tmpNode=new HashMap();
-            tmpNode.put("iri",tmp.getGroups().getAccession());
-            tmpNode.put("label",tmp.getGroups().getAccession());
-            nodes.add(tmpNode);
+		JSONObject json = new JSONObject();
+		json.put("nodes", nodes);
+		json.put("edges", edges);
+		return json;
+	}
 
-            Map<String, String> tmpList=new HashMap();
-            tmpList.put("source", accession);
-            tmpList.put("target",tmp.getGroups().getAccession());
-            tmpList.put("label","MEMBERSHIP");
-            edges.add(tmpList);
-        }
+	public JSONObject parseGroup(String accession) {
+		Group tmp = groupRepository.findOneByAccession(accession);
 
-        JSONObject json=new JSONObject();
-        json.put("nodes", nodes);
-        json.put("edges", edges);
-        return json;
-    }
+		// Adding accession node to nodes
+		Map<String, String> tmpSource = new HashMap();
+		tmpSource.put("iri", accession);
+		tmpSource.put("label", accession);
+		nodes.add(tmpSource);
 
+		/*
+		 * Maybe get rid of this part, since groups belong to Submissions and
+		 * therefor it cna be implied that samples also belong to submission
+		 */
+		if (tmp.getOwner() != null) {
+			Map<String, String> tmpNode = new HashMap();
+			tmpNode.put("iri", tmp.getOwner().getSubmissionId());
+			tmpNode.put("label", tmp.getOwner().getSubmissionId());
+			nodes.add(tmpNode);
 
+			Map<String, String> tmpList = new HashMap();
+			tmpList.put("source", accession);
+			tmpList.put("target", tmp.getOwner().getSubmissionId());
+			tmpList.put("label", "OWNERSHIP");
+			edges.add(tmpList);
+		}
 
+		if (tmp.getSamples() != null) {
 
+			for (Sample sample : tmp.getSamples()) {
+				Map<String, String> tmpNode = new HashMap();
+				tmpNode.put("iri", sample.getAccession());
+				tmpNode.put("label", sample.getAccession());
+				nodes.add(tmpNode);
 
-    public Object parseGroup(String accession){
-        Group tmp=groupRepository.findOneByAccession(accession);
+				Map<String, String> tmpList = new HashMap();
+				tmpList.put("target", accession);
+				tmpList.put("source", sample.getAccession());
+				tmpList.put("label", "MEMBERSHIP");
+				edges.add(tmpList);
+			}
 
-        //Adding accession node to nodes
-        Map<String, String> tmpSource=new HashMap();
-        tmpSource.put("iri",accession);
-        tmpSource.put("label", accession);
-        nodes.add(tmpSource);
+		}
 
+		JSONObject json = new JSONObject();
+		json.put("nodes", nodes);
+		json.put("edges", edges);
+		return json;
+	}
 
+	@RequestMapping(path = "graph", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	public JSONObject test(String accession) {
 
-        /*Maybe get rid of this part, since groups belong to Submissions and therefor it cna be implied that samples also belong to submission*/
-        if (tmp.getOwner()!=null)
-        {
-            Map<String, String> tmpNode=new HashMap();
-            tmpNode.put("iri", tmp.getOwner().getSubmissionId());
-            tmpNode.put("label", tmp.getOwner().getSubmissionId());
-            nodes.add(tmpNode);
+		nodes = new ArrayList<Map<String, String>>();
+		edges = new ArrayList<Map<String, String>>();
 
-            Map<String, String> tmpList=new HashMap();
-            tmpList.put("source", accession);
-            tmpList.put("target", tmp.getOwner().getSubmissionId());
-            tmpList.put("label","OWNERSHIP");
-            edges.add(tmpList);
-        }
+		int groupOrSample = accession.indexOf('G');
 
-        if (tmp.getSamples()!=null)     {
+		// 'G' in the first 3 letters of the id indicate, if it is a Group or a
+		// sample!
+		// Problem with submission with this test! If we want to offer
+		// submissions this has to change!
+		if (groupOrSample <= 4 && groupOrSample >= 0) {
+			return parseGroup(accession);
+		} else {
+			return parseSample(accession);
+		}
 
-            for (Sample sample : tmp.getSamples()) {
-                Map<String, String> tmpNode=new HashMap();
-                tmpNode.put("iri",sample.getAccession());
-                tmpNode.put("label",sample.getAccession());
-                nodes.add(tmpNode);
-
-                Map<String, String> tmpList=new HashMap();
-                tmpList.put("target", accession);
-                tmpList.put("source", sample.getAccession());
-                tmpList.put("label","MEMBERSHIP");
-                edges.add(tmpList);
-            }
-
-
-
-        }
-
-        JSONObject json=new JSONObject();
-        json.put("nodes", nodes);
-        json.put("edges", edges);
-        return json;
-    }
-
-
-    @RequestMapping(path="graph", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-    public Object test(String accession){
-
-        nodes = new ArrayList<Map<String, String>>();
-        edges = new ArrayList<Map<String, String>>();
-
-        int groupOrSample=accession.indexOf('G');
-
-        //'G' in the first 3 letters of the id indicate, if it is a Group or a sample!
-        //Problem with submission with this test! If we want to offer submissions this has to change!
-        if (groupOrSample<=4 && groupOrSample>=0)
-        {
-            return parseGroup(accession);
-        }
-        else
-        {
-            return parseSample(accession);
-        }
-
-    }
+	}
 
 }
