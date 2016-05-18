@@ -13,9 +13,9 @@ public class Sample {
 
 	@GraphId
 	private Long id;
-/*
-	private String accession;
 
+	private String accession;
+/*
 	@Relationship(type = "SAMEAS", direction = Relationship.OUTGOING)
 	public Sample alias;
 
@@ -27,7 +27,7 @@ public class Sample {
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	public Submission owner;
-
+*/
 	private Sample() {};
 
 	public Long getId() {
@@ -41,7 +41,7 @@ public class Sample {
 	public void setAccession(String accession) {
 		this.accession = accession;
 	}
-
+/*
 	public Submission getOwner() {
 		return owner;
 	}

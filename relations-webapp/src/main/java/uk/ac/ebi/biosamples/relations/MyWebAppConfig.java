@@ -2,7 +2,14 @@ package uk.ac.ebi.biosamples.relations;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceProcessor;
+
+import uk.ac.ebi.biosamples.relations.model.Group;
+import uk.ac.ebi.biosamples.relations.model.Sample;
 
 
 /**
@@ -12,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MyWebAppConfig extends SpringBootServletInitializer {
-/*
+
     //This function adds a Link to the Sample resource
     @Bean
     public ResourceProcessor<Resource<Sample>> sampleProcessor(){
@@ -43,7 +50,7 @@ public class MyWebAppConfig extends SpringBootServletInitializer {
             }
         };
     }
-*/
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Main.class);

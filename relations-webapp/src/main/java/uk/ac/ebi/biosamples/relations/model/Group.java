@@ -15,15 +15,15 @@ public class Group {
 
     @GraphId
     private Long id;
-/*
-    private String accession;
 
+    private String accession;
+/*
     @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
     private Set<Sample> samples =new HashSet<>();
 
     @Relationship(type="OWNERSHIP", direction=Relationship.OUTGOING)
     private Submission owner;
-
+*/
     public Group() {};
 
     public Long getId() {
@@ -37,7 +37,7 @@ public class Group {
     public void setAccession(String accession) {
         this.accession = accession;
     }
-
+/*
     public Submission getOwner() {
         return owner;
     }
