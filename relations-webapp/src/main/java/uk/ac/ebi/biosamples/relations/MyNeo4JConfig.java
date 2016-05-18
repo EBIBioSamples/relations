@@ -61,5 +61,4 @@ public class MyNeo4JConfig extends Neo4jConfiguration {
     public Session getSession() throws Exception {
         return super.getSession();
     }
-    
 }
