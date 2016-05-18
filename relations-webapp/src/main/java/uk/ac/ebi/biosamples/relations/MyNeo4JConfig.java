@@ -33,7 +33,7 @@ public class MyNeo4JConfig extends Neo4jConfiguration {
 
     @Bean
     public org.neo4j.ogm.config.Configuration getConfiguration() {
-    	if (uri != null && uri.length() == 0) {
+    	if (uri != null && uri.trim().length() == 0) {
     		uri = null;
     	} else {
     		uri = uri.trim();
