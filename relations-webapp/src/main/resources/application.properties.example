@@ -1,2 +1,1 @@
-ogm.driver=org.neo4j.ogm.drivers.embedded.driver.EmbeddedDriver
-#ogm.uri=URI_to_FOLDER
+spring.data.neo4j.uri=PATH_to_File
