@@ -1,9 +1,12 @@
 package uk.ac.ebi.biosamples.relations;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
@@ -17,9 +20,15 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
  */
 
 
-@Configuration
+@SpringBootApplication
 public class MyWebAppConfig extends SpringBootServletInitializer {
 
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigIn() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+    
     //This function adds a Link to the Sample resource
     @Bean
     public ResourceProcessor<Resource<Sample>> sampleProcessor(){
@@ -53,7 +62,14 @@ public class MyWebAppConfig extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Main.class);
+        //return application.sources(MyWebAppConfig.class);
+    	return application.sources(MyNeo4JConfig.class);
+    }
+    
+    public static void main(String[] args) throws Exception {
+        //SpringApplication.run(new Class[]{Main.class, MyWebAppConfig.class, MyNeo4JConfig.class}, args);
+    	//SpringApplication.run(MyWebAppConfig.class, args);
+    	SpringApplication.run(MyNeo4JConfig.class, args);
     }
 
 
