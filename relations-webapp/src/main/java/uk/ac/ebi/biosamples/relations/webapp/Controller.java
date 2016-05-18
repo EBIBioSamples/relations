@@ -3,13 +3,13 @@ package uk.ac.ebi.biosamples.relations.webapp;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.biosamples.relations.model.Group;
 import uk.ac.ebi.biosamples.relations.model.Sample;
 import uk.ac.ebi.biosamples.relations.repo.GroupRepository;
 import uk.ac.ebi.biosamples.relations.repo.SampleRepository;
+
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,11 +30,13 @@ public class Controller {
 	private GroupRepository groupRepository;
 
 	private List<Map<String, String>> nodes;
-
 	private List<Map<String, String>> edges;
+
 
 	public JSONObject parseSample(String accession) {
 		Sample tmp = sampleRepository.findOneByAccession(accession);
+
+		System.out.println("In parse Sample");
 
 		// Adding accession node to nodes
 		Map<String, String> tmpSource = new HashMap<>();
@@ -126,32 +128,27 @@ public class Controller {
 			tmpList.put("label", "MEMBERSHIP");
 			edges.add(tmpList);
 		}
-
-
+		
 		JSONObject json = new JSONObject();
 		json.put("nodes", nodes);
 		json.put("edges", edges);
 		return json;
 	}
 
-	@RequestMapping(path = "graph", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-	public JSONObject test(String accession) {
 
+	@RequestMapping(path = "groups/{accession}/graph", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	public JSONObject group(@PathVariable("accession") String accession){
 		nodes = new ArrayList<Map<String, String>>();
 		edges = new ArrayList<Map<String, String>>();
+		return parseGroup(accession);
+	}
 
-		int groupOrSample = accession.indexOf('G');
-
-		// 'G' in the first 3 letters of the id indicate, if it is a Group or a
-		// sample!
-		// Problem with submission with this test! If we want to offer
-		// submissions this has to change!
-		if (groupOrSample <= 4 && groupOrSample >= 0) {
-			return parseGroup(accession);
-		} else {
-			return parseSample(accession);
-		}
-
+	@RequestMapping(path = "samples/{accession}/graph", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	//public @ResponseBody Graph test(String accession) {
+	public JSONObject sample(@PathVariable("accession") String accession){
+		nodes = new ArrayList<Map<String, String>>();
+		edges = new ArrayList<Map<String, String>>();
+		return parseSample(accession);
 	}
 
 }

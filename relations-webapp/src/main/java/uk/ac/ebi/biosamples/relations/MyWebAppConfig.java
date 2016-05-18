@@ -28,8 +28,10 @@ public class MyWebAppConfig extends SpringBootServletInitializer {
     public static PropertySourcesPlaceholderConfigurer propertyConfigIn() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-    
-    //This function adds a Link to the Sample resource
+
+    /*
+    * This function adds a Link to the Sample resource
+    * */
     @Bean
     public ResourceProcessor<Resource<Sample>> sampleProcessor(){
         return new ResourceProcessor<Resource<Sample>>(){
@@ -39,13 +41,16 @@ public class MyWebAppConfig extends SpringBootServletInitializer {
                 //get the Sample accession through the resource object, add this to the new Link in order to produce valid link
                 String accession=resource.getContent().getAccession();
                 resource.add(new Link("http://whatever - for sample "+accession, "Additional Information"));
+                resource.add(new Link(resource.getLink("self").getHref()+"/graph", "graph"));
                 return resource;
             }
 
         };
     }
 
-    //This function adds a Link to the Group resource
+    /*
+    * This function adds a Link to the Group resource
+    * */
     @Bean
     public ResourceProcessor<Resource<Group>> groupProcessor(){
         return new ResourceProcessor<Resource<Group>> () {
@@ -55,10 +60,12 @@ public class MyWebAppConfig extends SpringBootServletInitializer {
                 //get the GROUPs accession through the resource object, add this to the new Link in order to produce valid link
                 String accession=resource.getContent().getAccession();
                 resource.add(new Link("http://whatever for group "+accession, "Additional Information"));
+                resource.add(new Link(resource.getLink("self").getHref()+"/graph", "graph"));
                 return resource;
             }
         };
     }
+
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
