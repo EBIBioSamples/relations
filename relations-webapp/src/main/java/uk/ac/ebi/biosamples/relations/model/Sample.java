@@ -5,6 +5,7 @@ package uk.ac.ebi.biosamples.relations.model;
  */
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 
 import java.util.Set;
 
@@ -17,6 +18,7 @@ public class Sample {
 	@GraphId
 	private Long id;
 
+    @Property
 	private String accession;
 
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)

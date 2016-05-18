@@ -2,6 +2,7 @@ package uk.ac.ebi.biosamples.relations.model;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.HashSet;
@@ -16,13 +17,14 @@ public class Submission {
     @GraphId
     private Long id;
 
+    @Property
     private String submissionId;
 
     @Relationship(type="OWNERSHIP", direction=Relationship.INCOMING)
-    private Set<Sample> samples = new HashSet<>();
+    private Set<Sample> samples;
 
     @Relationship(type="OWNERSHIP", direction= Relationship.INCOMING)
-    private Set<Group> groups = new HashSet<>();
+    private Set<Group> groups;
 
     public Submission() {};
 
