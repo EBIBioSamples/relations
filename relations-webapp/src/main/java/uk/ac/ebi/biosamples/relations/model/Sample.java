@@ -11,38 +11,44 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class Sample {
 
-    @GraphId
-    private Long id;
+	@GraphId
+	private Long id;
+/*
+	private String accession;
 
-    private String accession;
+	@Relationship(type = "SAMEAS", direction = Relationship.OUTGOING)
+	public Sample alias;
 
-    private Sample(){};
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	public Sample derivedFrom;
 
-    @Relationship(type="SAMEAS", direction= Relationship.OUTGOING)
-    public Sample alias;
+	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
+	public Group groups;
 
-    @Relationship(type="DERIVATION", direction= Relationship.OUTGOING)
-    public Sample derivedFrom;
+	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
+	public Submission owner;
 
-    @Relationship(type="MEMBERSHIP", direction= Relationship.OUTGOING)
-    public Group groups;
+	private Sample() {};
 
-    @Relationship(type="OWNERSHIP", direction=Relationship.OUTGOING)
-    public Submission owner;
+	public Long getId() {
+		return id;
+	}
 
-    public String getAccession() {      return accession;    }
+	public String getAccession() {
+		return accession;
+	}
 
-    public void setAccession(String accession) {
-                this.accession = accession;
-    }
+	public void setAccession(String accession) {
+		this.accession = accession;
+	}
 
-    public Submission getOwner() {
-        return owner;
-    }
+	public Submission getOwner() {
+		return owner;
+	}
 
-    public void setOwner(Submission owner) {
-        this.owner = owner;
-    }
+	public void setOwner(Submission owner) {
+		this.owner = owner;
+	}
 
 	public Sample getDerivedFrom() {
 		return derivedFrom;
@@ -53,25 +59,19 @@ public class Sample {
 	}
 
 	public Group getGroups() {
-        return groups;
-    }
+		return groups;
+	}
 
-    public void setGroups(Group groups) {
-        this.groups = groups;
-    }
+	public void setGroups(Group groups) {
+		this.groups = groups;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Sample getAlias() {
+		return alias;
+	}
 
-
-    public Sample getAlias() {
-        return alias;
-    }
-
-    public void setAlias(Sample alias) {
-        this.alias = alias;
-    }
-
-
+	public void setAlias(Sample alias) {
+		this.alias = alias;
+	}
+*/
 }

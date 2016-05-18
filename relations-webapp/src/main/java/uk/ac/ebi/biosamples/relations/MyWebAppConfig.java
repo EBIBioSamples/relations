@@ -1,29 +1,8 @@
-package uk.ac.ebi.biosamples.relations.webapp;
+package uk.ac.ebi.biosamples.relations;
 
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.neo4j.config.Neo4jConfiguration;
-import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-
-import org.neo4j.ogm.config.Configuration;
-
-/*  Imports needed for the ResourceProcessor  */
-import org.springframework.hateoas.ResourceProcessor;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import uk.ac.ebi.biosamples.relations.model.Sample;
-import uk.ac.ebi.biosamples.relations.model.Group;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.*;
+import org.springframework.context.annotation.Configuration;
 
 
 /**
@@ -31,20 +10,10 @@ import java.util.*;
  */
 
 
-@SpringBootApplication
-@EnableTransactionManagement
-@EnableNeo4jRepositories("uk.ac.ebi.biosamples.relations")
+@Configuration
 public class MyWebAppConfig extends SpringBootServletInitializer {
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(new Class[]{MyWebAppConfig.class, MyNeo4JConfig.class});
-    }
-
-
-    /*
-    * This function adds a Link to the Sample resource
-    * */
+/*
+    //This function adds a Link to the Sample resource
     @Bean
     public ResourceProcessor<Resource<Sample>> sampleProcessor(){
         return new ResourceProcessor<Resource<Sample>>(){
@@ -60,9 +29,7 @@ public class MyWebAppConfig extends SpringBootServletInitializer {
         };
     }
 
-    /*
-    * This function adds a Link to the Group resource
-    * */
+    //This function adds a Link to the Group resource
     @Bean
     public ResourceProcessor<Resource<Group>> groupProcessor(){
         return new ResourceProcessor<Resource<Group>> () {
@@ -76,7 +43,11 @@ public class MyWebAppConfig extends SpringBootServletInitializer {
             }
         };
     }
-
+*/
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Main.class);
+    }
 
 
 }
