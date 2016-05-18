@@ -5,6 +5,9 @@ package uk.ac.ebi.biosamples.relations.model;
  */
 
 import org.neo4j.ogm.annotation.NodeEntity;
+
+import java.util.Set;
+
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -15,19 +18,19 @@ public class Sample {
 	private Long id;
 
 	private String accession;
-/*
-	@Relationship(type = "SAMEAS", direction = Relationship.OUTGOING)
-	public Sample alias;
+
+	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
+	public Set<Sample> sameAs;
 
 	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
-	public Sample derivedFrom;
+	public Set<Sample> derivedFrom;
 
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
-	public Group groups;
+	public Set<Group> groups;
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	public Submission owner;
-*/
+	
 	private Sample() {};
 
 	public Long getId() {
@@ -41,7 +44,7 @@ public class Sample {
 	public void setAccession(String accession) {
 		this.accession = accession;
 	}
-/*
+
 	public Submission getOwner() {
 		return owner;
 	}
@@ -50,28 +53,16 @@ public class Sample {
 		this.owner = owner;
 	}
 
-	public Sample getDerivedFrom() {
+	public Set<Sample> getDerivedFrom() {
 		return derivedFrom;
 	}
 
-	public void setDerivedFrom(Sample parent) {
-		this.derivedFrom = parent;
-	}
-
-	public Group getGroups() {
+	public Set<Group> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(Group groups) {
-		this.groups = groups;
+	public Set<Sample> getSameAs() {
+		return sameAs;
 	}
 
-	public Sample getAlias() {
-		return alias;
-	}
-
-	public void setAlias(Sample alias) {
-		this.alias = alias;
-	}
-*/
 }

@@ -17,13 +17,13 @@ public class Submission {
     private Long id;
 
     private String submissionId;
-/*
-    @Relationship(type="OWNERSHIP", direction=Relationship.INCOMING )
+
+    @Relationship(type="OWNERSHIP", direction=Relationship.INCOMING)
     private Set<Sample> samples = new HashSet<>();
 
     @Relationship(type="OWNERSHIP", direction= Relationship.INCOMING)
     private Set<Group> groups = new HashSet<>();
-*/
+
     public Submission() {};
 
     public Long getId() {

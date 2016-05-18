@@ -17,13 +17,13 @@ public class Group {
     private Long id;
 
     private String accession;
-/*
+
     @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
     private Set<Sample> samples =new HashSet<>();
 
     @Relationship(type="OWNERSHIP", direction=Relationship.OUTGOING)
     private Submission owner;
-*/
+
     public Group() {};
 
     public Long getId() {
@@ -37,7 +37,7 @@ public class Group {
     public void setAccession(String accession) {
         this.accession = accession;
     }
-/*
+
     public Submission getOwner() {
         return owner;
     }
@@ -49,5 +49,5 @@ public class Group {
     public Set<Sample> getSamples() {
         return samples;
     }
-*/
+
 }
