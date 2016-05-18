@@ -29,8 +29,8 @@ public class MyNeo4JConfig extends Neo4jConfiguration{
         org.neo4j.ogm.config.Configuration config = new org.neo4j.ogm.config.Configuration();
         config
                 .driverConfiguration()
-                .setDriverClassName(driver)
-                .setURI(uri);
+                .setDriverClassName(driver.trim())
+                .setURI(uri.trim());
         return config;
     }
 
