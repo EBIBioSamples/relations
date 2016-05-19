@@ -12,6 +12,8 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
+import com.google.common.collect.ImmutableSet;
+
 @NodeEntity
 public class Sample {
 
@@ -22,16 +24,19 @@ public class Sample {
 	private String accession;
 
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
-	public Set<Sample> sameAs;
+	private Set<Sample> sameAs;
 
 	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
-	public Set<Sample> derivedFrom;
+	private Set<Sample> derivedFrom;
+
+	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
+	private Set<Sample> derivedTo;
 
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
-	public Set<Group> groups;
+	private Set<Group> groups;
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
-	public Submission owner;
+	private Submission owner;
 	
 	private Sample() {};
 
@@ -43,28 +48,24 @@ public class Sample {
 		return accession;
 	}
 
-	public void setAccession(String accession) {
-		this.accession = accession;
-	}
-
 	public Submission getOwner() {
 		return owner;
 	}
 
-	public void setOwner(Submission owner) {
-		this.owner = owner;
+	public ImmutableSet<Sample> getDerivedFrom() {
+		return ImmutableSet.copyOf(derivedFrom);
 	}
 
-	public Set<Sample> getDerivedFrom() {
-		return derivedFrom;
+	public ImmutableSet<Sample> getDerivedTo() {
+		return ImmutableSet.copyOf(derivedTo);
 	}
 
-	public Set<Group> getGroups() {
-		return groups;
+	public ImmutableSet<Group> getGroups() {
+		return ImmutableSet.copyOf(groups);
 	}
 
-	public Set<Sample> getSameAs() {
-		return sameAs;
+	public ImmutableSet<Sample> getSameAs() {
+		return ImmutableSet.copyOf(sameAs);
 	}
 
 }

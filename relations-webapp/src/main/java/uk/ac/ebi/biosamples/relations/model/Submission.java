@@ -5,6 +5,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,9 +37,12 @@ public class Submission {
     public String getSubmissionId() {
         return submissionId;
     }
-
-    public void setSubmissionId(String submissionId) {
-        this.submissionId = submissionId;
+    
+    public ImmutableSet<Sample> getSamples() {
+    	return ImmutableSet.copyOf(samples);
     }
-
+    
+    public ImmutableSet<Group> getGroups() {
+    	return ImmutableSet.copyOf(groups);
+    }
 }
