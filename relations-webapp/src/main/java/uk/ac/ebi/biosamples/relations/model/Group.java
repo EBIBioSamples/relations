@@ -42,8 +42,12 @@ public class Group {
         return owner;
     }
 
-    public ImmutableSet<Sample> getSamples() {
+/*    public ImmutableSet<Sample> getSamples() {
         return ImmutableSet.copyOf(samples);
+    }*/
+
+    public Set<Sample> getSamples() {
+        return samples;
     }
 
 }

@@ -26,10 +26,10 @@ public class Sample {
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
 	private Set<Sample> sameAs;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
 	private Set<Sample> derivedFrom;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
 	private Set<Sample> derivedTo;
 
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
@@ -37,7 +37,11 @@ public class Sample {
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
-	
+
+	//child of is missing in the neo db at the moment
+	//@Relationship(type = "CHILD OF", direction = Relationship.OUTGOING)
+	//private Set<Sample> child;
+
 	private Sample() {};
 
 	public Long getId() {
@@ -52,20 +56,28 @@ public class Sample {
 		return owner;
 	}
 
-	public ImmutableSet<Sample> getDerivedFrom() {
-		return ImmutableSet.copyOf(derivedFrom);
-	}
-
+	/*
+	public ImmutableSet<Sample> getDerivedFrom() {return ImmutableSet.copyOf(derivedFrom);}
 	public ImmutableSet<Sample> getDerivedTo() {
 		return ImmutableSet.copyOf(derivedTo);
 	}
-
 	public ImmutableSet<Group> getGroups() {
 		return ImmutableSet.copyOf(groups);
 	}
 
 	public ImmutableSet<Sample> getSameAs() {
 		return ImmutableSet.copyOf(sameAs);
-	}
+	} */
+
+
+
+
+	public Set<Group> getGroups(){ return groups;}
+	public Set<Sample> getSameAs(){return sameAs;};
+
+	public Set<Sample> getDerivedFrom() {return derivedFrom;}
+	public Set<Sample> getDerivedTo() {return derivedTo;}
+
+	//public Set<Sample> getChild() {return child;}	//Child of is still missing
 
 }
