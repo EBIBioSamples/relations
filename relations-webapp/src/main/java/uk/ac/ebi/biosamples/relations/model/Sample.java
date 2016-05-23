@@ -25,10 +25,10 @@ public class Sample {
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
 	private Set<Sample> sameAs;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
 	private Set<Sample> derivedFrom;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
 	private Set<Sample> derivedTo;
 
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
@@ -61,19 +61,31 @@ public class Sample {
 	}
 
 	public ImmutableSet<Sample> getDerivedFrom() {
-		return ImmutableSet.copyOf(derivedFrom);
+		if (derivedFrom==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(derivedFrom);
 	}
 
 	public ImmutableSet<Sample> getDerivedTo() {
-		return ImmutableSet.copyOf(derivedTo);
+		if (derivedTo==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(derivedTo);
 	}
 
 	public ImmutableSet<Group> getGroups() {
-		return ImmutableSet.copyOf(groups);
+		if (groups == null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(groups);
 	}
 
 	public ImmutableSet<Sample> getSameAs() {
-		return ImmutableSet.copyOf(sameAs);
+		if (sameAs==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(sameAs);
 	}
 
 }

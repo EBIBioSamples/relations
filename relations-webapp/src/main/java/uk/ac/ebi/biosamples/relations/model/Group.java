@@ -48,7 +48,10 @@ public class Group {
 	}
 
 	public ImmutableSet<Sample> getSamples() {
-		return ImmutableSet.copyOf(samples);
+		if (samples == null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(samples);
 	}
 
 }

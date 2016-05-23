@@ -36,8 +36,6 @@ public class Controller {
 	public JSONObject parseSample(String accession) {
 		Sample tmp = sampleRepository.findOneByAccession(accession);
 
-		System.out.println("In parse Sample");
-
 		// Adding accession node to nodes
 		Map<String, String> tmpSource = new HashMap<>();
 		tmpSource.put("iri", accession);
@@ -45,8 +43,7 @@ public class Controller {
 		tmpSource.put("type", "samples");
 		nodes.add(tmpSource);
 
-
-		if (tmp.getDerivedFrom() != null) {
+		if (!tmp.getDerivedFrom().isEmpty()) {
 			for (Sample sample : tmp.getDerivedFrom()) {
 				System.out.println(sample.getAccession());
 
@@ -65,7 +62,8 @@ public class Controller {
 
 		}
 
-		if (tmp.getDerivedTo() != null) {
+
+		if (!tmp.getDerivedTo().isEmpty()) {
 			for (Sample sample : tmp.getDerivedTo()) {
 				System.out.println(sample.getAccession());
 				Map<String, String> tmpNode = new HashMap<>();
@@ -83,7 +81,7 @@ public class Controller {
 		}
 
 
-		if (tmp.getOwner() != null) {
+		if (tmp.getOwner() !=null) {
 			Map<String, String> tmpNode = new HashMap<>();
 			tmpNode.put("iri", tmp.getOwner().getSubmissionId());
 			tmpNode.put("label", tmp.getOwner().getSubmissionId());
@@ -97,7 +95,7 @@ public class Controller {
 			edges.add(tmpList);
 		}
 
-		if (tmp.getGroups()!=null){
+		if (!tmp.getGroups().isEmpty()){
 			for (Group group : tmp.getGroups()) {
 				Map<String, String> tmpNode = new HashMap<>();
 				tmpNode.put("iri", group.getAccession());
@@ -117,7 +115,6 @@ public class Controller {
 		JSONObject json = new JSONObject();
 		json.put("nodes", nodes);
 		json.put("edges", edges);
-		System.out.println(json);
 		return json;
 	}
 
@@ -125,8 +122,6 @@ public class Controller {
 
 	public JSONObject parseGroup(String accession) {
 		Group tmp = groupRepository.findOneByAccession(accession);
-
-		System.out.println("In parse Group");
 
 		// Adding accession node to nodes
 		Map<String, String> tmpSource = new HashMap<>();
@@ -154,7 +149,7 @@ public class Controller {
 		}
 
 
-		if (tmp.getSamples()!=null) {
+		if (tmp.getSamples().isEmpty()) {
 			for (Sample sample : tmp.getSamples()) {
 				Map<String, String> tmpNode = new HashMap<>();
 				tmpNode.put("iri", sample.getAccession());
@@ -173,7 +168,6 @@ public class Controller {
 		JSONObject json = new JSONObject();
 		json.put("nodes", nodes);
 		json.put("edges", edges);
-		System.out.println(json);
 		return json;
 	}
 
