@@ -35,10 +35,12 @@ public class Group {
     }
 
     public String getAccession() {
+    	if (accession == null) throw new IllegalStateException("Accession is null");
         return accession;
     }
 
     public Submission getOwner() {
+    	if (owner == null) throw new IllegalStateException("Owner is null");
         return owner;
     }
 

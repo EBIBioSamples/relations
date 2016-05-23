@@ -1,8 +1,5 @@
 package uk.ac.ebi.biosamples.relations.model;
 
-/**
- * Created by tliener on 20/04/2016.
- */
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
@@ -14,6 +11,10 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import com.google.common.collect.ImmutableSet;
 
+
+/**
+ * Created by tliener on 20/04/2016.
+ */
 @NodeEntity
 public class Sample {
 
@@ -45,10 +46,12 @@ public class Sample {
 	}
 
 	public String getAccession() {
+    	if (accession == null) throw new IllegalStateException("Accession is null");
 		return accession;
 	}
 
 	public Submission getOwner() {
+    	if (owner == null) throw new IllegalStateException("Owner is null");
 		return owner;
 	}
 
