@@ -57,6 +57,11 @@
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
 		</dependency>
+		<!-- jackson serialization of guava collections -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-guava</artifactId>
+		</dependency>
 
 	</dependencies>
 

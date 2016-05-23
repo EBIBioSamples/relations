@@ -3,12 +3,16 @@ package uk.ac.ebi.biosamples.relations;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.support.SpringBootServletInitializer; // new version
-//import org.springframework.boot.context.web.SpringBootServletInitializer;
+//import org.springframework.boot.context.web.SpringBootServletInitializer; //old version
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
+
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
+
 import uk.ac.ebi.biosamples.relations.model.Group;
 import uk.ac.ebi.biosamples.relations.model.Sample;
 
@@ -53,6 +57,17 @@ public class RelationsApplication extends SpringBootServletInitializer {
         };
     }
 
+    /**
+     * Provides a Jackson converter for Guava collections objects. Makes it much 
+     * easier to use them and should be auto-wired to the relevant places within Spring-boot.
+     * 
+     * @return
+     */
+	@Bean
+	public Module getGuavaModule() {
+	  return new GuavaModule();
+	}
+	
     public static void main(String[] args) {
     	SpringApplication.run(RelationsApplication.class, args);
     }
