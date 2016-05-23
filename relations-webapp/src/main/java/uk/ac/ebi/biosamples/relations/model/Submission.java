@@ -42,7 +42,9 @@ public class Submission {
     	return ImmutableSet.copyOf(samples);
     }
     
-    public ImmutableSet<Group> getGroups() {
+/*    public ImmutableSet<Group> getGroups() {
     	return ImmutableSet.copyOf(groups);
-    }
+    }*/
+
+    public Set<Group> getGrous(){return groups;}
 }
