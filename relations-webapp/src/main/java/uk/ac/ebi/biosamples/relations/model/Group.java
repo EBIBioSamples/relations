@@ -16,40 +16,39 @@ import java.util.Set;
 @NodeEntity
 public class Group {
 
-    @GraphId
-    private Long id;
+	@GraphId
+	private Long id;
 
-    @Property
-    private String accession;
+	@Property
+	private String accession;
 
-    @Relationship(type = "MEMBERSHIP", direction=Relationship.INCOMING)
-    private Set<Sample> samples;
+	@Relationship(type = "MEMBERSHIP", direction = Relationship.INCOMING)
+	private Set<Sample> samples;
 
-    @Relationship(type="OWNERSHIP", direction=Relationship.OUTGOING)
-    private Submission owner;
+	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
+	private Submission owner;
 
-    public Group() {};
+	public Group() {
+	};
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getAccession() {
-    	if (accession == null) throw new IllegalStateException("Accession is null");
-        return accession;
-    }
+	public String getAccession() {
+		if (accession == null)
+			throw new IllegalStateException("Accession is null");
+		return accession;
+	}
 
-    public Submission getOwner() {
-    	if (owner == null) throw new IllegalStateException("Owner is null");
-        return owner;
-    }
+	public Submission getOwner() {
+		if (owner == null)
+			throw new IllegalStateException("Owner is null");
+		return owner;
+	}
 
-/*    public ImmutableSet<Sample> getSamples() {
-        return ImmutableSet.copyOf(samples);
-    }*/
-
-    public Set<Sample> getSamples() {
-        return samples;
-    }
+	public ImmutableSet<Sample> getSamples() {
+		return ImmutableSet.copyOf(samples);
+	}
 
 }

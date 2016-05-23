@@ -1,6 +1,5 @@
 package uk.ac.ebi.biosamples.relations.model;
 
-
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 
@@ -11,7 +10,6 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import com.google.common.collect.ImmutableSet;
 
-
 /**
  * Created by tliener on 20/04/2016.
  */
@@ -21,7 +19,7 @@ public class Sample {
 	@GraphId
 	private Long id;
 
-    @Property
+	@Property
 	private String accession;
 
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
@@ -39,48 +37,43 @@ public class Sample {
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
 
-	//child of is missing in the neo db at the moment
-	//@Relationship(type = "CHILD OF", direction = Relationship.OUTGOING)
-	//private Set<Sample> child;
+	// child of is missing in the neo db at the moment
+	// @Relationship(type = "CHILD OF", direction = Relationship.OUTGOING)
+	// private Set<Sample> child;
 
-	private Sample() {};
+	private Sample() {
+	};
 
 	public Long getId() {
 		return id;
 	}
 
 	public String getAccession() {
-    	if (accession == null) throw new IllegalStateException("Accession is null");
+		if (accession == null)
+			throw new IllegalStateException("Accession is null");
 		return accession;
 	}
 
 	public Submission getOwner() {
-    	if (owner == null) throw new IllegalStateException("Owner is null");
+		if (owner == null)
+			throw new IllegalStateException("Owner is null");
 		return owner;
 	}
 
-	/*
-	public ImmutableSet<Sample> getDerivedFrom() {return ImmutableSet.copyOf(derivedFrom);}
+	public ImmutableSet<Sample> getDerivedFrom() {
+		return ImmutableSet.copyOf(derivedFrom);
+	}
+
 	public ImmutableSet<Sample> getDerivedTo() {
 		return ImmutableSet.copyOf(derivedTo);
 	}
+
 	public ImmutableSet<Group> getGroups() {
 		return ImmutableSet.copyOf(groups);
 	}
 
 	public ImmutableSet<Sample> getSameAs() {
 		return ImmutableSet.copyOf(sameAs);
-	} */
-
-
-
-
-	public Set<Group> getGroups(){ return groups;}
-	public Set<Sample> getSameAs(){return sameAs;};
-
-	public Set<Sample> getDerivedFrom() {return derivedFrom;}
-	public Set<Sample> getDerivedTo() {return derivedTo;}
-
-	//public Set<Sample> getChild() {return child;}	//Child of is still missing
+	}
 
 }
