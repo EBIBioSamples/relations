@@ -9,6 +9,7 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
 import com.google.common.collect.ImmutableSet;
+import org.springframework.hateoas.core.Relation;
 
 /**
  * Created by tliener on 20/04/2016.
@@ -25,9 +26,6 @@ public class Sample {
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
 	private Set<Sample> sameAs;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
-	private Set<Sample> derivedFrom;
-
 	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
 	private Set<Sample> derivedTo;
 
@@ -37,12 +35,19 @@ public class Sample {
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
 
-	// child of is missing in the neo db at the moment
-	// @Relationship(type = "CHILD OF", direction = Relationship.OUTGOING)
-	// private Set<Sample> child;
+	@Relationship(type= "CHILDOF", direction = Relationship.OUTGOING)
+	private Set<Sample> children;
 
-	private Sample() {
-	};
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	private Set<Sample> derivedFrom;
+
+
+	/*
+	@Relationship(type= "CURATEDINTO", direction = Relationship.UNIDRECTED)
+	private Set <Sample> curatedInto;
+	*/
+
+	private Sample() {};
 
 	public Long getId() {
 		return id;
@@ -86,6 +91,13 @@ public class Sample {
 			return ImmutableSet.of();
 		else
 			return ImmutableSet.copyOf(sameAs);
+	}
+
+	public ImmutableSet<Sample> getChildren(){
+		if (children==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(children);
 	}
 
 }

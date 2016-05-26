@@ -23,6 +23,30 @@ import java.util.Map;
 @RestController
 public class Controller {
 
+	/*
+	* Constructing a Map<String, String> representing a Node in our model
+	* */
+	private Map<String, String> constructNode(String accession, String label, String type){
+		Map<String, String> tmpSource = new HashMap<>();
+		tmpSource.put("iri", accession);
+		tmpSource.put("label", label);
+		tmpSource.put("type", type);
+		return tmpSource;
+	}
+
+	/*
+	* Constructiong a Map<String, String> representing an Edge in our model.
+	* */
+	private Map<String, String> constructEdge(String source, String target, String edgeLabel){
+		Map<String, String> tmpList = new HashMap<>();
+		tmpList.put("source", source);
+		tmpList.put("target", target);
+		tmpList.put("label", edgeLabel);
+		return tmpList;
+	}
+
+
+
 	@Autowired
 	private SampleRepository sampleRepository;
 
@@ -36,51 +60,47 @@ public class Controller {
 	public JSONObject parseSample(String accession) {
 		Sample tmp = sampleRepository.findOneByAccession(accession);
 
-		// Adding accession node to nodes
-		Map<String, String> tmpSource = new HashMap<>();
-		tmpSource.put("iri", accession);
-		tmpSource.put("label", accession);
-		tmpSource.put("type", "samples");
-		nodes.add(tmpSource);
+		/*Add the sample start node to*/
+		nodes.add(constructNode(accession, accession, "samples"));
 
 		if (!tmp.getDerivedFrom().isEmpty()) {
 			for (Sample sample : tmp.getDerivedFrom()) {
-				System.out.println(sample.getAccession());
-
-				Map<String, String> tmpNode = new HashMap<>();
-				tmpNode.put("iri", sample.getAccession());
-				tmpNode.put("label", sample.getAccession());
-				tmpNode.put("type", "samples");
-				nodes.add(tmpNode);
-
-				Map<String, String> tmpList = new HashMap<>();
-				tmpList.put("source", sample.getAccession());
-				tmpList.put("target", accession);
-				tmpList.put("label", "DERIVATION");
-				edges.add(tmpList);
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(sample.getAccession(), accession, "DERIVATION"));
 			}
 
 		}
-
 
 		if (!tmp.getDerivedTo().isEmpty()) {
 			for (Sample sample : tmp.getDerivedTo()) {
-				System.out.println(sample.getAccession());
-				Map<String, String> tmpNode = new HashMap<>();
-				tmpNode.put("iri", sample.getAccession());
-				tmpNode.put("label", sample.getAccession());
-				tmpNode.put("type", "samples");
-				nodes.add(tmpNode);
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(accession, sample.getAccession(), "DERIVATION"));
+			}
+		}
 
-				Map<String, String> tmpList = new HashMap<>();
-				tmpList.put("source", accession);
-				tmpList.put("target", sample.getAccession());
-				tmpList.put("label", "DERIVATION");
-				edges.add(tmpList);
+		if (!tmp.getSameAs().isEmpty()){
+			for (Sample sample : tmp.getSameAs()){
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(accession, sample.getAccession(), "SAMEAS"));
 			}
 		}
 
 
+		if (!tmp.getChildren().isEmpty()){
+			for (Sample sample: tmp.getChildren()){
+			nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+			edges.add(constructEdge(accession, sample.getAccession(), "CHILDOF"));
+			}
+		}
+
+
+		//Missing - Manually curated into
+		// if (!)....
+		//
+
+
+
+		/* Get rid of submission - this part is about to be deleted soon
 		if (tmp.getOwner() !=null) {
 			Map<String, String> tmpNode = new HashMap<>();
 			tmpNode.put("iri", tmp.getOwner().getSubmissionId());
@@ -93,24 +113,17 @@ public class Controller {
 			tmpList.put("target", tmp.getOwner().getSubmissionId());
 			tmpList.put("label", "OWNERSHIP");
 			edges.add(tmpList);
-		}
+
+			nodes.add(constructNode());
+			edges.add(constructNode());
+		}*/
 
 		if (!tmp.getGroups().isEmpty()){
 			for (Group group : tmp.getGroups()) {
-				Map<String, String> tmpNode = new HashMap<>();
-				tmpNode.put("iri", group.getAccession());
-				tmpNode.put("label", group.getAccession());
-				tmpNode.put("type", "groups");
-				nodes.add(tmpNode);
-
-				Map<String, String> tmpList = new HashMap<>();
-				tmpList.put("source", accession);
-				tmpList.put("target", group.getAccession());
-				tmpList.put("label", "MEMBERSHIP");
-				edges.add(tmpList);
+				nodes.add(constructNode(group.getAccession(), group.getAccession(), "groups"));
+				edges.add(constructEdge(accession, group.getAccession(), "MEMBERSHIP"));
 			}
 		}
-
 
 		JSONObject json = new JSONObject();
 		json.put("nodes", nodes);
@@ -120,20 +133,18 @@ public class Controller {
 
 
 
+
+
+
 	public JSONObject parseGroup(String accession) {
+		System.out.println("In parseGroup");
 		Group tmp = groupRepository.findOneByAccession(accession);
 
-		// Adding accession node to nodes
-		Map<String, String> tmpSource = new HashMap<>();
-		tmpSource.put("iri", accession);
-		tmpSource.put("label", accession);
-		tmpSource.put("type", "groups");
-		nodes.add(tmpSource);
+		/*Add the group start node*/
+		nodes.add(constructNode(accession, accession, "groups"));
 
-		/*
-		 * Maybe get rid of this part, since groups belong to Submissions and
-		 * therefor it cna be implied that samples also belong to submission
-		 */
+
+		/* Submission is ignored as of now - might be deleted soon
 		if (tmp.getOwner() != null) {
 			Map<String, String> tmpNode = new HashMap<>();
 			tmpNode.put("iri", tmp.getOwner().getSubmissionId());
@@ -146,24 +157,18 @@ public class Controller {
 			tmpList.put("target", tmp.getOwner().getSubmissionId());
 			tmpList.put("label", "OWNERSHIP");
 			edges.add(tmpList);
-		}
+		}*/
 
 
-		if (tmp.getSamples().isEmpty()) {
+
+		if (!tmp.getSamples().isEmpty()) {
 			for (Sample sample : tmp.getSamples()) {
-				Map<String, String> tmpNode = new HashMap<>();
-				tmpNode.put("iri", sample.getAccession());
-				tmpNode.put("label", sample.getAccession());
-				tmpNode.put("type", "samples");
-				nodes.add(tmpNode);
-
-				Map<String, String> tmpList = new HashMap<>();
-				tmpList.put("target", accession);
-				tmpList.put("source", sample.getAccession());
-				tmpList.put("label", "MEMBERSHIP");
-				edges.add(tmpList);
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(accession, sample.getAccession(),"MEMBERSHIP"));
 			}
 		}
+
+
 
 		JSONObject json = new JSONObject();
 		json.put("nodes", nodes);
@@ -186,12 +191,5 @@ public class Controller {
 		edges = new ArrayList<Map<String, String>>();
 		return parseSample(accession);
 	}
-
-
-	/* This endpoint does not exist yet, we have to decide if we want to have it or not
-	@RequestMapping(path = "submission/{submissionId}/graph")
-	public void submission(@PathVariable("submissionId") String submissionId){
-		System.out.println("NO GRAPH data for submission available yet - should we have that one day?");
-	}*/
 
 }

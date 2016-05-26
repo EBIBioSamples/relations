@@ -19,6 +19,8 @@ import com.google.common.io.Files;
 import uk.ac.ebi.fg.biosd.model.expgraph.BioSample;
 import uk.ac.ebi.fg.biosd.model.organizational.BioSampleGroup;
 import uk.ac.ebi.fg.biosd.model.organizational.MSI;
+import uk.ac.ebi.fg.biosd.model.xref.DatabaseRecordRef;
+import uk.ac.ebi.fg.core_model.expgraph.Data;
 import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyType;
 import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyValue;
 
@@ -90,23 +92,47 @@ public class CSVMappingService implements Closeable {
 		submissionPrinter.print(acc);
 		submissionPrinter.println();
 	}
-	
-	private synchronized void printSample(String acc) throws IOException {
+
+
+	private synchronized void printSample(String acc, Set<DatabaseRecordRef> dbRefs) throws IOException {
 		samplePrinter.print(acc);
+
+		//If there are DB references, add them to the node
+		if (dbRefs.size()>0)
+			{
+				String tmp="";
+				for (DatabaseRecordRef ref : dbRefs){
+						tmp=tmp+(ref.getUrl())+" /n";
+				}
+				tmp=tmp.substring(0, tmp.length()-2);			//get rid of the line break if we talk about the last link
+				samplePrinter.print(tmp);
+			}
 		samplePrinter.println();
 	}
+
 	
-	private synchronized void printGroup(String acc) throws IOException {
+	private synchronized void printGroup(String acc, Set<DatabaseRecordRef> dbRefs) throws IOException {
 		groupPrinter.print(acc);
+		if (dbRefs.size()>0)
+			{
+				String tmp="";
+				for (DatabaseRecordRef ref : dbRefs){
+					tmp=tmp+(ref.getUrl())+" /n";
+				}
+				tmp=tmp.substring(0, tmp.length()-2);			//get rid of the line break if we talk about the last link
+				groupPrinter.print(dbRefs);
+			}
 		groupPrinter.println();
 	}
-	
+
+
 	private synchronized void printSampleOwnership(String acc, String subId) throws IOException {
 		ownershipSamplePrinter.print(acc);
 		ownershipSamplePrinter.print(subId);
 		ownershipSamplePrinter.println();
 	}
-	
+
+
 	private synchronized void printGroupOwnership(String acc, String subId) throws IOException {
 		ownershipGroupPrinter.print(acc);
 		ownershipGroupPrinter.print(subId);
@@ -151,7 +177,7 @@ public class CSVMappingService implements Closeable {
 			printSubmission(msi.getAcc());
 			for (BioSample sample : msi.getSamples()) {
 				if (valid(sample)) {
-					printSample(sample.getAcc());
+					printSample(sample.getAcc(), sample.getDatabaseRecordRefs());
 					printSampleOwnership(sample.getAcc(),msi.getAcc());
 
 					//this is the slow join
@@ -164,7 +190,7 @@ public class CSVMappingService implements Closeable {
 							printDerivation(sample.getAcc(), otherAcc);
 						}
 
-					//	can not be found
+					//can not be found
 						if("same as".equals(ept.getTermText().toLowerCase())){
 							String otherAcc=epv.getTermText();
 							String acc=sample.getAcc();
@@ -192,16 +218,14 @@ public class CSVMappingService implements Closeable {
 						}*/
 					}
 
-
 				}
 			}
-
 
 			for (BioSampleGroup group : msi.getSampleGroups()) {
 				if (valid(group)) {
 
-					printGroup(group.getAcc());
-					printGroupOwnership(group.getAcc(),msi.getAcc());
+					printGroup(group.getAcc(), group.getDatabaseRecordRefs());
+					printGroupOwnership(group.getAcc(), msi.getAcc());
 
 					for (BioSample sample : group.getSamples()) {
 						if (valid(sample)) {
@@ -213,7 +237,7 @@ public class CSVMappingService implements Closeable {
 		}
 
 		//Should never be executed
-		else{			System.out.println("NOT VALID MSI"); 		}
+		else {			System.out.println("NOT VALID MSI"); 		}
 
 
 	}
