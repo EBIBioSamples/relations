@@ -120,7 +120,7 @@ public class CSVMappingService implements Closeable {
 					tmp=tmp+(ref.getUrl())+" /n";
 				}
 				tmp=tmp.substring(0, tmp.length()-2);			//get rid of the line break if we talk about the last link
-				groupPrinter.print(dbRefs);
+				groupPrinter.print(tmp);
 			}
 		groupPrinter.println();
 	}
