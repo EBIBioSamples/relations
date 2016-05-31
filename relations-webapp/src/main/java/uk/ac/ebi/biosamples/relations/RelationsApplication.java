@@ -10,8 +10,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
 
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
 import uk.ac.ebi.biosamples.relations.model.Group;
 import uk.ac.ebi.biosamples.relations.model.Sample;
@@ -22,9 +20,9 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
  */
 @SpringBootApplication
 public class RelationsApplication extends SpringBootServletInitializer {
-    /*
-    * This function adds a Link to the Sample resource
-    * */
+/*
+	
+    // This function adds a Link to the Sample resource
     @Bean
     public ResourceProcessor<Resource<Sample>> sampleProcessor() {
         return new ResourceProcessor<Resource<Sample>>() {
@@ -39,10 +37,8 @@ public class RelationsApplication extends SpringBootServletInitializer {
 
         };
     }
-
-    /*
-    * This function adds a Link to the Group resource
-    * */
+    
+    //This function adds a Link to the Group resource
     @Bean
     public ResourceProcessor<Resource<Group>> groupProcessor() {
         return new ResourceProcessor<Resource<Group>>() {
@@ -56,18 +52,7 @@ public class RelationsApplication extends SpringBootServletInitializer {
             }
         };
     }
-
-    /**
-     * Provides a Jackson converter for Guava collections objects. Makes it much 
-     * easier to use them and should be auto-wired to the relevant places within Spring-boot.
-     * 
-     * @return
-     */
-	@Bean
-	public Module getGuavaModule() {
-	  return new GuavaModule();
-	}
-	
+*/
     public static void main(String[] args) {
     	SpringApplication.run(RelationsApplication.class, args);
     }

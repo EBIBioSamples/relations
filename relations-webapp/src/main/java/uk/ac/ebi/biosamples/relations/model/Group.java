@@ -5,8 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
-import com.google.common.collect.ImmutableSet;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,22 +34,15 @@ public class Group {
 	}
 
 	public String getAccession() {
-		if (accession == null)
-			throw new IllegalStateException("Accession is null");
 		return accession;
 	}
 
 	public Submission getOwner() {
-		if (owner == null)
-			throw new IllegalStateException("Owner is null");
 		return owner;
 	}
 
-	public ImmutableSet<Sample> getSamples() {
-		if (samples == null)
-			return ImmutableSet.of();
-		else
-			return ImmutableSet.copyOf(samples);
+	public Set<Sample> getSamples() {
+		return samples;
 	}
 
 }
