@@ -1,0 +1,103 @@
+package uk.ac.ebi.biosamples.relations.model;
+
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+
+import java.util.Set;
+
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Relationship;
+
+import com.google.common.collect.ImmutableSet;
+import org.springframework.hateoas.core.Relation;
+
+/**
+ * Created by tliener on 20/04/2016.
+ */
+@NodeEntity
+public class Sample {
+
+	@GraphId
+	private Long id;
+
+	@Property
+	private String accession;
+
+	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
+	private Set<Sample> sameAs;
+
+	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
+	private Set<Sample> derivedTo;
+
+	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
+	private Set<Group> groups;
+
+	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
+	private Submission owner;
+
+	@Relationship(type= "CHILDOF", direction = Relationship.OUTGOING)
+	private Set<Sample> children;
+
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	private Set<Sample> derivedFrom;
+
+
+	/*
+	@Relationship(type= "CURATEDINTO", direction = Relationship.UNIDRECTED)
+	private Set <Sample> curatedInto;
+	*/
+
+	private Sample() {};
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getAccession() {
+		if (accession == null)
+			throw new IllegalStateException("Accession is null");
+		return accession;
+	}
+
+	public Submission getOwner() {
+		if (owner == null)
+			throw new IllegalStateException("Owner is null");
+		return owner;
+	}
+
+	public ImmutableSet<Sample> getDerivedFrom() {
+		if (derivedFrom==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(derivedFrom);
+	}
+
+	public ImmutableSet<Sample> getDerivedTo() {
+		if (derivedTo==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(derivedTo);
+	}
+
+	public ImmutableSet<Group> getGroups() {
+		if (groups == null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(groups);
+	}
+
+	public ImmutableSet<Sample> getSameAs() {
+		if (sameAs==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(sameAs);
+	}
+
+	public ImmutableSet<Sample> getChildren(){
+		if (children==null)
+			return ImmutableSet.of();
+		else
+			return ImmutableSet.copyOf(children);
+	}
+
+}

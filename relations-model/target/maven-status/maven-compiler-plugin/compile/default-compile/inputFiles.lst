@@ -1,0 +1,6 @@
+/Users/tliener/biosamples/relations/relations-model/src/main/java/uk/ac/ebi/biosamples/relations/model/Group.java
+/Users/tliener/biosamples/relations/relations-model/src/main/java/uk/ac/ebi/biosamples/relations/model/Sample.java
+/Users/tliener/biosamples/relations/relations-model/src/main/java/uk/ac/ebi/biosamples/relations/repo/SampleRepository.java
+/Users/tliener/biosamples/relations/relations-model/src/main/java/uk/ac/ebi/biosamples/relations/repo/GroupRepository.java
+/Users/tliener/biosamples/relations/relations-model/src/main/java/uk/ac/ebi/biosamples/relations/model/Submission.java
+/Users/tliener/biosamples/relations/relations-model/src/main/java/uk/ac/ebi/biosamples/relations/repo/SubmissionRepository.java

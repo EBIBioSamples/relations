@@ -9,8 +9,6 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
 import uk.ac.ebi.biosamples.relations.repo.GroupRepository;
 import uk.ac.ebi.biosamples.relations.repo.SampleRepository;
 
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

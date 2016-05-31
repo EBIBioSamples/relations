@@ -1,0 +1,6 @@
+uk/ac/ebi/biosamples/relations/model/Submission.class
+uk/ac/ebi/biosamples/relations/repo/SampleRepository.class
+uk/ac/ebi/biosamples/relations/repo/SubmissionRepository.class
+uk/ac/ebi/biosamples/relations/repo/GroupRepository.class
+uk/ac/ebi/biosamples/relations/model/Sample.class
+uk/ac/ebi/biosamples/relations/model/Group.class

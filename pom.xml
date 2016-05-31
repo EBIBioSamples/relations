@@ -10,6 +10,7 @@
 	
 	<modules>
 		<module>relations-import</module>
+		<module>relations-model</module>
 		<module>relations-webapp</module>
 	</modules>
 
