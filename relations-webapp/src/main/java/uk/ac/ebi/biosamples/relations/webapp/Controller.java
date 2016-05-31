@@ -9,8 +9,6 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
 import uk.ac.ebi.biosamples.relations.repo.GroupRepository;
 import uk.ac.ebi.biosamples.relations.repo.SampleRepository;
 
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,44 +21,58 @@ import java.util.Map;
 @RestController
 public class Controller {
 
-	/*
-	* Constructing a Map<String, String> representing a Node in our model
-	* */
-	private Map<String, String> constructNode(String accession, String label, String type){
-		Map<String, String> tmpSource = new HashMap<>();
-		tmpSource.put("iri", accession);
-		tmpSource.put("label", label);
-		tmpSource.put("type", type);
-		return tmpSource;
-	}
-
-	/*
-	* Constructiong a Map<String, String> representing an Edge in our model.
-	* */
-	private Map<String, String> constructEdge(String source, String target, String edgeLabel){
-		Map<String, String> tmpList = new HashMap<>();
-		tmpList.put("source", source);
-		tmpList.put("target", target);
-		tmpList.put("label", edgeLabel);
-		return tmpList;
-	}
-
-
-
 	@Autowired
 	private SampleRepository sampleRepository;
 
 	@Autowired
 	private GroupRepository groupRepository;
 
-	private List<Map<String, String>> nodes;
-	private List<Map<String, String>> edges;
+	@RequestMapping(path = "groups/{accession}/graph", produces = {
+			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	public JSONObject group(@PathVariable("accession") String accession) {
+		System.out.println("In parseGroup");
+		Group tmp = groupRepository.findOneByAccession(accession);
 
+		List<Map<String, String>> nodes = new ArrayList<>();
+		List<Map<String, String>> edges = new ArrayList<>();
 
-	public JSONObject parseSample(String accession) {
+		/* Add the group start node */
+		nodes.add(constructNode(accession, accession, "groups"));
+
+		/*
+		 * Submission is ignored as of now - might be deleted soon if
+		 * (tmp.getOwner() != null) { Map<String, String> tmpNode = new
+		 * HashMap<>(); tmpNode.put("iri", tmp.getOwner().getSubmissionId());
+		 * tmpNode.put("label", tmp.getOwner().getSubmissionId());
+		 * tmpNode.put("type", "submission"); nodes.add(tmpNode);
+		 * 
+		 * Map<String, String> tmpList = new HashMap<>(); tmpList.put("source",
+		 * accession); tmpList.put("target", tmp.getOwner().getSubmissionId());
+		 * tmpList.put("label", "OWNERSHIP"); edges.add(tmpList); }
+		 */
+
+		if (!tmp.getSamples().isEmpty()) {
+			for (Sample sample : tmp.getSamples()) {
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(accession, sample.getAccession(), "MEMBERSHIP"));
+			}
+		}
+
+		JSONObject json = new JSONObject();
+		json.put("nodes", nodes);
+		json.put("edges", edges);
+		return json;
+	}
+
+	@RequestMapping(path = "samples/{accession}/graph", produces = {
+			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	// public @ResponseBody Graph test(String accession) {
+	public JSONObject sample(@PathVariable("accession") String accession) {
 		Sample tmp = sampleRepository.findOneByAccession(accession);
+		List<Map<String, String>> nodes = new ArrayList<>();
+		List<Map<String, String>> edges = new ArrayList<>();
 
-		/*Add the sample start node to*/
+		/* Add the sample start node to */
 		nodes.add(constructNode(accession, accession, "samples"));
 
 		if (!tmp.getDerivedFrom().isEmpty()) {
@@ -78,47 +90,39 @@ public class Controller {
 			}
 		}
 
-		if (!tmp.getSameAs().isEmpty()){
-			for (Sample sample : tmp.getSameAs()){
+		if (!tmp.getSameAs().isEmpty()) {
+			for (Sample sample : tmp.getSameAs()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "SAMEAS"));
 			}
 		}
 
-
-		if (!tmp.getChildren().isEmpty()){
-			for (Sample sample: tmp.getChildren()){
-			nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
-			edges.add(constructEdge(accession, sample.getAccession(), "CHILDOF"));
+		if (!tmp.getChildren().isEmpty()) {
+			for (Sample sample : tmp.getChildren()) {
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(accession, sample.getAccession(), "CHILDOF"));
 			}
 		}
 
-
-		//Missing - Manually curated into
+		// Missing - Manually curated into
 		// if (!)....
 		//
 
+		/*
+		 * Get rid of submission - this part is about to be deleted soon if
+		 * (tmp.getOwner() !=null) { Map<String, String> tmpNode = new
+		 * HashMap<>(); tmpNode.put("iri", tmp.getOwner().getSubmissionId());
+		 * tmpNode.put("label", tmp.getOwner().getSubmissionId());
+		 * tmpNode.put("type", "submissions"); nodes.add(tmpNode);
+		 * 
+		 * Map<String, String> tmpList = new HashMap<>(); tmpList.put("source",
+		 * accession); tmpList.put("target", tmp.getOwner().getSubmissionId());
+		 * tmpList.put("label", "OWNERSHIP"); edges.add(tmpList);
+		 * 
+		 * nodes.add(constructNode()); edges.add(constructNode()); }
+		 */
 
-
-		/* Get rid of submission - this part is about to be deleted soon
-		if (tmp.getOwner() !=null) {
-			Map<String, String> tmpNode = new HashMap<>();
-			tmpNode.put("iri", tmp.getOwner().getSubmissionId());
-			tmpNode.put("label", tmp.getOwner().getSubmissionId());
-			tmpNode.put("type", "submissions");
-			nodes.add(tmpNode);
-
-			Map<String, String> tmpList = new HashMap<>();
-			tmpList.put("source", accession);
-			tmpList.put("target", tmp.getOwner().getSubmissionId());
-			tmpList.put("label", "OWNERSHIP");
-			edges.add(tmpList);
-
-			nodes.add(constructNode());
-			edges.add(constructNode());
-		}*/
-
-		if (!tmp.getGroups().isEmpty()){
+		if (!tmp.getGroups().isEmpty()) {
 			for (Group group : tmp.getGroups()) {
 				nodes.add(constructNode(group.getAccession(), group.getAccession(), "groups"));
 				edges.add(constructEdge(accession, group.getAccession(), "MEMBERSHIP"));
@@ -131,65 +135,25 @@ public class Controller {
 		return json;
 	}
 
-
-
-
-
-
-	public JSONObject parseGroup(String accession) {
-		System.out.println("In parseGroup");
-		Group tmp = groupRepository.findOneByAccession(accession);
-
-		/*Add the group start node*/
-		nodes.add(constructNode(accession, accession, "groups"));
-
-
-		/* Submission is ignored as of now - might be deleted soon
-		if (tmp.getOwner() != null) {
-			Map<String, String> tmpNode = new HashMap<>();
-			tmpNode.put("iri", tmp.getOwner().getSubmissionId());
-			tmpNode.put("label", tmp.getOwner().getSubmissionId());
-			tmpNode.put("type", "submission");
-			nodes.add(tmpNode);
-
-			Map<String, String> tmpList = new HashMap<>();
-			tmpList.put("source", accession);
-			tmpList.put("target", tmp.getOwner().getSubmissionId());
-			tmpList.put("label", "OWNERSHIP");
-			edges.add(tmpList);
-		}*/
-
-
-
-		if (!tmp.getSamples().isEmpty()) {
-			for (Sample sample : tmp.getSamples()) {
-				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
-				edges.add(constructEdge(accession, sample.getAccession(),"MEMBERSHIP"));
-			}
-		}
-
-
-
-		JSONObject json = new JSONObject();
-		json.put("nodes", nodes);
-		json.put("edges", edges);
-		return json;
+	/*
+	 * Constructing a Map<String, String> representing a Node in our model
+	 */
+	private Map<String, String> constructNode(String accession, String label, String type) {
+		Map<String, String> tmpSource = new HashMap<>();
+		tmpSource.put("iri", accession);
+		tmpSource.put("label", label);
+		tmpSource.put("type", type);
+		return tmpSource;
 	}
 
-
-	@RequestMapping(path = "groups/{accession}/graph", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-	public JSONObject group(@PathVariable("accession") String accession){
-		nodes = new ArrayList<Map<String, String>>();
-		edges = new ArrayList<Map<String, String>>();
-		return parseGroup(accession);
+	/*
+	 * Constructiong a Map<String, String> representing an Edge in our model.
+	 */
+	private Map<String, String> constructEdge(String source, String target, String edgeLabel) {
+		Map<String, String> tmpList = new HashMap<>();
+		tmpList.put("source", source);
+		tmpList.put("target", target);
+		tmpList.put("label", edgeLabel);
+		return tmpList;
 	}
-
-	@RequestMapping(path = "samples/{accession}/graph", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-	//public @ResponseBody Graph test(String accession) {
-	public JSONObject sample(@PathVariable("accession") String accession){
-		nodes = new ArrayList<Map<String, String>>();
-		edges = new ArrayList<Map<String, String>>();
-		return parseSample(accession);
-	}
-
 }
