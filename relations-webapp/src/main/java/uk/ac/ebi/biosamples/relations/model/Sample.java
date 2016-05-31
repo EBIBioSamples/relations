@@ -8,9 +8,6 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
-import com.google.common.collect.ImmutableSet;
-import org.springframework.hateoas.core.Relation;
-
 /**
  * Created by tliener on 20/04/2016.
  */
@@ -54,50 +51,31 @@ public class Sample {
 	}
 
 	public String getAccession() {
-		if (accession == null)
-			throw new IllegalStateException("Accession is null");
 		return accession;
 	}
 
 	public Submission getOwner() {
-		if (owner == null)
-			throw new IllegalStateException("Owner is null");
 		return owner;
 	}
 
-	public ImmutableSet<Sample> getDerivedFrom() {
-		if (derivedFrom==null)
-			return ImmutableSet.of();
-		else
-			return ImmutableSet.copyOf(derivedFrom);
+	public Set<Sample> getDerivedFrom() {
+		return derivedFrom;
 	}
 
-	public ImmutableSet<Sample> getDerivedTo() {
-		if (derivedTo==null)
-			return ImmutableSet.of();
-		else
-			return ImmutableSet.copyOf(derivedTo);
+	public Set<Sample> getDerivedTo() {
+		return derivedTo;
 	}
 
-	public ImmutableSet<Group> getGroups() {
-		if (groups == null)
-			return ImmutableSet.of();
-		else
-			return ImmutableSet.copyOf(groups);
+	public Set<Group> getGroups() {
+		return groups;
 	}
 
-	public ImmutableSet<Sample> getSameAs() {
-		if (sameAs==null)
-			return ImmutableSet.of();
-		else
-			return ImmutableSet.copyOf(sameAs);
+	public Set<Sample> getSameAs() {
+		return sameAs;
 	}
 
-	public ImmutableSet<Sample> getChildren(){
-		if (children==null)
-			return ImmutableSet.of();
-		else
-			return ImmutableSet.copyOf(children);
+	public Set<Sample> getChildren(){
+		return children;
 	}
 
 }

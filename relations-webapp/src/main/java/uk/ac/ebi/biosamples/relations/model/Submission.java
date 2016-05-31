@@ -5,8 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
-import com.google.common.collect.ImmutableSet;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,35 +14,34 @@ import java.util.Set;
 @NodeEntity
 public class Submission {
 
-    @GraphId
-    private Long id;
+	@GraphId
+	private Long id;
 
-    @Property
-    private String submissionId;
+	@Property
+	private String submissionId;
 
-    @Relationship(type="OWNERSHIP", direction=Relationship.INCOMING)
-    private Set<Sample> samples;
+	@Relationship(type = "OWNERSHIP", direction = Relationship.INCOMING)
+	private Set<Sample> samples;
 
-    @Relationship(type="OWNERSHIP", direction= Relationship.INCOMING)
-    private Set<Group> groups;
+	@Relationship(type = "OWNERSHIP", direction = Relationship.INCOMING)
+	private Set<Group> groups;
 
-    public Submission() {};
+	public Submission() {
+	};
 
-    public Long getId() {
-        return id;
-    }
-    
-    public String getSubmissionId() {
-        return submissionId;
-    }
-    
-    public ImmutableSet<Sample> getSamples() {
-    	return ImmutableSet.copyOf(samples);
-    }
-    
-/*    public ImmutableSet<Group> getGroups() {
-    	return ImmutableSet.copyOf(groups);
-    }*/
+	public Long getId() {
+		return id;
+	}
 
-    public Set<Group> getGrous(){return groups;}
+	public String getSubmissionId() {
+		return submissionId;
+	}
+
+	public Set<Sample> getSamples() {
+		return samples;
+	}
+
+	public Set<Group> getGroups() {
+		return groups;
+	}
 }

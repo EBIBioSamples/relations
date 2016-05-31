@@ -21,13 +21,13 @@ import java.io.Serializable;
 public class CustomBackendIdConverter implements BackendIdConverter {
 
 	@Autowired
-	SampleRepository sampleRepository;
+	private SampleRepository sampleRepository;
 
 	@Autowired
-	GroupRepository groupRepository;
+	private GroupRepository groupRepository;
 
 	@Autowired
-	SubmissionRepository submissionRepository;
+	private SubmissionRepository submissionRepository;
 
 	@Override // This function has to return the graphid, given a certain
 				// accession
