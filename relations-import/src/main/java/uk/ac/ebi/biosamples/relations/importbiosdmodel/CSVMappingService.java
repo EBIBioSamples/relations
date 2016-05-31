@@ -98,6 +98,7 @@ public class CSVMappingService implements Closeable {
 		samplePrinter.print(acc);
 
 		//If there are DB references, add them to the node
+		/*
 		if (dbRefs.size()>0)
 			{
 				String tmp="";
@@ -107,12 +108,14 @@ public class CSVMappingService implements Closeable {
 				tmp=tmp.substring(0, tmp.length()-2);			//get rid of the line break if we talk about the last link
 				samplePrinter.print(tmp);
 			}
+			*/
 		samplePrinter.println();
 	}
 
 	
 	private synchronized void printGroup(String acc, Set<DatabaseRecordRef> dbRefs) throws IOException {
 		groupPrinter.print(acc);
+		/*
 		if (dbRefs.size()>0)
 			{
 				String tmp="";
@@ -122,6 +125,7 @@ public class CSVMappingService implements Closeable {
 				tmp=tmp.substring(0, tmp.length()-2);			//get rid of the line break if we talk about the last link
 				groupPrinter.print(tmp);
 			}
+			*/
 		groupPrinter.println();
 	}
 
