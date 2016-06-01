@@ -20,8 +20,7 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
  */
 @SpringBootApplication
 public class RelationsApplication extends SpringBootServletInitializer {
-/*
-	
+    
     // This function adds a Link to the Sample resource
     @Bean
     public ResourceProcessor<Resource<Sample>> sampleProcessor() {
@@ -52,7 +51,7 @@ public class RelationsApplication extends SpringBootServletInitializer {
             }
         };
     }
-*/
+
     public static void main(String[] args) {
     	SpringApplication.run(RelationsApplication.class, args);
     }
