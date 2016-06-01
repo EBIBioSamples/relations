@@ -38,6 +38,14 @@
 			<version>${neo4j-ogm.version}</version>
 		</dependency>
 
+		<!-- Include HTTP Driver to the project
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-neo4j</artifactId>
+			<version>{version}</version>
+		</dependency>
+		-->
+
 		<!-- mark tomcat as provided so we can deploy to tomcat -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -50,6 +58,15 @@
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 		</dependency>
+
+
+		<!--
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>-->
+
 
 	</dependencies>
 
@@ -68,6 +85,19 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+
+            <!-- Need to pass this argument to the compiler so that custom repository searches work -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgument>-parameters</compilerArgument>
+                </configuration>
+            </plugin>
+            <!-- End of the part, this should go away one day!-->
+
+
 		</plugins>
 	</build>
 

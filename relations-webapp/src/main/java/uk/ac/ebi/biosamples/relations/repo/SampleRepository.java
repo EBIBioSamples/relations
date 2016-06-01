@@ -13,8 +13,10 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
 
 
 public interface SampleRepository extends GraphRepository<Sample> {
-	
+
+	//public Sample findOneByAccession(@Param("accession") String accession);
 	public Sample findOneByAccession(String accession);
+
 
 	@Query("MATCH (sample:Sample) WHERE (sample)-[:OWNERSHIP]->(:Submission {submissionId:{submissionId}}) RETURN sample")
 	public Iterable<Sample> findSamplesOwnedBySubmissionBySubmissionId(@Param("submissionId") String submissionId);
