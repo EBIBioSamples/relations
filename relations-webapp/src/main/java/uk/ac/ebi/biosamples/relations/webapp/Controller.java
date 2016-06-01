@@ -97,8 +97,8 @@ public class Controller {
 			}
 		}
 
-		if (!tmp.getChildren().isEmpty()) {
-			for (Sample sample : tmp.getChildren()) {
+		if (!tmp.getChildOf().isEmpty()) {
+			for (Sample sample : tmp.getChildOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "CHILDOF"));
 			}

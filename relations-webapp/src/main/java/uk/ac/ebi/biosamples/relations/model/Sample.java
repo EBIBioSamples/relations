@@ -33,7 +33,7 @@ public class Sample {
 	private Submission owner;
 
 	@Relationship(type= "CHILDOF", direction = Relationship.OUTGOING)
-	private Set<Sample> children;
+	private Set<Sample> childOf;
 
 	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
 	private Set<Sample> derivedFrom;
@@ -74,8 +74,8 @@ public class Sample {
 		return sameAs;
 	}
 
-	public Set<Sample> getChildren(){
-		return children;
+	public Set<Sample> getChildOf(){
+		return childOf;
 	}
 
 }
