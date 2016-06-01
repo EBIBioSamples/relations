@@ -66,7 +66,6 @@ public class Controller {
 
 	@RequestMapping(path = "samples/{accession}/graph", produces = {
 			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-	// public @ResponseBody Graph test(String accession) {
 	public JSONObject sample(@PathVariable("accession") String accession) {
 		Sample tmp = sampleRepository.findOneByAccession(accession);
 		List<Map<String, String>> nodes = new ArrayList<>();
@@ -75,7 +74,8 @@ public class Controller {
 		/* Add the sample start node to */
 		nodes.add(constructNode(accession, accession, "samples"));
 
-		if (!tmp.getDerivedFrom().isEmpty()) {
+		//if (!tmp.getDerivedFrom().isEmpty()) {
+		if (tmp.getDerivedFrom()!=null) {
 			for (Sample sample : tmp.getDerivedFrom()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "DERIVATION"));
@@ -83,21 +83,23 @@ public class Controller {
 
 		}
 
-		if (!tmp.getDerivedTo().isEmpty()) {
+		//if (!tmp.getDerivedTo().isEmpty()) {
+		if (tmp.getDerivedTo()!=null) {
 			for (Sample sample : tmp.getDerivedTo()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "DERIVATION"));
 			}
 		}
 
-		if (!tmp.getSameAs().isEmpty()) {
+		if (tmp.getSameAs()!=null) {
 			for (Sample sample : tmp.getSameAs()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "SAMEAS"));
 			}
 		}
 
-		if (!tmp.getChildOf().isEmpty()) {
+		//if (!tmp.getChildren().isEmpty()) {
+		if (tmp.getChildOf()!=null) {
 			for (Sample sample : tmp.getChildOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "CHILDOF"));
@@ -122,7 +124,8 @@ public class Controller {
 		 * nodes.add(constructNode()); edges.add(constructNode()); }
 		 */
 
-		if (!tmp.getGroups().isEmpty()) {
+		//if (!tmp.getGroups().isEmpty()) {
+		if (tmp.getGroups()!=null) {
 			for (Group group : tmp.getGroups()) {
 				nodes.add(constructNode(group.getAccession(), group.getAccession(), "groups"));
 				edges.add(constructEdge(accession, group.getAccession(), "MEMBERSHIP"));
