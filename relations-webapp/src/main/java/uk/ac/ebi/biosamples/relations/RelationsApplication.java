@@ -56,7 +56,7 @@ public class RelationsApplication extends SpringBootServletInitializer {
                 String accession = resource.getContent().getAccession();
 
                 String link=resource.getLink("self").getHref();
-                
+
                 if (link.indexOf("/relations")!=-1)
                     link=link.substring(0,link.indexOf("/relations"))+"/group/"+accession;   //On the server, this should take you to the biosamples page of the sample
                 else
