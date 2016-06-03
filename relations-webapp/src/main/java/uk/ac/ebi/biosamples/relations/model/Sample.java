@@ -36,7 +36,6 @@ public class Sample {
 	@Relationship(type = "CURATED", direction = Relationship.INCOMING)
 	private Set<Sample> recuratedFrom;
 
-
 	/* Outgoing relationships */
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
 	private Set<Group> groups;
@@ -83,8 +82,8 @@ public class Sample {
 		return childOf;
 	}
 
-	public Set<Sample> getReCuratedInto() {return recuratedInto;}
+	public Set<Sample> getRecuratedInto() {	return recuratedInto;	}
 
-	public Set<Sample> getReCuratedFrom() {return recuratedFrom;}
+	public Set<Sample> getRecuratedFrom() {	return recuratedFrom;	}
 
 }

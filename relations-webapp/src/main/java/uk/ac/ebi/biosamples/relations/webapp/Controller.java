@@ -106,15 +106,15 @@ public class Controller {
 		}
 
 		// Missing - Manually curated into
-		 if (tmp.getReCuratedFrom()!=null) {
-			 for (Sample sample : tmp.getReCuratedFrom()) {
+		 if (tmp.getRecuratedFrom()!=null) {
+			 for (Sample sample : tmp.getRecuratedFrom()) {
 				 nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				 edges.add(constructEdge(sample.getAccession(), accession, "RECURATED"));
 			 }
 		 }
 
-		if (tmp.getDerivedTo()!=null){
-			for (Sample sample : tmp.getReCuratedInto()){
+		if (tmp.getRecuratedInto()!=null){
+			for (Sample sample : tmp.getRecuratedInto()){
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "RECURATED"));
 			}
@@ -196,16 +196,16 @@ public class Controller {
 
 		list=new ArrayList<String>();
 		//Adding derivedTo to the json reply
-		if (tmp.getReCuratedInto()!=null)
-		{	for (Sample tmpSample : tmp.getReCuratedInto())
+		if (tmp.getRecuratedInto()!=null)
+		{	for (Sample tmpSample : tmp.getRecuratedInto())
 			{			list.add(tmpSample.getAccession());			}
 		}
 		json.put("ReCuratedInto", list);
 
 		list=new ArrayList<String>();
 		//Adding derivedTo to the json reply
-		if (tmp.getReCuratedFrom()!=null)
-		{	for (Sample tmpSample : tmp.getReCuratedFrom())
+		if (tmp.getDerivedFrom()!=null)
+		{	for (Sample tmpSample : tmp.getRecuratedFrom())
 			{			list.add(tmpSample.getAccession());			}
 		}
 		json.put("ReCuratedFrom", list);
