@@ -34,9 +34,9 @@ public class RelationsApplication extends SpringBootServletInitializer {
 
                 //If block for protects from error msg on localhost, should not be relevant on the server
                 if (link.indexOf("/relations")!=-1)
-                    link=link.substring(0, link.indexOf("/relations"))+"/sample/"+accession;    //On the server, this should take you to the biosamples page of the sample
+                    link=link.substring(0, link.indexOf("/relations"))+"/api/samples/"+accession;    //On the server, this should take you to the biosamples page of the sample
                 else
-                    link="could not parse link correctly, maybe you are working on localhost?";
+                    link="Could not parse link correctly, maybe you are working on localhost?";
 
                 resource.add(new Link(link, "Go here for more details on "+accession));
                 resource.add(new Link(resource.getLink("self").getHref() + "/graph", "graph"));
@@ -58,9 +58,9 @@ public class RelationsApplication extends SpringBootServletInitializer {
                 String link=resource.getLink("self").getHref();
 
                 if (link.indexOf("/relations")!=-1)
-                    link=link.substring(0,link.indexOf("/relations"))+"/group/"+accession;   //On the server, this should take you to the biosamples page of the sample
+                    link=link.substring(0,link.indexOf("/relations"))+"api/groups/"+accession;   //On the server, this should take you to the biosamples page of the sample
                 else
-                    link="could not parse link correctly, maybe you are working on localhost?";
+                    link="Could not parse link correctly, maybe you are working on localhost?";
 
                 resource.add(new Link(link, "Additional Information about the group"));
                 resource.add(new Link(resource.getLink("self").getHref() + "/graph", "graph"));
