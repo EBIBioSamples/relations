@@ -27,10 +27,9 @@ public class Controller {
 	@Autowired
 	private GroupRepository groupRepository;
 
-	@RequestMapping(path = "groups/{accession}/graph", produces = {
-			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	@CrossOrigin
+	@RequestMapping(path = "groups/{accession}/graph", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject group(@PathVariable("accession") String accession) {
-		System.out.println("In parseGroup");
 		Group tmp = groupRepository.findOneByAccession(accession);
 
 		List<Map<String, String>> nodes = new ArrayList<>();
@@ -64,17 +63,16 @@ public class Controller {
 		return json;
 	}
 
-	@RequestMapping(path = "samples/{accession}/graph", produces = {
-			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	@RequestMapping(path = "samples/{accession}/graph", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject sample(@PathVariable("accession") String accession) {
 		Sample tmp = sampleRepository.findOneByAccession(accession);
 		List<Map<String, String>> nodes = new ArrayList<>();
 		List<Map<String, String>> edges = new ArrayList<>();
 
-		/* Add the sample start node to */
+		/* Add the sample start node (equals the accession) to the graph data */
 		nodes.add(constructNode(accession, accession, "samples"));
 
-		//if (!tmp.getDerivedFrom().isEmpty()) {
+		/*Get derivedFrom data*/
 		if (tmp.getDerivedFrom()!=null) {
 			for (Sample sample : tmp.getDerivedFrom()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -83,7 +81,7 @@ public class Controller {
 
 		}
 
-		//if (!tmp.getDerivedTo().isEmpty()) {
+		/*Get derivedTo data*/
 		if (tmp.getDerivedTo()!=null) {
 			for (Sample sample : tmp.getDerivedTo()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -91,6 +89,7 @@ public class Controller {
 			}
 		}
 
+		/*Get sameAs data*/
 		if (tmp.getSameAs()!=null) {
 			for (Sample sample : tmp.getSameAs()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -98,7 +97,7 @@ public class Controller {
 			}
 		}
 
-		//if (!tmp.getChildren().isEmpty()) {
+		/*Get childOf data*/
 		if (tmp.getChildOf()!=null) {
 			for (Sample sample : tmp.getChildOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -107,8 +106,21 @@ public class Controller {
 		}
 
 		// Missing - Manually curated into
-		// if (!)....
-		//
+		 if (tmp.getReCuratedFrom()!=null) {
+			 for (Sample sample : tmp.getReCuratedFrom()) {
+				 nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				 edges.add(constructEdge(sample.getAccession(), accession, "CURATED FROM"));
+			 }
+		 }
+
+		if (tmp.getDerivedTo()!=null){
+			for (Sample sample : tmp.getReCuratedInto()){
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(accession, sample.getAccession(), "CURATED INTO"));
+			}
+
+		}
+
 
 		/*
 		 * Get rid of submission - this part is about to be deleted soon if
@@ -124,7 +136,6 @@ public class Controller {
 		 * nodes.add(constructNode()); edges.add(constructNode()); }
 		 */
 
-		//if (!tmp.getGroups().isEmpty()) {
 		if (tmp.getGroups()!=null) {
 			for (Group group : tmp.getGroups()) {
 				nodes.add(constructNode(group.getAccession(), group.getAccession(), "groups"));
@@ -137,6 +148,71 @@ public class Controller {
 		json.put("edges", edges);
 		return json;
 	}
+
+
+	@CrossOrigin
+	@RequestMapping(path= "samples/{accession}/biosamplesWeb", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
+	public JSONObject biosamplesWeb(@PathVariable("accession") String accession){
+
+		JSONObject json = new JSONObject();
+		Sample tmp = sampleRepository.findOneByAccession(accession);
+
+		ArrayList<String> list=new ArrayList<String>();
+
+		//Adding derivedFrom to the json reply
+		if (tmp.getDerivedFrom()!=null)
+		{
+			for (Sample tmpSample : tmp.getDerivedFrom())
+			{			list.add(tmpSample.getAccession());			}
+		}
+		json.put("derivedFrom", list);
+
+
+		//Adding derivedTo to the json reply
+		if (tmp.getDerivedTo()!=null)
+		{
+			for (Sample tmpSample : tmp.getDerivedTo())
+			{			list.add(tmpSample.getAccession());			}
+		}
+		json.put("derivedTo", list);
+
+		list=new ArrayList<String>();
+		//Adding childOf to the json reply
+		if (tmp.getChildOf()!=null)
+		{
+			for (Sample tmpSample : tmp.getChildOf())
+			{			list.add(tmpSample.getAccession());		}
+		}
+		json.put("childOf", list);
+
+
+		list=new ArrayList<String>();
+		//Adding derivedTo to the json reply
+		if (tmp.getSameAs()!=null)
+		{	for (Sample tmpSample : tmp.getSameAs())
+			{			list.add(tmpSample.getAccession());			}
+		}
+		json.put("sameAs", list);
+
+		list=new ArrayList<String>();
+		//Adding derivedTo to the json reply
+		if (tmp.getReCuratedInto()!=null)
+		{	for (Sample tmpSample : tmp.getReCuratedInto())
+			{			list.add(tmpSample.getAccession());			}
+		}
+		json.put("ReCuratedInto", list);
+
+		list=new ArrayList<String>();
+		//Adding derivedTo to the json reply
+		if (tmp.getReCuratedFrom()!=null)
+		{	for (Sample tmpSample : tmp.getReCuratedFrom())
+			{			list.add(tmpSample.getAccession());			}
+		}
+		json.put("ReCuratedFrom", list);
+
+		return json;
+	}
+
 
 	/*
 	 * Constructing a Map<String, String> representing a Node in our model

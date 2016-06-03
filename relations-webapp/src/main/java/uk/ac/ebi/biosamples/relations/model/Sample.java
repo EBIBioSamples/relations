@@ -27,23 +27,25 @@ public class Sample {
 	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
 	private Set<Sample> derivedTo;
 
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	private Set<Sample> derivedFrom;
+
+	@Relationship(type = "CURATED", direction = Relationship.OUTGOING)
+	private Set<Sample> recuratedInto;
+
+	@Relationship(type = "CURATED", direction = Relationship.INCOMING)
+	private Set<Sample> recuratedFrom;
+
+
+	/* Outgoing relationships */
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
 	private Set<Group> groups;
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
 
-	@Relationship(type= "CHILDOF", direction = Relationship.OUTGOING)
+	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
 	private Set<Sample> childOf;
-
-	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
-	private Set<Sample> derivedFrom;
-
-
-	/*
-	@Relationship(type= "CURATEDINTO", direction = Relationship.UNIDRECTED)
-	private Set <Sample> curatedInto;
-	*/
 
 
 
@@ -81,5 +83,8 @@ public class Sample {
 		return childOf;
 	}
 
+	public Set<Sample> getReCuratedInto() {return recuratedInto;}
+
+	public Set<Sample> getReCuratedFrom() {return recuratedFrom;}
 
 }
