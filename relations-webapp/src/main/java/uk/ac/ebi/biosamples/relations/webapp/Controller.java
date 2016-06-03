@@ -109,14 +109,14 @@ public class Controller {
 		 if (tmp.getReCuratedFrom()!=null) {
 			 for (Sample sample : tmp.getReCuratedFrom()) {
 				 nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
-				 edges.add(constructEdge(sample.getAccession(), accession, "CURATED FROM"));
+				 edges.add(constructEdge(sample.getAccession(), accession, "RECURATED"));
 			 }
 		 }
 
 		if (tmp.getDerivedTo()!=null){
 			for (Sample sample : tmp.getReCuratedInto()){
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
-				edges.add(constructEdge(accession, sample.getAccession(), "CURATED INTO"));
+				edges.add(constructEdge(accession, sample.getAccession(), "RECURATED"));
 			}
 
 		}
