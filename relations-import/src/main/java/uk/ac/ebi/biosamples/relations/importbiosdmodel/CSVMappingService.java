@@ -42,7 +42,8 @@ public class CSVMappingService implements Closeable {
 	private CSVPrinter derivationPrinter;
 	private CSVPrinter sameAsPrinter;
 	private CSVPrinter childOfPrinter;
-	private CSVPrinter nieceOrNephewPrinter;
+	private CSVPrinter ReCuratedFromPrinter;
+	//private CSVPrinter nieceOrNephewPrinter;
 
 
 	@PostConstruct
@@ -58,7 +59,8 @@ public class CSVMappingService implements Closeable {
 		derivationPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "derivation.csv"))), CSVFormat.DEFAULT);
 		sameAsPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "sameAs.csv"))), CSVFormat.DEFAULT);
 		childOfPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "childOf.csv"))), CSVFormat.DEFAULT);
-		nieceOrNephewPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "nieceOrNephew.csv"))), CSVFormat.DEFAULT);
+		ReCuratedFromPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "curatedFrom.csv"))), CSVFormat.DEFAULT);
+		//nieceOrNephewPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "nieceOrNephew.csv"))), CSVFormat.DEFAULT);
 	}
 
 	@PreDestroy
@@ -70,6 +72,9 @@ public class CSVMappingService implements Closeable {
 		ownershipGroupPrinter.close();
 		membershipPrinter.close();
 		derivationPrinter.close();
+		sameAsPrinter.close();
+		childOfPrinter.close();
+		ReCuratedFromPrinter.close();
 	}
 	
 	private boolean valid(BioSampleGroup group) {
@@ -94,38 +99,36 @@ public class CSVMappingService implements Closeable {
 	}
 
 
+
 	private synchronized void printSample(String acc, Set<DatabaseRecordRef> dbRefs) throws IOException {
 		samplePrinter.print(acc);
-
-		//If there are DB references, add them to the node
-		/*
+		/*IF there are DB references, add them to a list and add this list to the file*/
 		if (dbRefs.size()>0)
-			{
-				String tmp="";
-				for (DatabaseRecordRef ref : dbRefs){
-						tmp=tmp+(ref.getUrl())+" /n";
-				}
-				tmp=tmp.substring(0, tmp.length()-2);			//get rid of the line break if we talk about the last link
-				samplePrinter.print(tmp);
+		{
+			ArrayList<String> list=new ArrayList<String>();
+			for (DatabaseRecordRef ref : dbRefs){
+				list.add(ref.getUrl());
 			}
-			*/
+			samplePrinter.print(list);
+		}
 		samplePrinter.println();
 	}
+
 
 	
 	private synchronized void printGroup(String acc, Set<DatabaseRecordRef> dbRefs) throws IOException {
 		groupPrinter.print(acc);
-		/*
+
+		/*IF there are DB references, add them to a list and add this list to the file*/
 		if (dbRefs.size()>0)
 			{
-				String tmp="";
+				ArrayList<String> list=new ArrayList<String>();
 				for (DatabaseRecordRef ref : dbRefs){
-					tmp=tmp+(ref.getUrl())+" /n";
+					list.add(ref.getUrl());
 				}
-				tmp=tmp.substring(0, tmp.length()-2);			//get rid of the line break if we talk about the last link
-				groupPrinter.print(tmp);
+				groupPrinter.print(list);
 			}
-			*/
+
 		groupPrinter.println();
 	}
 
@@ -168,11 +171,18 @@ public class CSVMappingService implements Closeable {
 		childOfPrinter.println();
 	}
 
+	private synchronized void printRecuratedFrom(String acc, String otherAcc) throws IOException{
+		ReCuratedFromPrinter.print(acc);
+		ReCuratedFromPrinter.print(otherAcc);
+		ReCuratedFromPrinter.println();
+	}
+
+	/*
 	private synchronized void printNieceOrNephew(String acc, String otherAcc) throws IOException{
 		nieceOrNephewPrinter.print(acc);
 		nieceOrNephewPrinter.print(otherAcc);
 		nieceOrNephewPrinter.println();
-	}
+	}*/
 
 	public void handle(MSI msi) throws IOException {
 		
@@ -194,24 +204,17 @@ public class CSVMappingService implements Closeable {
 							printDerivation(sample.getAcc(), otherAcc);
 						}
 
-					//can not be found
 						if("same as".equals(ept.getTermText().toLowerCase())){
-							String otherAcc=epv.getTermText();
-							String acc=sample.getAcc();
-							printSameAs(acc, otherAcc);
+							printSameAs(sample.getAcc(), epv.getTermText());
 						}
-
-						/* - does not work. To compare it exactly without converting it to lower case works, so we are fine, but why doesn't it work. No idea good question.
-						if("child of".equals(ept.getTermText().toLowerCase())){
-								System.out.println("Is never reached ... and this is funny");
-						}*/
 
 						//to convert to lower case does not seem to work. no idea why. for the sake of it I keep in the if clause just to make sure we catch all
 						if ("Child Of".equals(ept.getTermText()) || "child of".equals(ept.getTermText().toLowerCase())) {
-							String otherAcc=epv.getTermText();
-							String acc=sample.getAcc();
-							printChildOf(acc, otherAcc);
+								printChildOf(sample.getAcc(),epv.getTermText());
+						}
 
+						if ("recurated from".equals(ept.getTermText().toLowerCase())){
+							printRecuratedFrom(sample.getAcc(),epv.getTermText());
 						}
 
 						//If we want to save that as well
