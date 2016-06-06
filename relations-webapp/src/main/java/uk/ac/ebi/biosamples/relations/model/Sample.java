@@ -47,7 +47,6 @@ public class Sample {
 	private Set<Sample> childOf;
 
 
-
 	private Sample() {};
 
 	public Long getId() {

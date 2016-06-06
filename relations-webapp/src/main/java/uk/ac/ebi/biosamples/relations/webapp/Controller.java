@@ -38,18 +38,6 @@ public class Controller {
 		/* Add the group start node */
 		nodes.add(constructNode(accession, accession, "groups"));
 
-		/*
-		 * Submission is ignored as of now - might be deleted soon if
-		 * (tmp.getOwner() != null) { Map<String, String> tmpNode = new
-		 * HashMap<>(); tmpNode.put("iri", tmp.getOwner().getSubmissionId());
-		 * tmpNode.put("label", tmp.getOwner().getSubmissionId());
-		 * tmpNode.put("type", "submission"); nodes.add(tmpNode);
-		 * 
-		 * Map<String, String> tmpList = new HashMap<>(); tmpList.put("source",
-		 * accession); tmpList.put("target", tmp.getOwner().getSubmissionId());
-		 * tmpList.put("label", "OWNERSHIP"); edges.add(tmpList); }
-		 */
-
 		if (!tmp.getSamples().isEmpty()) {
 			for (Sample sample : tmp.getSamples()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -63,6 +51,7 @@ public class Controller {
 		return json;
 	}
 
+	@CrossOrigin
 	@RequestMapping(path = "samples/{accession}/graph", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject sample(@PathVariable("accession") String accession) {
 		Sample tmp = sampleRepository.findOneByAccession(accession);
@@ -105,7 +94,6 @@ public class Controller {
 			}
 		}
 
-		// Missing - Manually curated into
 		 if (tmp.getRecuratedFrom()!=null) {
 			 for (Sample sample : tmp.getRecuratedFrom()) {
 				 nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -121,20 +109,6 @@ public class Controller {
 
 		}
 
-
-		/*
-		 * Get rid of submission - this part is about to be deleted soon if
-		 * (tmp.getOwner() !=null) { Map<String, String> tmpNode = new
-		 * HashMap<>(); tmpNode.put("iri", tmp.getOwner().getSubmissionId());
-		 * tmpNode.put("label", tmp.getOwner().getSubmissionId());
-		 * tmpNode.put("type", "submissions"); nodes.add(tmpNode);
-		 * 
-		 * Map<String, String> tmpList = new HashMap<>(); tmpList.put("source",
-		 * accession); tmpList.put("target", tmp.getOwner().getSubmissionId());
-		 * tmpList.put("label", "OWNERSHIP"); edges.add(tmpList);
-		 * 
-		 * nodes.add(constructNode()); edges.add(constructNode()); }
-		 */
 
 		if (tmp.getGroups()!=null) {
 			for (Group group : tmp.getGroups()) {
