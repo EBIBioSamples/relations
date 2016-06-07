@@ -33,12 +33,13 @@ public class RelationsApplication extends SpringBootServletInitializer {
                 String link=resource.getLink("self").getHref();
 
                 //If block for protects from error msg on localhost, should not be relevant on the server
-                if (link.indexOf("/relations")!=-1)
+                if (link.indexOf("/relations")!=-1) {
                     link=link.substring(0, link.indexOf("/relations"))+"/api/samples/"+accession;    //On the server, this should take you to the biosamples page of the sample
-                else
+                } else {
                     link="Could not parse link correctly, maybe you are working on localhost?";
+                }
 
-                resource.add(new Link(link, "Go here for more details on "+accession));
+                resource.add(new Link(link, "details"));
                 resource.add(new Link(resource.getLink("self").getHref() + "/graph", "graph"));
                 return resource;
             }
