@@ -8,7 +8,6 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
-
 /**
  * Created by tliener on 20/04/2016.
  */
@@ -46,8 +45,8 @@ public class Sample {
 	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
 	private Set<Sample> childOf;
 
-
-	private Sample() {};
+	private Sample() {
+	};
 
 	public Long getId() {
 		return id;
@@ -66,7 +65,7 @@ public class Sample {
 	}
 
 	public Set<Sample> getDerivedTo() {
-			return derivedTo;
+		return derivedTo;
 	}
 
 	public Set<Group> getGroups() {
@@ -77,12 +76,16 @@ public class Sample {
 		return sameAs;
 	}
 
-	public Set<Sample> getChildOf(){
+	public Set<Sample> getChildOf() {
 		return childOf;
 	}
 
-	public Set<Sample> getRecuratedInto() {	return recuratedInto;	}
+	public Set<Sample> getRecuratedInto() {
+		return recuratedInto;
+	}
 
-	public Set<Sample> getRecuratedFrom() {	return recuratedFrom;	}
+	public Set<Sample> getRecuratedFrom() {
+		return recuratedFrom;
+	}
 
 }
