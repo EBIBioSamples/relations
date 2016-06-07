@@ -11,25 +11,28 @@ import javax.annotation.PreDestroy;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.google.common.io.Files;
 
 import uk.ac.ebi.fg.biosd.model.expgraph.BioSample;
 import uk.ac.ebi.fg.biosd.model.organizational.BioSampleGroup;
 import uk.ac.ebi.fg.biosd.model.organizational.MSI;
 import uk.ac.ebi.fg.biosd.model.xref.DatabaseRecordRef;
-import uk.ac.ebi.fg.core_model.expgraph.Data;
 import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyType;
 import uk.ac.ebi.fg.core_model.expgraph.properties.ExperimentalPropertyValue;
-
+import uk.ac.ebi.fg.myequivalents.model.Entity;
 
 import java.util.*;
 
 @Service
 public class CSVMappingService implements Closeable {
-	
+
+	@Autowired
+	private MyEquivalenceManager myEquivalenceManager;
+
+
 	@Value("${neo4jIndexer.outpath:output}")
 	private File outpath;
 
@@ -98,37 +101,38 @@ public class CSVMappingService implements Closeable {
 		submissionPrinter.println();
 	}
 
-
-
-	private synchronized void printSample(String acc, Set<DatabaseRecordRef> dbRefs) throws IOException {
-		samplePrinter.print(acc);
-		/*IF there are DB references, add them to a list and add this list to the file*/
-		if (dbRefs.size()>0)
-		{
-			ArrayList<String> list=new ArrayList<String>();
-			for (DatabaseRecordRef ref : dbRefs){
-				list.add(ref.getUrl());
-			}
-			samplePrinter.print(list);
+	/*Generic print function for DBrefs from the MyEquivalent DB. Use for samples and groups*/
+	private synchronized void printFromEq(String acc, Set<Entity> dbRefs, CSVPrinter printer) throws IOException{
+		printer.print(acc);
+		ArrayList<String> list=new ArrayList<String>();
+		for (Entity ref :dbRefs){
+			list.add(ref.getURI());
 		}
+		printer.print(list);
+		printer.println();
+	}
+
+	/*Print DbRefs for sample and groups*/
+	private synchronized  void printFromDBRef(String acc, Set <DatabaseRecordRef> dbRefs, CSVPrinter printer) throws IOException{
+		printer.print(acc);
+		ArrayList<String> list=new ArrayList<String>();
+		for (DatabaseRecordRef ref : dbRefs){
+			list.add(ref.getUrl());
+		}
+		printer.print(list);
+		printer.println();
+
+	}
+
+	/*Print Sample without Db reference*/
+	private synchronized void printSample(String acc) throws IOException{
+		samplePrinter.print(acc);
 		samplePrinter.println();
 	}
 
-
-	
-	private synchronized void printGroup(String acc, Set<DatabaseRecordRef> dbRefs) throws IOException {
+	/* Print group without Database reference*/
+	private synchronized void printGroup(String acc) throws IOException{
 		groupPrinter.print(acc);
-
-		/*IF there are DB references, add them to a list and add this list to the file*/
-		if (dbRefs.size()>0)
-			{
-				ArrayList<String> list=new ArrayList<String>();
-				for (DatabaseRecordRef ref : dbRefs){
-					list.add(ref.getUrl());
-				}
-				groupPrinter.print(list);
-			}
-
 		groupPrinter.println();
 	}
 
@@ -184,6 +188,7 @@ public class CSVMappingService implements Closeable {
 		nieceOrNephewPrinter.println();
 	}*/
 
+
 	public void handle(MSI msi) throws IOException {
 		
 		if (valid(msi)) {
@@ -191,7 +196,22 @@ public class CSVMappingService implements Closeable {
 			printSubmission(msi.getAcc());
 			for (BioSample sample : msi.getSamples()) {
 				if (valid(sample)) {
-					printSample(sample.getAcc(), sample.getDatabaseRecordRefs());
+
+					if (!sample.getDatabaseRecordRefs().isEmpty())
+					{
+						//printSampleWithDbRef(sample.getAcc(), sample.getDatabaseRecordRefs());
+						printFromDBRef(sample.getAcc(), sample.getDatabaseRecordRefs(), samplePrinter);
+					}
+
+					if (!myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty()){
+						//printSampleWithEq(sample.getAcc(), myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()));
+						printFromEq(sample.getAcc(), myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()), samplePrinter);
+					}
+
+					if (sample.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty()) {
+						printSample(sample.getAcc());
+					}
+
 					printSampleOwnership(sample.getAcc(),msi.getAcc());
 
 					//this is the slow join
@@ -204,7 +224,7 @@ public class CSVMappingService implements Closeable {
 							printDerivation(sample.getAcc(), otherAcc);
 						}
 
-						if("same as".equals(ept.getTermText().toLowerCase())){
+						if("sas".equals(ept.getTermText().toLowerCase())){
 							printSameAs(sample.getAcc(), epv.getTermText());
 						}
 
@@ -231,7 +251,17 @@ public class CSVMappingService implements Closeable {
 			for (BioSampleGroup group : msi.getSampleGroups()) {
 				if (valid(group)) {
 
-					printGroup(group.getAcc(), group.getDatabaseRecordRefs());
+					if (!group.getDatabaseRecordRefs().isEmpty()){
+						printFromDBRef(group.getAcc(), group.getDatabaseRecordRefs(), groupPrinter);
+					}
+					if (!myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
+						printFromEq(group.getAcc(), myEquivalenceManager.getSampleExternalEquivalences(group.getAcc()), groupPrinter);
+
+					}
+					if (group.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
+						printGroup(group.getAcc());
+					}
+
 					printGroupOwnership(group.getAcc(), msi.getAcc());
 
 					for (BioSample sample : group.getSamples()) {

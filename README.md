@@ -1,5 +1,4 @@
 # Description of subprojects
 
-* importrelational - produces csv files by using the hibernate model
-* importjdbc - exports csv files by using direct SQL model.
-* spring-app - Includes the neo4j model and provides webservice end points
+* relations-import: Creates csv files by using the hibernate model. These files can be imported into neo4j by using the provided header files
+* relations-webapp: Includes the neo4j model, using an embedded database and provides various webservice endpoints to explore the data
