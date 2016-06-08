@@ -18,6 +18,11 @@ import java.util.Map;
  * Created by tliener on 20/04/2016.
  */
 
+/*
+* This class is the implementation of additional API endpoints - the Endpoints provided by Spring are not enough for us.
+* We needed graph endpoints for the visualisation as well as a biosamplesWeb endpoint to support the biosamples webpage
+* with displaying the relationship data which only lives in Neo and not in solr
+* */
 @RestController
 public class Controller {
 
@@ -27,6 +32,13 @@ public class Controller {
 	@Autowired
 	private GroupRepository groupRepository;
 
+	/*
+	* The endpoint constructs the GraphJSON for a specific group. A Group usually has multiple samples, that are connected
+	* via 'membership' with the group. Since this is the only relationship for a group, the endpoint is simpler than the
+	* corresponding endpoint for samples
+	* @param accession of a group
+	* @return Graph JSON for a group
+	* */
 	@CrossOrigin
 	@RequestMapping(path = "groups/{accession}/graph", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject group(@PathVariable("accession") String accession) {
@@ -51,6 +63,15 @@ public class Controller {
 		return json;
 	}
 
+
+	/*
+	* Enpoint to create the graph object for samples. The Graph JSON is constructed without spring but with simpleJSON
+	* All relationship types for the sample Object are tested, and in case they are not null, processed - namely a the
+	* constructNode as well as the constructEdge function are called and their return value is added to the ArrayList nodes
+	 * and edges, which combined represent the returned Graph JSON Object
+	* @param accession the accession of the function
+	* @return Graph JSON for a sample
+	* */
 	@CrossOrigin
 	@RequestMapping(path = "samples/{accession}/graph", produces = {MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject sample(@PathVariable("accession") String accession) {
@@ -90,18 +111,20 @@ public class Controller {
 		if (tmp.getChildOf()!=null) {
 			for (Sample sample : tmp.getChildOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
-				edges.add(constructEdge(accession, sample.getAccession(), "CHILDOF"));
+				edges.add(constructEdge(accession, sample.getAccession(), "OFFSPRING"));
 			}
 		}
 
+		/*Get Parent data*/
 		if (tmp.getParent()!=null){
 			for (Sample sample : tmp.getParent()){
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
-				edges.add(constructEdge(sample.getAccession(), accession, "CHILDOF"));
+				edges.add(constructEdge(sample.getAccession(), accession, "OFFSPRING"));
 			}
 
 		}
 
+		/*Get RecuratedFrom data*/
 		 if (tmp.getRecuratedFrom()!=null) {
 			 for (Sample sample : tmp.getRecuratedFrom()) {
 				 nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -109,6 +132,7 @@ public class Controller {
 			 }
 		 }
 
+		/*Get RecuratedInto data*/
 		if (tmp.getRecuratedInto()!=null){
 			for (Sample sample : tmp.getRecuratedInto()){
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -117,7 +141,7 @@ public class Controller {
 
 		}
 
-
+		/*Get the group the sample is member of*/
 		if (tmp.getGroups()!=null) {
 			for (Group group : tmp.getGroups()) {
 				nodes.add(constructNode(group.getAccession(), group.getAccession(), "groups"));
@@ -132,6 +156,13 @@ public class Controller {
 	}
 
 
+	/*
+	* This endpoint is specifically for the biosamples-web project. Via jsonSimple a json file is constructed, that anwsers
+	* the question which relationship the sample has - specifially to be displayed in the thymleaf template. No other information
+	* is transfered, which should make this endpoint quick.
+	* @param accession of a sample
+	* @return json used in the biosample-web project to display the relationship between samples
+	* */
 	@CrossOrigin
 	@RequestMapping(path= "samples/{accession}/biosamplesWeb", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
 	public JSONObject biosamplesWeb(@PathVariable("accession") String accession){

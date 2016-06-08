@@ -17,6 +17,12 @@ import java.io.Serializable;
  * Created by tliener on 22/04/2016.
  */
 
+
+/*
+* This class converts (translates) our accession numbers for samples, groups and submission into internal ids and also
+* the other way around. By overwriting these two functions Spring allows us to have our accession in the URL of our API to point
+* to a certain sample/group/submission instead of having kind of random internal (neo) ids.
+* */
 @Component
 public class CustomBackendIdConverter implements BackendIdConverter {
 
@@ -29,8 +35,11 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 	@Autowired
 	private SubmissionRepository submissionRepository;
 
-	@Override // This function has to return the graphid, given a certain
-				// accession
+
+	/*
+	* This function returns the graphid, given a certain accession
+	* */
+	@Override
 	public Serializable fromRequestId(String id, Class<?> entityType) {
 		if (entityType.equals(Sample.class)) {
 			return sampleRepository.findOneByAccession(id).getId();
@@ -43,7 +52,10 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 		}
 	}
 
-	@Override // This function has to return the accession to a given graphid
+	/*
+	* This function returns the accession to a given graphid
+	*/
+	@Override
 	public String toRequestId(Serializable id, Class<?> entityType) {
 		if (entityType.equals(Sample.class)) {
 			return sampleRepository.findOne((Long) id).getAccession();
@@ -57,6 +69,9 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 
 	}
 
+	/*
+	* Has to be overwritten for the whole thing to work, the sprin docs tell us
+	* */
 	@Override
 	public boolean supports(Class<?> delimiter) {
 		if (delimiter.equals(Sample.class)) {

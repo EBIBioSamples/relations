@@ -20,13 +20,14 @@ public class Sample {
 	@Property
 	private String accession;
 
+	/*Same as is the only unidirected relationship of the project*/
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
 	private Set<Sample> sameAs;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
 	private Set<Sample> derivedTo;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
 	private Set<Sample> derivedFrom;
 
 	@Relationship(type = "CURATED", direction = Relationship.OUTGOING)
@@ -49,10 +50,7 @@ public class Sample {
 	private Submission owner;
 
 
-
-
-	private Sample() {
-	};
+	private Sample() {};
 
 	public Long getId() {
 		return id;
