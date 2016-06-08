@@ -199,12 +199,10 @@ public class CSVMappingService implements Closeable {
 
 					if (!sample.getDatabaseRecordRefs().isEmpty())
 					{
-						//printSampleWithDbRef(sample.getAcc(), sample.getDatabaseRecordRefs());
 						printFromDBRef(sample.getAcc(), sample.getDatabaseRecordRefs(), samplePrinter);
 					}
 
 					if (!myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty()){
-						//printSampleWithEq(sample.getAcc(), myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()));
 						printFromEq(sample.getAcc(), myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()), samplePrinter);
 					}
 
@@ -219,12 +217,10 @@ public class CSVMappingService implements Closeable {
 						ExperimentalPropertyType ept = epv.getType();
 
 						if ("derived from".equals(ept.getTermText().toLowerCase())) {
-							String otherAcc = epv.getTermText();
-							//TODO check that otherAcc is a valid node accession
-							printDerivation(sample.getAcc(), otherAcc);
+							printDerivation(sample.getAcc(), epv.getTermText());
 						}
 
-						if("sas".equals(ept.getTermText().toLowerCase())){
+						if("same as".equals(ept.getTermText().toLowerCase())){
 							printSameAs(sample.getAcc(), epv.getTermText());
 						}
 
