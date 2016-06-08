@@ -35,6 +35,12 @@ public class Sample {
 	@Relationship(type = "CURATED", direction = Relationship.INCOMING)
 	private Set<Sample> recuratedFrom;
 
+	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
+	private Set<Sample> childOf;
+
+	@Relationship(type = "CHILDOF", direction = Relationship.INCOMING)
+	private Set<Sample> parent;
+
 	/* Outgoing relationships */
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
 	private Set<Group> groups;
@@ -42,8 +48,8 @@ public class Sample {
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
 
-	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
-	private Set<Sample> childOf;
+
+
 
 	private Sample() {
 	};
@@ -87,5 +93,7 @@ public class Sample {
 	public Set<Sample> getRecuratedFrom() {
 		return recuratedFrom;
 	}
+
+	public Set<Sample> getParent(){return parent;}
 
 }

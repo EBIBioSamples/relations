@@ -94,6 +94,14 @@ public class Controller {
 			}
 		}
 
+		if (tmp.getParent()!=null){
+			for (Sample sample : tmp.getParent()){
+				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
+				edges.add(constructEdge(sample.getAccession(), accession, "CHILDOF"));
+			}
+
+		}
+
 		 if (tmp.getRecuratedFrom()!=null) {
 			 for (Sample sample : tmp.getRecuratedFrom()) {
 				 nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
@@ -142,6 +150,7 @@ public class Controller {
 		json.put("derivedFrom", list);
 
 
+		list=new ArrayList<String>();
 		//Adding derivedTo to the json reply
 		if (tmp.getDerivedTo()!=null)
 		{
@@ -161,7 +170,19 @@ public class Controller {
 
 
 		list=new ArrayList<String>();
-		//Adding derivedTo to the json reply
+		//Adding parentOf to json reply
+		if (tmp.getParent()!=null)
+		{
+			for (Sample tmpSample:tmp.getParent())
+			{			list.add(tmpSample.getAccession()); 	}
+
+		}
+		json.put("parentOf", list);
+
+
+
+		list=new ArrayList<String>();
+		//Adding sameAs to the json reply
 		if (tmp.getSameAs()!=null)
 		{	for (Sample tmpSample : tmp.getSameAs())
 			{			list.add(tmpSample.getAccession());			}
@@ -169,7 +190,7 @@ public class Controller {
 		json.put("sameAs", list);
 
 		list=new ArrayList<String>();
-		//Adding derivedTo to the json reply
+		//Adding curatedInto the json reply
 		if (tmp.getRecuratedInto()!=null)
 		{	for (Sample tmpSample : tmp.getRecuratedInto())
 			{			list.add(tmpSample.getAccession());			}
@@ -177,12 +198,12 @@ public class Controller {
 		json.put("ReCuratedInto", list);
 
 		list=new ArrayList<String>();
-		//Adding derivedTo to the json reply
-		if (tmp.getDerivedFrom()!=null)
-		{	for (Sample tmpSample : tmp.getRecuratedFrom())
+		//Adding recuratedFrom to the json reply
+		if (tmp.getRecuratedFrom()!=null) {
+			for (Sample tmpSample : tmp.getRecuratedFrom())
 			{			list.add(tmpSample.getAccession());			}
 		}
-		json.put("ReCuratedFrom", list);
+			json.put("ReCuratedFrom", list);
 
 		return json;
 	}
