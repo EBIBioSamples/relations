@@ -10,7 +10,7 @@ import uk.ac.ebi.biosamples.relations.model.Group;
  */
 
 
-public interface GroupRepository extends GraphRepository<Group> {
+public interface GroupRepository extends ReadOnlyNeoRepository<Group> {
 
 	public Group findOneByAccession(String accession);
 

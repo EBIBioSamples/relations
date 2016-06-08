@@ -12,7 +12,7 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
  */
 
 
-public interface SampleRepository extends GraphRepository<Sample> {
+public interface SampleRepository extends ReadOnlyNeoRepository<Sample> {
 	
 	public Sample findOneByAccession(String accession);
 

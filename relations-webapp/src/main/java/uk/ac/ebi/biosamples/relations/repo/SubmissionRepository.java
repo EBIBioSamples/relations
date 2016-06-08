@@ -10,7 +10,7 @@ import uk.ac.ebi.biosamples.relations.model.Submission;
  */
 
 
-public interface SubmissionRepository extends GraphRepository<Submission> {
+public interface SubmissionRepository extends ReadOnlyNeoRepository<Submission> {
 
 	public Submission findOneBySubmissionId(String submissionId);
 
