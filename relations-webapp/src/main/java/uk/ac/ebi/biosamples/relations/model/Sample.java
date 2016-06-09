@@ -20,13 +20,14 @@ public class Sample {
 	@Property
 	private String accession;
 
+	/*Same as is the only unidirected relationship of the project*/
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
 	private Set<Sample> sameAs;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
+	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
 	private Set<Sample> derivedTo;
 
-	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
+	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
 	private Set<Sample> derivedFrom;
 
 	@Relationship(type = "CURATED", direction = Relationship.OUTGOING)
@@ -35,6 +36,12 @@ public class Sample {
 	@Relationship(type = "CURATED", direction = Relationship.INCOMING)
 	private Set<Sample> recuratedFrom;
 
+	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
+	private Set<Sample> childOf;
+
+	@Relationship(type = "CHILDOF", direction = Relationship.INCOMING)
+	private Set<Sample> parent;
+
 	/* Outgoing relationships */
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
 	private Set<Group> groups;
@@ -42,11 +49,8 @@ public class Sample {
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
 
-	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
-	private Set<Sample> childOf;
 
-	private Sample() {
-	};
+	private Sample() {};
 
 	public Long getId() {
 		return id;
@@ -87,5 +91,7 @@ public class Sample {
 	public Set<Sample> getRecuratedFrom() {
 		return recuratedFrom;
 	}
+
+	public Set<Sample> getParent(){return parent;}
 
 }
