@@ -52,6 +52,7 @@ public class CSVMappingService implements Closeable {
 	private CSVPrinter sameAsPrinter;
 	private CSVPrinter childOfPrinter;
 	private CSVPrinter ReCuratedFromPrinter;
+	private CSVPrinter DbNodePrinter;
 	//private CSVPrinter nieceOrNephewPrinter;
 
 
@@ -72,6 +73,7 @@ public class CSVMappingService implements Closeable {
 		sameAsPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "sameAs.csv"))), CSVFormat.DEFAULT);
 		childOfPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "childOf.csv"))), CSVFormat.DEFAULT);
 		ReCuratedFromPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "curatedFrom.csv"))), CSVFormat.DEFAULT);
+		DbNodePrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "dbRefRelationship.csv"))), CSVFormat.DEFAULT);
 		//nieceOrNephewPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "nieceOrNephew.csv"))), CSVFormat.DEFAULT);
 	}
 
@@ -113,42 +115,23 @@ public class CSVMappingService implements Closeable {
 		submissionPrinter.println();
 	}
 
-	/*Generic print function for DBrefs from the MyEquivalent DB. Use for samples and groups*/
-	private synchronized void printFromEq(String acc, Set<Entity> dbRefs, CSVPrinter printer) throws IOException{
-		printer.print(acc);
-		ArrayList<String> list=new ArrayList<String>();
-		for (Entity ref :dbRefs){
-			list.add(ref.getURI());
-		}
-		printer.print(list);
-		printer.println();
-	}
-
-	/*Print DbRefs for sample and groups*/
-	private synchronized  void printFromDBRef(String acc, Set <DatabaseRecordRef> dbRefs, CSVPrinter printer) throws IOException{
-		printer.print(acc);
-		ArrayList<String> list=new ArrayList<String>();
-		for (DatabaseRecordRef ref : dbRefs){
-			list.add(ref.getUrl());
-		}
-		printer.print(list);
-		printer.println();
-
-	}
-
-	/*Print Sample Node without Db reference
+	/*Print Sample Node with db reference
 	* @param acc accession for a Sample node
+	* @param dbrefstring Set<String> that defines the db urls
 	* */
-	private synchronized void printSample(String acc) throws IOException{
+	private synchronized void printSample(String acc, Set<String> dbrefstring) throws IOException{
 		samplePrinter.print(acc);
+		samplePrinter.print(dbrefstring);
 		samplePrinter.println();
 	}
 
-	/* Print group Node without Database reference
+	/* Print group Node with database reference
 	*  @param acc accession for a Group node
+	* @param dbrefstring Set<String> that defines the db urls
 	* */
-	private synchronized void printGroup(String acc) throws IOException{
+	private synchronized void printGroup(String acc, Set<String> dbrefstring) throws IOException{
 		groupPrinter.print(acc);
+		groupPrinter.print(dbrefstring);
 		groupPrinter.println();
 	}
 
@@ -222,12 +205,39 @@ public class CSVMappingService implements Closeable {
 		ReCuratedFromPrinter.println();
 	}
 
+
 	/*
-	private synchronized void printNieceOrNephew(String acc, String otherAcc) throws IOException{
-		nieceOrNephewPrinter.print(acc);
-		nieceOrNephewPrinter.print(otherAcc);
-		nieceOrNephewPrinter.println();
-	}*/
+	* @param acc accession of a node (group or sample)
+	* @param url url of a database link
+	* */
+	private synchronized void printDbNode(String acc, String url) throws IOException{
+		DbNodePrinter.print(acc);
+		DbNodePrinter.print(url);
+		DbNodePrinter.println();
+	}
+
+	/* Converts DbRefs coming from an Entity as stored in the myEquivalence model
+	* @param dbRefs A Set<Entity> as stored in myEquivalence
+	*/
+	private Set<String> covertMyEquiEntity(Set<Entity> dbRefs){
+		Set<String> list = new HashSet<String>();
+		for (Entity ref :dbRefs){
+			list.add(ref.getURI());
+		}
+		return list;
+	}
+
+	/*Converts DbRefs coming from the Hibernate model into Set of Strings
+	* @param dbRefs A Set <DatabaseRecordRef>  as stored in the model
+	*/
+	private Set <String> convertDbRefs(Set <DatabaseRecordRef> dbRefs){
+		Set<String> list = new HashSet<String>();
+		for (DatabaseRecordRef ref : dbRefs){
+			list.add(ref.getUrl());
+		}
+		return list;
+	}
+
 
 
 	/*
@@ -242,18 +252,34 @@ public class CSVMappingService implements Closeable {
 			for (BioSample sample : msi.getSamples()) {
 				if (valid(sample)) {
 
-					if (!sample.getDatabaseRecordRefs().isEmpty())
+					Set <String> dburls= new HashSet<String>();
+					if (!sample.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty())
 					{
-						printFromDBRef(sample.getAcc(), sample.getDatabaseRecordRefs(), samplePrinter);
+						dburls=convertDbRefs(sample.getDatabaseRecordRefs());
+					}
+					else if (sample.getDatabaseRecordRefs().isEmpty() && !myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty()){
+						dburls=covertMyEquiEntity(myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()));
 					}
 
-					if (!myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty()){
-						printFromEq(sample.getAcc(), myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()), samplePrinter);
-					}
+					//if BOTH are not empty (which in theory should never be the case), Build a Set<Strings> with Refs from both sources
+					else if (!sample.getDatabaseRecordRefs().isEmpty() && !myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty()){
+						dburls=convertDbRefs(sample.getDatabaseRecordRefs());
+						dburls.addAll(covertMyEquiEntity(myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc())));
 
+					}
+					//In case both are empty, we print an empty dburls string
 					if (sample.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc()).isEmpty()) {
-						printSample(sample.getAcc());
+						dburls.clear();
 					}
+
+					//IF we model DBRefs as own node, get rid of dburls parameter here
+					printSample(sample.getAcc(), dburls);
+
+					/*	To model the db links as own relationships: Run over dburls and create for every string a connection to the node
+					*/
+					for (String url : dburls)
+					{printDbNode(sample.getAcc(), url);	}
+
 
 					printSampleOwnership(sample.getAcc(),msi.getAcc());
 
@@ -278,12 +304,6 @@ public class CSVMappingService implements Closeable {
 							printRecuratedFrom(sample.getAcc(),epv.getTermText());
 						}
 
-						//If we want to save that as well
-						/*if ("niece or nephew of".equals(ept.getTermText().toLowerCase())) {
-							String otherAcc=epv.getTermText();
-							String acc=sample.getAcc();
-							printNieceOrNephew(acc, otherAcc);
-						}*/
 					}
 
 				}
@@ -292,16 +312,34 @@ public class CSVMappingService implements Closeable {
 			for (BioSampleGroup group : msi.getSampleGroups()) {
 				if (valid(group)) {
 
-					if (!group.getDatabaseRecordRefs().isEmpty()){
-						printFromDBRef(group.getAcc(), group.getDatabaseRecordRefs(), groupPrinter);
+					Set <String> dburls= new HashSet<String>();
+					//only dbrefs from hibernate has refs
+					if (!group.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
+						dburls=convertDbRefs(group.getDatabaseRecordRefs());
 					}
-					if (!myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
-						printFromEq(group.getAcc(), myEquivalenceManager.getSampleExternalEquivalences(group.getAcc()), groupPrinter);
+					//only myEquivalents has db refs
+					else if (group.getDatabaseRecordRefs().isEmpty() && !myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
+						dburls=covertMyEquiEntity(myEquivalenceManager.getSampleExternalEquivalences(group.getAcc()));
+					}
+					//both have dbrefs
+					else if (!group.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
+						dburls=convertDbRefs(group.getDatabaseRecordRefs());
+						dburls.addAll(covertMyEquiEntity(myEquivalenceManager.getSampleExternalEquivalences(group.getAcc())));
+					}
+					//both are empty
+					else if (group.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
+						dburls.clear();
+					}
 
-					}
-					if (group.getDatabaseRecordRefs().isEmpty() && myEquivalenceManager.getGroupExternalEquivalences(group.getAcc()).isEmpty()){
-						printGroup(group.getAcc());
-					}
+					//IF we model DBRefs as own node, get rid of dburls parameter here
+					printGroup(group.getAcc(), dburls);
+
+					/*	To model the db links as own relationships: Run over dburls and create for every string a connection to the node
+					*/
+					for (String url : dburls)
+					{printDbNode(group.getAcc(), url);	}
+
+
 
 					printGroupOwnership(group.getAcc(), msi.getAcc());
 
@@ -319,5 +357,8 @@ public class CSVMappingService implements Closeable {
 
 
 	}
+
+
+
 
 }
