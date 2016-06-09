@@ -1,5 +1,4 @@
-/neo4jdb/
-/importjdbc/target/*
+*.properties
 
 **/*.iml
 **/.idea/
