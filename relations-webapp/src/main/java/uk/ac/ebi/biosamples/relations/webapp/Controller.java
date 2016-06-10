@@ -116,8 +116,8 @@ public class Controller {
 		}
 
 		/*Get Parent data*/
-		if (tmp.getParent()!=null){
-			for (Sample sample : tmp.getParent()){
+		if (tmp.getParentOf()!=null){
+			for (Sample sample : tmp.getParentOf()){
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "OFFSPRING"));
 			}
@@ -133,8 +133,8 @@ public class Controller {
 		 }
 
 		/*Get RecuratedInto data*/
-		if (tmp.getRecuratedInto()!=null){
-			for (Sample sample : tmp.getRecuratedInto()){
+		if (tmp.getRecuratedTo()!=null){
+			for (Sample sample : tmp.getRecuratedTo()){
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "RECURATED"));
 			}
@@ -202,9 +202,9 @@ public class Controller {
 
 		list=new ArrayList<String>();
 		//Adding parentOf to json reply
-		if (tmp.getParent()!=null)
+		if (tmp.getParentOf()!=null)
 		{
-			for (Sample tmpSample:tmp.getParent())
+			for (Sample tmpSample:tmp.getParentOf())
 			{			list.add(tmpSample.getAccession()); 	}
 
 		}
@@ -222,8 +222,8 @@ public class Controller {
 
 		list=new ArrayList<String>();
 		//Adding curatedInto the json reply
-		if (tmp.getRecuratedInto()!=null)
-		{	for (Sample tmpSample : tmp.getRecuratedInto())
+		if (tmp.getRecuratedTo()!=null)
+		{	for (Sample tmpSample : tmp.getRecuratedTo())
 			{			list.add(tmpSample.getAccession());			}
 		}
 		json.put("ReCuratedInto", list);

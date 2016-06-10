@@ -2,6 +2,8 @@ package uk.ac.ebi.biosamples.relations.importbiosdmodel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -38,7 +40,7 @@ public class Runner implements ApplicationRunner {
 
 	private List<String> msiAccs; 
 	private ExecutorService threadPool = null;
-	private List<Future<Void>> futures = new ArrayList<>();
+	private List<Future<Void>> futures = new LinkedList<>();
 	
 	private int offsetCount = 0;
 	private int offsetTotal = -1;
@@ -94,18 +96,13 @@ public class Runner implements ApplicationRunner {
 					callable.call();
 				} else {
 					futures.add(threadPool.submit(callable));
+					//ensure we don't have too many futures at once
+					checkQueue(10000);
 				}
 	        }
 
 	        //wait for all other futures to finish
-	        log.info("Waiting for futures...");
-			for (Future<Void> future : futures) {
-				try {
-					future.get();
-				} catch (ExecutionException e) {
-					log.error("Problem getting future", e);
-				}
-			}
+			checkQueue(0);
 			
 			//close down thread pool
 			if (threadPool != null) {
@@ -128,5 +125,33 @@ public class Runner implements ApplicationRunner {
 		log.info("Processed "+msiAccs.size()+" in "+(System.currentTimeMillis() - startTime)/1000+"s");
 		return;
 		
+	}
+
+	public void checkQueue(int maxSize) throws InterruptedException, ExecutionException {
+		//remove finished jobs from queue
+		int count = 0;
+		Iterator<Future<Void>> it = futures.iterator();
+		while (it.hasNext()) {
+			Future<Void> future = it.next();
+			//if a future is finished, remove but don't count
+			if (future.isDone()){
+				future.get();
+				it.remove();
+			} else {
+				//this future is still pending count it
+				count += 1;
+				if (count > maxSize) {
+			        log.info("Waiting for futures...");
+					//if we already have enough pending futures 
+					//then wait for it to finish before continuing
+					future.get();
+					it.remove();
+					//move back to the start of the queue and count again
+					//as early tasks have probably finished by now
+					count = 0;
+					it = futures.iterator();
+				}
+			}
+		}
 	}
 }

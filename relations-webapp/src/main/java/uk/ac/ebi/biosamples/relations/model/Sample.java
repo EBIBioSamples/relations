@@ -8,9 +8,6 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
-/**
- * Created by tliener on 20/04/2016.
- */
 @NodeEntity
 public class Sample {
 
@@ -20,7 +17,7 @@ public class Sample {
 	@Property
 	private String accession;
 
-	/*Same as is the only unidirected relationship of the project*/
+	/* Same as is the only unidirected relationship of the project */
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
 	private Set<Sample> sameAs;
 
@@ -31,7 +28,7 @@ public class Sample {
 	private Set<Sample> derivedFrom;
 
 	@Relationship(type = "CURATED", direction = Relationship.OUTGOING)
-	private Set<Sample> recuratedInto;
+	private Set<Sample> recuratedTo;
 
 	@Relationship(type = "CURATED", direction = Relationship.INCOMING)
 	private Set<Sample> recuratedFrom;
@@ -49,8 +46,8 @@ public class Sample {
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
 
-
-	private Sample() {};
+	private Sample() {
+	};
 
 	public Long getId() {
 		return id;
@@ -64,34 +61,33 @@ public class Sample {
 		return owner;
 	}
 
+	public Set<Group> getGroups() {
+		return groups;
+	}
+
 	public Set<Sample> getDerivedFrom() {
 		return derivedFrom;
 	}
-
 	public Set<Sample> getDerivedTo() {
 		return derivedTo;
-	}
-
-	public Set<Group> getGroups() {
-		return groups;
 	}
 
 	public Set<Sample> getSameAs() {
 		return sameAs;
 	}
 
+	public Set<Sample> getParentOf() {
+		return parent;
+	}
 	public Set<Sample> getChildOf() {
 		return childOf;
 	}
 
-	public Set<Sample> getRecuratedInto() {
-		return recuratedInto;
+	public Set<Sample> getRecuratedTo() {
+		return recuratedTo;
 	}
-
 	public Set<Sample> getRecuratedFrom() {
 		return recuratedFrom;
 	}
-
-	public Set<Sample> getParent(){return parent;}
 
 }
