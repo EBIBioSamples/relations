@@ -49,7 +49,7 @@ public class CSVMappingService implements AutoCloseable {
 	private CSVPrinter derivationPrinter;
 	private CSVPrinter sameAsPrinter;
 	private CSVPrinter childOfPrinter;
-	private CSVPrinter reCuratedFromPrinter;
+	private CSVPrinter recurationPrinter;
 	private CSVPrinter externalLinkPrinter;
 	private CSVPrinter hasExternalLinkGroupPrinter;
 	private CSVPrinter hasExternalLinkSamplePrinter;
@@ -76,18 +76,18 @@ public class CSVMappingService implements AutoCloseable {
 				CSVFormat.DEFAULT);
 		derivationPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "derivation.csv"))),
 				CSVFormat.DEFAULT);
-		sameAsPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "sameAs.csv"))),
+		sameAsPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "sameas.csv"))),
 				CSVFormat.DEFAULT);
-		childOfPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "childOf.csv"))),
+		childOfPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "childof.csv"))),
 				CSVFormat.DEFAULT);
-		reCuratedFromPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "curatedFrom.csv"))),
+		recurationPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "recuratedfrom.csv"))),
 				CSVFormat.DEFAULT);
 		externalLinkPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "links.csv"))),
 				CSVFormat.DEFAULT);
-		hasExternalLinkGroupPrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "hasLink_group.csv"))),
-				CSVFormat.DEFAULT);
-		hasExternalLinkSamplePrinter = new CSVPrinter(new BufferedWriter(new FileWriter(new File(outpath, "hasLink_sample.csv"))),
-				CSVFormat.DEFAULT);
+		hasExternalLinkGroupPrinter = new CSVPrinter(
+				new BufferedWriter(new FileWriter(new File(outpath, "haslink_group.csv"))), CSVFormat.DEFAULT);
+		hasExternalLinkSamplePrinter = new CSVPrinter(
+				new BufferedWriter(new FileWriter(new File(outpath, "haslink_sample.csv"))), CSVFormat.DEFAULT);
 	}
 
 	/*
@@ -104,7 +104,7 @@ public class CSVMappingService implements AutoCloseable {
 		derivationPrinter.close();
 		sameAsPrinter.close();
 		childOfPrinter.close();
-		reCuratedFromPrinter.close();
+		recurationPrinter.close();
 	}
 
 	private boolean valid(BioSampleGroup group) {
@@ -216,9 +216,24 @@ public class CSVMappingService implements AutoCloseable {
 	 */
 	private void printDerivation(String productAcc, String sourceAcc) throws IOException {
 		synchronized (derivationPrinter) {
-			derivationPrinter.print(productAcc);
 			derivationPrinter.print(sourceAcc);
+			derivationPrinter.print(productAcc);
 			derivationPrinter.println();
+		}
+	}
+
+	/*
+	 * Prints Recurated From relationship
+	 * 
+	 * @param sample accession
+	 * 
+	 * @param sample accession
+	 */
+	private void printRecuration(String target, String original) throws IOException {
+		synchronized (recurationPrinter) {
+			recurationPrinter.print(original);
+			recurationPrinter.print(target);
+			recurationPrinter.println();
 		}
 	}
 
@@ -244,26 +259,11 @@ public class CSVMappingService implements AutoCloseable {
 	 * 
 	 * @param sample accession
 	 */
-	private void printChildOf(String acc, String otherAcc) throws IOException {
+	private void printChildOf(String child, String parent) throws IOException {
 		synchronized (childOfPrinter) {
-			childOfPrinter.print(acc);
-			childOfPrinter.print(otherAcc);
+			childOfPrinter.print(child);
+			childOfPrinter.print(parent);
 			childOfPrinter.println();
-		}
-	}
-
-	/*
-	 * Prints Recurated From relationship
-	 * 
-	 * @param sample accession
-	 * 
-	 * @param sample accession
-	 */
-	private void printRecuratedFrom(String acc, String otherAcc) throws IOException {
-		synchronized (reCuratedFromPrinter) {
-			reCuratedFromPrinter.print(acc);
-			reCuratedFromPrinter.print(otherAcc);
-			reCuratedFromPrinter.println();
 		}
 	}
 
@@ -383,7 +383,7 @@ public class CSVMappingService implements AutoCloseable {
 						}
 
 						if ("recurated from".equals(ept.getTermText().toLowerCase())) {
-							printRecuratedFrom(sample.getAcc(), epv.getTermText());
+							printRecuration(sample.getAcc(), epv.getTermText());
 						}
 
 					}
@@ -423,12 +423,5 @@ public class CSVMappingService implements AutoCloseable {
 				}
 			}
 		}
-
-		// Should never be executed
-		else {
-			System.out.println("NOT VALID MSI");
-		}
-
 	}
-
 }

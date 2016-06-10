@@ -27,10 +27,10 @@ public class Sample {
 	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
 	private Set<Sample> derivedFrom;
 
-	@Relationship(type = "CURATED", direction = Relationship.OUTGOING)
+	@Relationship(type = "RECURATION", direction = Relationship.OUTGOING)
 	private Set<Sample> recuratedTo;
 
-	@Relationship(type = "CURATED", direction = Relationship.INCOMING)
+	@Relationship(type = "RECURATION", direction = Relationship.INCOMING)
 	private Set<Sample> recuratedFrom;
 
 	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
