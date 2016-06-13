@@ -105,6 +105,9 @@ public class CSVMappingService implements AutoCloseable {
 		sameAsPrinter.close();
 		childOfPrinter.close();
 		recurationPrinter.close();
+		externalLinkPrinter.close();
+		hasExternalLinkGroupPrinter.close();
+		hasExternalLinkSamplePrinter.close();
 	}
 
 	private boolean valid(BioSampleGroup group) {
