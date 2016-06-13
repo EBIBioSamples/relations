@@ -17,37 +17,37 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 /*
- * This is an copy of the class that can be found in solrIndexer, so I guess this could replaced a dependencies I guess
- * but for todays testing, I don't care
-* */
+ * This is an copy of the class that can be found in solrIndexer
+* 
+*/
 @Component
 public class MyEquivalenceManager {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	// @Autowired
-	// private ManagerFactory managerFactory;
-
 	private ManagerFactory managerFactory = null;
 
 	private MyEquivalenceManager() {
 	}
+	
+	private MyEquivalenceManager(ManagerFactory managerFactory) {
+		this.managerFactory = managerFactory;
+	}	
 
-	public synchronized ManagerFactory getManagerFactory() {
+	@PostConstruct
+	public void doSetup() throws IOException {
 		if (managerFactory == null) {
-			// managerFactory = Resources.getInstance().getMyEqManagerFactory();
-
 			Properties properties = new Properties();
 			InputStream is = null;
 			try {
 				is = this.getClass().getResourceAsStream("/myeq.properties");
 				if (is == null) {
-					throw new RuntimeException("Unable to find myeq.properties");
+					throw new IOException("Unable to find myeq.properties");
 				}
 				properties.load(is);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
 			} finally {
 				if (is != null) {
 					try {
@@ -57,8 +57,11 @@ public class MyEquivalenceManager {
 					}
 				}
 			}
-			return new DbManagerFactory(properties);
+			managerFactory = new DbManagerFactory(properties);
 		}
+	}
+
+	public ManagerFactory getManagerFactory() {
 		return managerFactory;
 	}
 
@@ -126,7 +129,7 @@ public class MyEquivalenceManager {
 
 				for (EntityMappingSearchResult.Bundle bundle : bundles) {
 					for (Entity entity : bundle.getEntities()) {
-						// skip if it links to itself
+						// skip if it links to biosamples
 						if (entity.getServiceName().equals("ebi.biosamples.samples")) {
 							String entityAccession = entity.getAccession();
 							if (entityAccession.equals(sampleAccession)) {
