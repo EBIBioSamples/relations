@@ -11,11 +11,14 @@ rm -rf $NEO_DATA/graph.db.tmp
 time nice $NEO4J_BIN/neo4j-import --bad-tolerance 10000 --into $NEO_DATA/graph.db.tmp --i-type string \
 	--nodes:Sample "$IMPORTER/csv/sample_header.csv,$IMPORTER/output/sample.csv" \
 	--nodes:Group "$IMPORTER/csv/group_header.csv,$IMPORTER/output/group.csv" \
+	--nodes:ExternalLink "$IMPORTER/csv/links_header.csv,$IMPORTER/output/links.csv" \
 	--relationships:MEMBERSHIP "$IMPORTER/csv/membership_header.csv,$IMPORTER/output/membership.csv" \
 	--relationships:DERIVATION "$IMPORTER/csv/derivation_header.csv,$IMPORTER/output/derivation.csv" \
 	--relationships:CHILDOF "$IMPORTER/csv/childof_header.csv,$IMPORTER/output/childof.csv" \
 	--relationships:RECURATION "$IMPORTER/csv/recuratedfrom_header.csv,$IMPORTER/output/recuratedfrom.csv" \
-	--relationships:SAMEAS "$IMPORTER/csv/sameas_header.csv,$IMPORTER/output/sameas.csv"
+	--relationships:SAMEAS "$IMPORTER/csv/sameas_header.csv,$IMPORTER/output/sameas.csv" \
+	--relationships:HASLINK "$IMPORTER/csv/haslink_groups_header.csv,$IMPORTER/output/haslink_groups.csv" \
+	--relationships:HASLINK "$IMPORTER/csv/haslink_samples_header.csv,$IMPORTER/output/haslink_samples.csv" 
 #Indexes are not created during the import. Instead you’ll need to add indexes afterwards
        
 #create indexes

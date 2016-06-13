@@ -23,6 +23,9 @@ public class Group {
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
 	private Submission owner;
 
+	@Relationship(type = "HASLINK", direction = Relationship.OUTGOING)
+	private Set<ExternalLink> externalLinks;
+
 	public Group() {
 	};
 
@@ -40,6 +43,10 @@ public class Group {
 
 	public Set<Sample> getSamples() {
 		return samples;
+	}
+	
+	public Set<ExternalLink> getExternalLinks() {
+		return externalLinks;
 	}
 
 }
