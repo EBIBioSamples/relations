@@ -142,10 +142,9 @@ public class CSVMappingService implements AutoCloseable {
 	 * 
 	 * @param dbrefstring Set<String> that defines the db urls
 	 */
-	private void printSample(String acc, Set<String> dbrefstring) throws IOException {
+	private void printSample(String acc) throws IOException {
 		synchronized (samplePrinter) {
 			samplePrinter.print(acc);
-			samplePrinter.print(dbrefstring);
 			samplePrinter.println();
 		}
 	}
@@ -157,10 +156,9 @@ public class CSVMappingService implements AutoCloseable {
 	 * 
 	 * @param dbrefstring Set<String> that defines the db urls
 	 */
-	private void printGroup(String acc, Set<String> dbrefstring) throws IOException {
+	private void printGroup(String acc) throws IOException {
 		synchronized (groupPrinter) {
 			groupPrinter.print(acc);
-			groupPrinter.print(dbrefstring);
 			groupPrinter.println();
 		}
 	}
@@ -349,9 +347,7 @@ public class CSVMappingService implements AutoCloseable {
 					dburls.addAll(
 							covertMyEquiEntity(myEquivalenceManager.getSampleExternalEquivalences(sample.getAcc())));
 
-					// IF we model DBRefs as own node, get rid of dburls
-					// parameter here, we don't need the urls as properties then
-					printSample(sample.getAcc(), dburls);
+					printSample(sample.getAcc());
 
 					/*
 					 * To model the db links as own relationships: Run over
@@ -402,9 +398,7 @@ public class CSVMappingService implements AutoCloseable {
 					dburls.addAll(
 							covertMyEquiEntity(myEquivalenceManager.getSampleExternalEquivalences(group.getAcc())));
 
-					// IF we model DBRefs as own node, get rid of dburls
-					// parameter here, we don't need the url as property
-					printGroup(group.getAcc(), dburls);
+					printGroup(group.getAcc());
 
 					/*
 					 * To model the db links as own relationships: Run over
