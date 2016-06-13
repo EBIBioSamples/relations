@@ -188,7 +188,7 @@ public class Controller {
 		ArrayList<String> list = new ArrayList<String>();
 
 		// Adding derivedFrom to the json reply
-		if (sample.getDerivedFrom() != null) {
+		if (sample != null && sample.getDerivedFrom() != null) {
 			for (Sample tmpSample : sample.getDerivedFrom()) {
 				list.add(tmpSample.getAccession());
 			}
@@ -197,7 +197,7 @@ public class Controller {
 
 		list = new ArrayList<String>();
 		// Adding derivedTo to the json reply
-		if (sample.getDerivedTo() != null) {
+		if (sample != null && sample.getDerivedTo() != null) {
 			for (Sample tmpSample : sample.getDerivedTo()) {
 				list.add(tmpSample.getAccession());
 			}
@@ -206,7 +206,7 @@ public class Controller {
 
 		list = new ArrayList<String>();
 		// Adding childOf to the json reply
-		if (sample.getChildOf() != null) {
+		if (sample != null && sample.getChildOf() != null) {
 			for (Sample tmpSample : sample.getChildOf()) {
 				list.add(tmpSample.getAccession());
 			}
@@ -215,7 +215,7 @@ public class Controller {
 
 		list = new ArrayList<String>();
 		// Adding parentOf to json reply
-		if (sample.getParentOf() != null) {
+		if (sample != null && sample.getParentOf() != null) {
 			for (Sample tmpSample : sample.getParentOf()) {
 				list.add(tmpSample.getAccession());
 			}
@@ -225,7 +225,7 @@ public class Controller {
 
 		list = new ArrayList<String>();
 		// Adding sameAs to the json reply
-		if (sample.getSameAs() != null) {
+		if (sample != null && sample.getSameAs() != null) {
 			for (Sample tmpSample : sample.getSameAs()) {
 				list.add(tmpSample.getAccession());
 			}
@@ -234,7 +234,7 @@ public class Controller {
 
 		list = new ArrayList<String>();
 		// Adding curatedInto the json reply
-		if (sample.getRecuratedTo() != null) {
+		if (sample != null && sample.getRecuratedTo() != null) {
 			for (Sample tmpSample : sample.getRecuratedTo()) {
 				list.add(tmpSample.getAccession());
 			}
@@ -243,7 +243,7 @@ public class Controller {
 
 		list = new ArrayList<String>();
 		// Adding recuratedFrom to the json reply
-		if (sample.getRecuratedFrom() != null) {
+		if (sample != null && sample.getRecuratedFrom() != null) {
 			for (Sample tmpSample : sample.getRecuratedFrom()) {
 				list.add(tmpSample.getAccession());
 			}
