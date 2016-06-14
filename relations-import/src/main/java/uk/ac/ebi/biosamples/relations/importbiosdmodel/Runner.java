@@ -29,6 +29,9 @@ public class Runner implements ApplicationRunner {
 	@Value("${neo4jIndexer.threadCount:0}")
 	private int threadCount;
 	
+	@Value("${neo4jIndexer.futureMaxCount:1000}")
+	private int futureMaxCount;
+	
 	@Value("${neo4jIndexer.fetchStep:10}")
 	private int fetchStep;
 
@@ -97,7 +100,7 @@ public class Runner implements ApplicationRunner {
 				} else {
 					futures.add(threadPool.submit(callable));
 					//ensure we don't have too many futures at once
-					checkQueue(10000);
+					checkQueue(futureMaxCount);
 				}
 	        }
 
