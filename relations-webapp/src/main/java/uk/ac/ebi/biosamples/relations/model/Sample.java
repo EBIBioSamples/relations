@@ -37,7 +37,7 @@ public class Sample {
 	private Set<Sample> childOf;
 
 	@Relationship(type = "CHILDOF", direction = Relationship.INCOMING)
-	private Set<Sample> parent;
+	private Set<Sample> parentOf;
 
 	/* Outgoing relationships */
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
@@ -84,7 +84,7 @@ public class Sample {
 	}
 
 	public Set<Sample> getParentOf() {
-		return parent;
+		return parentOf;
 	}
 	public Set<Sample> getChildOf() {
 		return childOf;
