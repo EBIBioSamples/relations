@@ -5,6 +5,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -125,6 +126,7 @@ public class CSVMappingService implements AutoCloseable {
 	}
 
 	private boolean valid(MSI msi) {
+		if (msi == null) return false;
 		return true;
 	}
 
@@ -306,10 +308,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * 
 	 * @param dbRefs A Set<Entity> as stored in myEquivalence
 	 */
-	private Set<String> covertMyEquiEntity(Set<Entity> dbRefs) {
+	private Set<String> covertMyEquiEntity(Set<URI> dbRefs) {
 		Set<String> list = new HashSet<String>();
-		for (Entity ref : dbRefs) {
-			list.add(ref.getURI());
+		for (URI uri : dbRefs) {
+			list.add(uri.toString());
 		}
 		return list;
 	}

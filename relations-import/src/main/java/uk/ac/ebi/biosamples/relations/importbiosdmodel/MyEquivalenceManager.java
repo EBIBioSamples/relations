@@ -11,6 +11,8 @@ import uk.ac.ebi.fg.myequivalents.model.Entity;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
@@ -69,8 +71,8 @@ public class MyEquivalenceManager {
 		this.managerFactory = managerFactory;
 	}
 
-	public Set<Entity> getGroupExternalEquivalences(String groupAccession) {
-		Set<Entity> otherEquivalences = new HashSet<>();
+	public Set<URI> getGroupExternalEquivalences(String groupAccession) {
+		Set<URI> otherEquivalences = new HashSet<>();
 		EntityMappingManager entityMappingManager = null;
 		try {
 			entityMappingManager = getManagerFactory().newEntityMappingManager();
@@ -103,7 +105,11 @@ public class MyEquivalenceManager {
 						// }
 					}
 
-					otherEquivalences.add(entity);
+					try {
+						otherEquivalences.add(new URI(entity.getURI()));
+					} catch (URISyntaxException e) {
+						log.warn("Found invalid URI within "+groupAccession);
+					}
 				}
 
 			}
@@ -116,8 +122,8 @@ public class MyEquivalenceManager {
 		return otherEquivalences;
 	}
 
-	public Set<Entity> getSampleExternalEquivalences(String sampleAccession) {
-		Set<Entity> otherEquivalences = new HashSet<>();
+	public Set<URI> getSampleExternalEquivalences(String sampleAccession) {
+		Set<URI> otherEquivalences = new HashSet<>();
 		EntityMappingManager entityMappingManager = null;
 		try {
 			entityMappingManager = getManagerFactory().newEntityMappingManager();
@@ -136,7 +142,11 @@ public class MyEquivalenceManager {
 								continue;
 							}
 						}
-						otherEquivalences.add(entity);
+						try {
+							otherEquivalences.add(new URI(entity.getURI()));
+						} catch (URISyntaxException e) {
+							log.warn("Found invalid URI within "+sampleAccession);
+						}
 					}
 				}
 			}
