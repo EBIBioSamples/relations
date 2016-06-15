@@ -31,6 +31,11 @@
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-actuator</artifactId>
+		</dependency>
+
 		<!-- Add the embedded driver to the project -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
