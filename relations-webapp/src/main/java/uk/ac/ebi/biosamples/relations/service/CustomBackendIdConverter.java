@@ -1,4 +1,4 @@
-package uk.ac.ebi.biosamples.relations.webapp;
+package uk.ac.ebi.biosamples.relations.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
