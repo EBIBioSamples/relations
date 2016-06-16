@@ -18,11 +18,15 @@ public class ApiLinkFactory {
     private String biosamplesWebServerUrl;
 
     public Link createApiLinkForSample(Sample sample) {
-        return new Link(biosamplesWebServerUrl + "/samples/" + sample.getAccession(), "details");
+        String url = biosamplesWebServerUrl + (biosamplesWebServerUrl.endsWith("/") ? "samples/" : "/samples/") +
+                sample.getAccession();
+        return new Link(url, "details");
     }
 
     public Link createApiLinkForGroup(Group group) {
-        return new Link(biosamplesWebServerUrl + "/groups/" + group.getAccession(), "details");
+        String url = biosamplesWebServerUrl + (biosamplesWebServerUrl.endsWith("/") ? "groups/" : "/groups/") +
+                group.getAccession();
+        return new Link(url, "details");
     }
 
 }
