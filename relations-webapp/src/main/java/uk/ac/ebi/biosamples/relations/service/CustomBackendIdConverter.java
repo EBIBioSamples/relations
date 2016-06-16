@@ -42,11 +42,26 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 	@Override
 	public Serializable fromRequestId(String id, Class<?> entityType) {
 		if (entityType.equals(Sample.class)) {
-			return sampleRepository.findOneByAccession(id).getId();
+			Sample sample = sampleRepository.findOneByAccession(id);
+			if (sample == null) { 
+				return id;
+			} else {
+				return sample.getId();
+			}
 		} else if (entityType.equals(Group.class)) {
-			return groupRepository.findOneByAccession(id).getId();
+			Group group = groupRepository.findOneByAccession(id);
+			if (group == null) {
+				return null;
+			} else {
+				return group.getId();
+			}
 		} else if (entityType.equals(Submission.class)) {
-			return submissionRepository.findOneBySubmissionId(id).getId();
+			Submission submission = submissionRepository.findOneBySubmissionId(id);
+			if (submission == null) {
+				return null;
+			} else {
+				return submission.getId();
+			}
 		} else {
 			throw new IllegalArgumentException("Unrecognized class " + entityType);
 		}
@@ -58,11 +73,26 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 	@Override
 	public String toRequestId(Serializable id, Class<?> entityType) {
 		if (entityType.equals(Sample.class)) {
-			return sampleRepository.findOne((Long) id).getAccession();
+			Sample sample = sampleRepository.findOne((Long)id);
+			if (sample == null) { 
+				return id.toString();
+			} else {
+				return sample.getAccession();
+			}
 		} else if (entityType.equals(Group.class)) {
-			return groupRepository.findOne((Long) id).getAccession();
+			Group group = groupRepository.findOne((Long)id);
+			if (group == null) { 
+				return id.toString();
+			} else {
+				return group.getAccession();
+			}
 		} else if (entityType.equals(Submission.class)) {
-			return submissionRepository.findOne((Long) id).getSubmissionId();
+			Submission submission = submissionRepository.findOne((Long)id);
+			if (submission == null) { 
+				return id.toString();
+			} else {
+				return submission.getSubmissionId();
+			}
 		} else {
 			throw new IllegalArgumentException("Unrecognized class " + entityType);
 		}
