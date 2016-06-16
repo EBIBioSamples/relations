@@ -44,21 +44,21 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 		if (entityType.equals(Sample.class)) {
 			Sample sample = sampleRepository.findOneByAccession(id);
 			if (sample == null) { 
-				return id;
+				return -1;
 			} else {
 				return sample.getId();
 			}
 		} else if (entityType.equals(Group.class)) {
 			Group group = groupRepository.findOneByAccession(id);
 			if (group == null) {
-				return null;
+				return -1;
 			} else {
 				return group.getId();
 			}
 		} else if (entityType.equals(Submission.class)) {
 			Submission submission = submissionRepository.findOneBySubmissionId(id);
 			if (submission == null) {
-				return null;
+				return -1;
 			} else {
 				return submission.getId();
 			}
@@ -75,21 +75,21 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 		if (entityType.equals(Sample.class)) {
 			Sample sample = sampleRepository.findOne((Long)id);
 			if (sample == null) { 
-				return id.toString();
+				return null;
 			} else {
 				return sample.getAccession();
 			}
 		} else if (entityType.equals(Group.class)) {
 			Group group = groupRepository.findOne((Long)id);
 			if (group == null) { 
-				return id.toString();
+				return null;
 			} else {
 				return group.getAccession();
 			}
 		} else if (entityType.equals(Submission.class)) {
 			Submission submission = submissionRepository.findOne((Long)id);
 			if (submission == null) { 
-				return id.toString();
+				return null;
 			} else {
 				return submission.getSubmissionId();
 			}
