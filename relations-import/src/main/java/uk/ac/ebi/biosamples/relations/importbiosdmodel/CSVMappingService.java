@@ -112,6 +112,7 @@ public class CSVMappingService implements AutoCloseable {
 	}
 
 	private boolean valid(BioSampleGroup group) {
+		if (group == null) return false;
 		// must be owned by one msi and one msi only
 		if (group.getMSIs().size() != 1)
 			return false;
@@ -119,6 +120,7 @@ public class CSVMappingService implements AutoCloseable {
 	}
 
 	private boolean valid(BioSample sample) {
+		if (sample == null) return false;
 		// must be owned by one msi and one msi only
 		if (sample.getMSIs().size() != 1)
 			return false;
@@ -131,6 +133,8 @@ public class CSVMappingService implements AutoCloseable {
 	}
 
 	private void printSubmission(String acc) throws IOException {
+		if (acc == null) return;
+		if (acc.trim().length() == 0) return;
 		synchronized (submissionPrinter) {
 			submissionPrinter.print(acc);
 			submissionPrinter.println();
@@ -145,6 +149,8 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param dbrefstring Set<String> that defines the db urls
 	 */
 	private void printSample(String acc) throws IOException {
+		if (acc == null) return;
+		if (acc.trim().length() == 0) return;
 		synchronized (samplePrinter) {
 			samplePrinter.print(acc);
 			samplePrinter.println();
@@ -159,6 +165,8 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param dbrefstring Set<String> that defines the db urls
 	 */
 	private void printGroup(String acc) throws IOException {
+		if (acc == null) return;
+		if (acc.trim().length() == 0) return;
 		synchronized (groupPrinter) {
 			groupPrinter.print(acc);
 			groupPrinter.println();
@@ -173,6 +181,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param subId submission ID
 	 */
 	private void printSampleOwnership(String acc, String subId) throws IOException {
+		if (acc == null) return;
+		if (subId == null) return;
+		if (acc.trim().length() == 0) return;
+		if (subId.trim().length() == 0) return;
 		synchronized (ownershipSamplePrinter) {
 			ownershipSamplePrinter.print(acc);
 			ownershipSamplePrinter.print(subId);
@@ -188,6 +200,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param subId submission ID
 	 */
 	private void printGroupOwnership(String acc, String subId) throws IOException {
+		if (acc == null) return;
+		if (subId == null) return;
+		if (acc.trim().length() == 0) return;
+		if (subId.trim().length() == 0) return;
 		synchronized (ownershipGroupPrinter) {
 			ownershipGroupPrinter.print(acc);
 			ownershipGroupPrinter.print(subId);
@@ -203,6 +219,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param groupAcc accession of the group
 	 */
 	private void printMembership(String sampleAcc, String groupAcc) throws IOException {
+		if (sampleAcc == null) return;
+		if (groupAcc == null) return;
+		if (sampleAcc.trim().length() == 0) return;
+		if (groupAcc.trim().length() == 0) return;
 		synchronized (membershipPrinter) {
 			membershipPrinter.print(sampleAcc);
 			membershipPrinter.print(groupAcc);
@@ -218,6 +238,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param sourceAcc sample accession
 	 */
 	private void printDerivation(String productAcc, String sourceAcc) throws IOException {
+		if (productAcc == null) return;
+		if (sourceAcc == null) return;
+		if (productAcc.trim().length() == 0) return;
+		if (sourceAcc.trim().length() == 0) return;
 		synchronized (derivationPrinter) {
 			derivationPrinter.print(sourceAcc);
 			derivationPrinter.print(productAcc);
@@ -233,6 +257,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param sample accession
 	 */
 	private void printRecuration(String target, String original) throws IOException {
+		if (target == null) return;
+		if (original == null) return;
+		if (target.trim().length() == 0) return;
+		if (original.trim().length() == 0) return;
 		synchronized (recurationPrinter) {
 			recurationPrinter.print(original);
 			recurationPrinter.print(target);
@@ -248,6 +276,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param sample accession
 	 */
 	private void printSameAs(String acc, String otherAcc) throws IOException {
+		if (acc == null) return;
+		if (otherAcc == null) return;
+		if (acc.trim().length() == 0) return;
+		if (otherAcc.trim().length() == 0) return;
 		synchronized (sameAsPrinter) {
 			sameAsPrinter.print(acc);
 			sameAsPrinter.print(otherAcc);
@@ -263,6 +295,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param sample accession
 	 */
 	private void printChildOf(String child, String parent) throws IOException {
+		if (child == null) return;
+		if (parent == null) return;
+		if (child.trim().length() == 0) return;
+		if (parent.trim().length() == 0) return;
 		synchronized (childOfPrinter) {
 			childOfPrinter.print(child);
 			childOfPrinter.print(parent);
@@ -274,6 +310,8 @@ public class CSVMappingService implements AutoCloseable {
 	 * @param url url of a database link
 	 */
 	private void printDbNode(String url) throws IOException {
+		if (url == null) return;
+		if (url.trim().length() == 0) return;
 		synchronized (externalLinkPrinter) {
 			externalLinkPrinter.print(url);
 			externalLinkPrinter.println();
@@ -284,6 +322,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * Saves the relationship between db url and sample
 	 */
 	private void printSampleHasExternalLink(String acc, String url) throws IOException {
+		if (acc == null) return;
+		if (url == null) return;
+		if (acc.trim().length() == 0) return;
+		if (url.trim().length() == 0) return;
 		synchronized (hasExternalLinkSamplePrinter) {
 			hasExternalLinkSamplePrinter.print(acc);
 			hasExternalLinkSamplePrinter.print(url);
@@ -295,6 +337,10 @@ public class CSVMappingService implements AutoCloseable {
 	 * Saves the relationship between db url and group
 	 */
 	private void printGroupHasExternalLink(String acc, String url) throws IOException {
+		if (acc == null) return;
+		if (url == null) return;
+		if (acc.trim().length() == 0) return;
+		if (url.trim().length() == 0) return;
 		synchronized (hasExternalLinkGroupPrinter) {
 			hasExternalLinkGroupPrinter.print(acc);
 			hasExternalLinkGroupPrinter.print(url);
@@ -415,7 +461,7 @@ public class CSVMappingService implements AutoCloseable {
 					printGroupOwnership(group.getAcc(), msi.getAcc());
 
 					for (BioSample sample : group.getSamples()) {
-						if (valid(sample)) {
+						if (valid(sample) && valid(group)) {
 							printMembership(sample.getAcc(), group.getAcc());
 						}
 					}
