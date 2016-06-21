@@ -7,6 +7,17 @@ source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/load_env.sh
 #clean any existing content
 rm -rf $NEO_DATA/graph.db.tmp
 
+#ensure all files have unique lines
+for FILENAME in $IMPORTER/output/*.csv ;
+do
+  echo "Sorting and uniqing $FILENAME"
+  sort -u -i $FILENAME > $FILENAME.tmp && true
+  mv -f $FILENAME.tmp $FILENAME
+done
+
+
+
+
 #create new content
 time nice $NEO4J_BIN/neo4j-import --bad-tolerance 10000 --into $NEO_DATA/graph.db.tmp --i-type string \
 	--nodes:Sample "$IMPORTER/csv/sample_header.csv,$IMPORTER/output/sample.csv" \
