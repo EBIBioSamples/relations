@@ -3,8 +3,7 @@ package uk.ac.ebi.biosamples.relations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.support.SpringBootServletInitializer; // new version
-//import org.springframework.boot.context.web.SpringBootServletInitializer; //old version
+import org.springframework.boot.web.support.SpringBootServletInitializer; 
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.Link;
@@ -17,9 +16,6 @@ import uk.ac.ebi.biosamples.relations.model.Sample;
 import uk.ac.ebi.biosamples.relations.service.ApiLinkFactory;
 
 
-/**
- * Created by tliener on 20/04/2016.
- */
 @SpringBootApplication
 public class RelationsApplication extends SpringBootServletInitializer {
     @Autowired
