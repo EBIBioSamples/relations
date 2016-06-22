@@ -309,7 +309,7 @@ public class CSVMappingService implements AutoCloseable {
 	/*
 	 * @param url url of a database link
 	 */
-	private void printDbNode(String url) throws IOException {
+	private void printExternalLink(String url) throws IOException {
 		if (url == null) return;
 		if (url.trim().length() == 0) return;
 		synchronized (externalLinkPrinter) {
@@ -403,8 +403,10 @@ public class CSVMappingService implements AutoCloseable {
 					 * well as a connection between the group and the url
 					 */
 					for (String url : dburls) {
+						//skip internal links, these should be captured as other relationships
+						if (url.contains("ebi.ac.uk/biosamples")) continue;						
 						printSampleHasExternalLink(sample.getAcc(), url);
-						printDbNode(url);
+						printExternalLink(url);
 					}
 
 					printSampleOwnership(sample.getAcc(), msi.getAcc());
@@ -454,8 +456,10 @@ public class CSVMappingService implements AutoCloseable {
 					 * well as a connection between the group and the url
 					 */
 					for (String url : dburls) {
+						//skip internal links, these should be captured as other relationships
+						if (url.contains("ebi.ac.uk/biosamples")) continue;			
 						printGroupHasExternalLink(group.getAcc(), url);
-						printDbNode(url);
+						printExternalLink(url);
 					}
 
 					printGroupOwnership(group.getAcc(), msi.getAcc());
