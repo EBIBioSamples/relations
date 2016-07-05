@@ -8,12 +8,13 @@ source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/load_env.sh
 rm -rf $NEO_DATA/graph.db.tmp
 
 #ensure all files have unique lines
+#do this in parallel for all files at once
 for FILENAME in $IMPORTER/output/*.csv ;
 do
-  echo "Sorting and uniqing $FILENAME"
-  sort -u -i $FILENAME > $FILENAME.tmp && true
-  mv -f $FILENAME.tmp $FILENAME
+ echo "Sorting and uniqing $FILENAME"
+ bash -c "sort -u -i -o $FILENAME.tmp $FILENAME; mv -f $FILENAME.tmp $FILENAME" &
 done
+wait
 
 
 
