@@ -21,16 +21,16 @@ wait
 
 #create new content
 time nice $NEO4J_BIN/neo4j-import --bad-tolerance 10000 --into $NEO_DATA/graph.db.tmp --i-type string \
-	--nodes:Sample "$IMPORTER/csv/sample_header.csv,$IMPORTER/output/sample.csv" \
-	--nodes:Group "$IMPORTER/csv/group_header.csv,$IMPORTER/output/group.csv" \
-	--nodes:ExternalLink "$IMPORTER/csv/links_header.csv,$IMPORTER/output/links.csv" \
-	--relationships:MEMBERSHIP "$IMPORTER/csv/membership_header.csv,$IMPORTER/output/membership.csv" \
-	--relationships:DERIVATION "$IMPORTER/csv/derivation_header.csv,$IMPORTER/output/derivation.csv" \
-	--relationships:CHILDOF "$IMPORTER/csv/childof_header.csv,$IMPORTER/output/childof.csv" \
-	--relationships:RECURATION "$IMPORTER/csv/recuratedfrom_header.csv,$IMPORTER/output/recuratedfrom.csv" \
-	--relationships:SAMEAS "$IMPORTER/csv/sameas_header.csv,$IMPORTER/output/sameas.csv" \
-	--relationships:HASLINK "$IMPORTER/csv/haslink_group_header.csv,$IMPORTER/output/haslink_group.csv" \
-	--relationships:HASLINK "$IMPORTER/csv/haslink_sample_header.csv,$IMPORTER/output/haslink_sample.csv" 
+	--nodes:Sample "$IMPORTER/csv/sample_header.csv,`ls -1 $IMPORTER/output/sample.*csv | paste -sd ,`" \
+	--nodes:Group "$IMPORTER/csv/group_header.csv,`ls -1 $IMPORTER/output/group.*csv | paste -sd ,`" \
+	--nodes:ExternalLink "$IMPORTER/csv/links_header.csv,`ls -1 $IMPORTER/output/links.*csv | paste -sd ,`" \
+	--relationships:MEMBERSHIP "$IMPORTER/csv/membership_header.csv,`ls -1 $IMPORTER/output/membership.*csv | paste -sd ,`" \
+	--relationships:DERIVATION "$IMPORTER/csv/derivation_header.csv,`ls -1 $IMPORTER/output/derivation.*csv | paste -sd ,`" \
+	--relationships:CHILDOF "$IMPORTER/csv/childof_header.csv,`ls -1 $IMPORTER/output/childof.*csv | paste -sd ,`" \
+	--relationships:RECURATION "$IMPORTER/csv/recuratedfrom_header.csv,`ls -1 $IMPORTER/output/recuratedfrom.*csv | paste -sd ,`" \
+	--relationships:SAMEAS "$IMPORTER/csv/sameas_header.csv,`ls -1 $IMPORTER/output/sameas.*csv | paste -sd ,`" \
+	--relationships:HASLINK "$IMPORTER/csv/haslink_group_header.csv,`ls -1 $IMPORTER/output/haslink_group.*csv | paste -sd ,`" \
+	--relationships:HASLINK "$IMPORTER/csv/haslink_sample_header.csv,`ls -1 $IMPORTER/output/haslink_sample.*csv | paste -sd ,`" 
 	
 	
 #Indexes are not created during the import. Instead you’ll need to add indexes afterwards
