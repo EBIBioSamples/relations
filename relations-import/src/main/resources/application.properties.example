@@ -1,3 +1,0 @@
-neo4jIndexer.threadCount=0
-neo4jIndexer.fetchStep=10
-neo4jIndexer.futureMaxCount=1000

@@ -9,7 +9,6 @@
 	<packaging>pom</packaging>
 	
 	<modules>
-		<module>relations-import</module>
 		<module>relations-webapp</module>
 	</modules>
 

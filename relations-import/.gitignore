@@ -1,7 +1,0 @@
-/bin/
-/target/
-/.settings/
-/output/
-/graph.db/
-/.idea/
-/load_env.sh
